@@ -2192,6 +2192,8 @@ public class ImproveServiceImpl implements ImproveService{
             }
             if (res > 0){
 
+                springJedisDao.zAdd(getImpLFDKey(impid),userid,System.currentTimeMillis());
+
                 //24小时热门进步
                 threadPoolTaskExecutor.execute(new Runnable() {
                     @Override
@@ -2516,6 +2518,7 @@ public class ImproveServiceImpl implements ImproveService{
 
         //将赞保存到redis
         setLikeToRedis(impid,businessid,businesstype,1);
+        springJedisDao.zAdd(getImpLFDKey(impid),userid,System.currentTimeMillis());
         //添加临时记录
 //        springJedisDao.set(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid,"1",10*60*60);
 //        springJedisDao.putAll(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),map,30*24*60*60);
@@ -2746,7 +2749,16 @@ public class ImproveServiceImpl implements ImproveService{
         springJedisDao.del("improve_like_temp_"+improve.getImpid()+userid);
         //删除临时记录
         springJedisDao.del(Constant.REDIS_IMPROVE_LIKE + improve.getImpid() + "@" + userid);
-        springJedisDao.delete(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),"like"+improve.getImpid());
+        //        springJedisDao.delete(Constant.REDIS_IMPROVE_LFD + improve.getImpid(),"like"+improve.getImpid());
+
+        /**
+         * 如果送过花就不移除了
+         */
+        isFlower(userid,improve);
+        if(!improve.getHasflower().equals("1")){
+            springJedisDao.zRem(getImpLFDKey(improve.getImpid()),userid);
+        }
+
     }
 
     /**
@@ -2987,21 +2999,66 @@ public class ImproveServiceImpl implements ImproveService{
     private void initLikeFlowerDiamondInfo(Improve improve){
         try{
             if(null != improve){
-//                Long count = improveMongoDao.selectTotalCountImproveLFD(String.valueOf(improve.getImpid()));
-                Long count = getImproveLFDCount(String.valueOf(improve.getImpid()));
-//                List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-//                for (ImproveLFD improveLFD : improveLFDs){
-//                    AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
-//                    improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
-//                }
-                List<ImproveLFD> improveLFDs = getImproveLFDList(String.valueOf(improve.getImpid()));
-                improve.setLfdcount(count);
+                String key = getImpLFDKey(improve.getImpid());
+                List<ImproveLFD> improveLFDs = new ArrayList<>();
+                Long icount = 0l;
+                if(springJedisDao.hasKey(key)){
+                    icount = springJedisDao.zCard(key);
+                    Set<String> list = springJedisDao.zRevrange(key,0l,6l);
+                    for (String s:list){
+                        ImproveLFD improveLFD = new ImproveLFD();
+                        improveLFD.setUserid(s);
+                        AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+                        improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+                        improveLFDs.add(improveLFD);
+                    }
+                }else{
+                    icount = getImproveLFDCount(String.valueOf(improve.getImpid()));
+                    List<ImproveLFD> allImproveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
+                    for (int i = 0; i < improveLFDs.size(); i++) {
+                        ImproveLFD improveLFD = improveLFDs.get(i);
+//                        if(i<6){
+                        AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+                        improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+                        improveLFDs.add(improveLFD);
+//                        }
+                    }
+                    //异步同步到rendis中去
+                    initFLDToRedis(String.valueOf(improve.getImpid()));
+                }
+                improve.setLfdcount(icount);
+
                 improve.setImproveLFDs(improveLFDs);
             }
         }catch (Exception e){
             logger.error("selectImproveLfdList error improve={}",JSONObject.fromObject(improve).toString(),e);
         }
     }
+
+
+    private void initFLDToRedis(final String improveid){
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<ImproveLFDDetail> allImproveLFDDetails = improveMongoDao.getAllFLDDetails(improveid);
+                for (int i = 0; i < allImproveLFDDetails.size(); i++) {
+                    ImproveLFDDetail im = allImproveLFDDetails.get(i);
+                    springJedisDao.zAdd(getImpLFDKey(im.getImpid()),im.getUserid(),System.currentTimeMillis());
+                }
+            }
+        });
+    }
+
+    private String getImpLFDKey(Long improveId){
+        //springJedisDao.zAdd(Constant.REDIS_RANK_SORT+rank.getRankid(),userId+"",ratio);
+        return Constant.REDIS_IMPROVE_LFD + improveId;
+    }
+
+    private String getImpLFDKey(String improveId){
+        //springJedisDao.zAdd(Constant.REDIS_RANK_SORT+rank.getRankid(),userId+"",ratio);
+        return Constant.REDIS_IMPROVE_LFD + improveId;
+    }
+
 
 
     private Long getImproveLFDCount(String improveid){
@@ -3014,22 +3071,22 @@ public class ImproveServiceImpl implements ImproveService{
     }
 
 
-    private List<ImproveLFD> getImproveLFDList(String improveid){
-        String improveLFDstr = springJedisDao.get("ImpLFDList"+improveid);
-        if (StringUtils.isBlank(improveLFDstr)){
-            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(improveid);
-            for (ImproveLFD improveLFD : improveLFDs){
-                AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
-                improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
-                improveLFD.setVcertification(appUser.getVcertification());
-            }
-            improveLFDstr = JSON.toJSONString(improveLFDs);
-            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,10);
-            return improveLFDs;
-        }
-        List<ImproveLFD> list = JSON.parseArray(improveLFDstr,ImproveLFD.class);
-        return list;
-    }
+//    private List<ImproveLFD> getImproveLFDList(String improveid){
+//        String improveLFDstr = springJedisDao.get("ImpLFDList"+improveid);
+//        if (StringUtils.isBlank(improveLFDstr)){
+//            List<ImproveLFD> improveLFDs = improveMongoDao.selectImproveLfdList(improveid);
+//            for (ImproveLFD improveLFD : improveLFDs){
+//                AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
+//                improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
+//                improveLFD.setVcertification(appUser.getVcertification());
+//            }
+//            improveLFDstr = JSON.toJSONString(improveLFDs);
+//            springJedisDao.set("ImpLFDList"+improveid,improveLFDstr,10);
+//            return improveLFDs;
+//        }
+//        List<ImproveLFD> list = JSON.parseArray(improveLFDstr,ImproveLFD.class);
+//        return list;
+//    }
 
     /**
      * 是否 点赞 送花 送钻

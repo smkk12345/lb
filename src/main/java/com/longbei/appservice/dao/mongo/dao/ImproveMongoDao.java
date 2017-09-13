@@ -123,7 +123,8 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
      */
     public Long selectTotalCountImproveLFD(String impid){
         DBObject object = new BasicDBObject("impid",impid);
-        return Long.parseLong(mongoTemplate.getCollection("improveLFDDetail").distinct("userid",object).size()+"");
+        Long res = Long.parseLong(mongoTemplate.getCollection("improveLFDDetail").distinct("userid",object).size()+"");
+        return res;
 //        return group.getRawResults().
 ////        Dist
 //        Long count = mongoTemplate.count(query,ImproveLFDDetail.class);
@@ -194,6 +195,17 @@ public class ImproveMongoDao extends BaseMongoDao<Improve>{
         return user;
     }
 
+    /**
+     * 返回该进步下所有点赞送花明细信息
+     * @param impid
+     * @return
+     */
+    public List<ImproveLFDDetail> getAllFLDDetails(String impid){
+        Criteria criteria = Criteria.where("impid").is(impid);
+        Query query = new Query(criteria);
+        List<ImproveLFDDetail> list = mongoTemplate.find(query, ImproveLFDDetail.class);
+        return list;
+    }
 
 
 
