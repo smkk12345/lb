@@ -985,24 +985,6 @@ public class ImproveServiceImpl implements ImproveService{
         return improves;
     }
 
-    private boolean isIos(String version){
-        //v1.0_2_3.0.2
-        if(StringUtils.isBlank(version)){
-            return false;
-        }
-        String vers[] = version.split("_");
-        if (vers.length > 0) {
-            String v = vers[2];
-            v = v.trim().replaceAll("\\.", "");
-            if ("2".equals(vers[1])){//andrion
-                return false;
-            }else{//ios
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     /**
      *  @author luye
