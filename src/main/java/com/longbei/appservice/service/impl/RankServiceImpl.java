@@ -2394,7 +2394,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(newRankAcceptAward.getAcceptdate() != null){
                 BaseResp<Object> updateRankAcceptAward = this.rankAcceptAwardService.updateRankAcceptAward(newRankAcceptAward);
             }
-
             resultMap.put("award",award);
             resultMap.put("rankMember",rankMember);
 
@@ -2402,7 +2401,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
             return baseResp;
         }catch(Exception e){
-            logger.error("user accept award error userId:{} rankId:{} errorMsg:{}",userId,rankId,e);
+            logger.error("user accept award error userId:{} rankId:{} errorMsg:",userId,rankId,e);
             printExceptionAndRollBackTransaction(e);
         }
 
@@ -3419,14 +3418,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             resultMap.put("userRankMemberStatus",userRankMemberStatus);
 
             //加载评论数
-            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"10", "");
-            if(commentResp.getCode() == 0){
-                resultMap.put("commentCount",commentResp.getData());
-                rank.setCommentCount(commentResp.getData());
-            }else{
-                resultMap.put("commentCount","0");
-                rank.setCommentCount(0);
-            }
+//            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"10", "");
+//            if(commentResp.getCode() == 0){
+//                resultMap.put("commentCount",commentResp.getData());
+//                rank.setCommentCount(commentResp.getData());
+//            }else{
+//                resultMap.put("commentCount","0");
+//                rank.setCommentCount(0);
+//            }
 
             //计算入榜截止时间
             Date endJoinTime = rank.getEndtime();

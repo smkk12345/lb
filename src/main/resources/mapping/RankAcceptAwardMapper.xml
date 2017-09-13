@@ -48,7 +48,7 @@
     select
     <include refid="Base_Column_List" />
     from rank_accept_award
-    where rankid=#{rankid} AND userid=#{userid}
+    where rankid=#{rankid} AND userid=#{userid} ORDER BY createdate DESC limit 1
   </select>
 
   <select id="selectCount" parameterType="com.longbei.appservice.entity.RankAcceptAward" resultType="java.lang.Integer">

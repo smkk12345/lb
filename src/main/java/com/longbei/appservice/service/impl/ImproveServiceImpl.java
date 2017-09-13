@@ -1047,12 +1047,12 @@ public class ImproveServiceImpl implements ImproveService{
 
     //批复信息
   	private void replyImp(List<Improve> improves, String userid, String classroomid,String version){
-  		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+//  		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
 //  		List<String> list = new ArrayList<>();
 //  		if(null != classroom){
 //  			list = userCardMapper.selectUseridByCardid(classroom.getCardid());
 //  		}
-  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+//  		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
   		if(null != improves && improves.size()>0){
   			for (Improve improve : improves) {
   				String isreply = "0";
@@ -1069,25 +1069,25 @@ public class ImproveServiceImpl implements ImproveService{
                     replyImprove.setAppUserMongoEntity(appUserMongo);
   					improve.setReplyImprove(replyImprove);
   				}
-  				if(!isIos(version)){
-                    if(!"1".equals(isreply)){
-                        if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
-                            //判断当前用户是否是老师
-                            if(userCard.getUserid() != Long.parseLong(userid)){
-                                isreply = "2";
-                            }
-                        }
-                    }
-                    if(!StringUtils.isBlank(userid)){
-                        if(userid.toString().equals(Constant.VISITOR_UID)){
-                            isreply = "2";
-                        }
-                    }else{
-                        isreply = "2";
-                    }
-                }else {
-                    isreply = "0";
-                }
+//  				if(!isIos(version)){
+//                    if(!"1".equals(isreply)){
+//                        if(!StringUtils.isBlank(userid)&&!userid.equals(Constant.VISITOR_UID)){
+//                            //判断当前用户是否是老师
+//                            if(userCard.getUserid() != Long.parseLong(userid)){
+//                                isreply = "2";
+//                            }
+//                        }
+//                    }
+//                    if(!StringUtils.isBlank(userid)){
+//                        if(userid.toString().equals(Constant.VISITOR_UID)){
+//                            isreply = "2";
+//                        }
+//                    }else{
+//                        isreply = "2";
+//                    }
+//                }else {
+//                    isreply = "0";
+//                }
   				improve.setIsreply(isreply);
   			}
   		}
@@ -1639,8 +1639,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @return
      * @author:luye
      * @date update 02月10日
-     */
-    private BaseResp insertImproveFilter(String businessid,String userid,String improvetype){
+     */ private BaseResp insertImproveFilter(String businessid,String userid,String improvetype){
         BaseResp baseResp = new BaseResp();
         switch (improvetype){
             case Constant.IMPROVE_SINGLE_TYPE:
@@ -2657,18 +2656,6 @@ public class ImproveServiceImpl implements ImproveService{
                         isreply = "1";
                         improve.setReplyImprove(replyImprove);
                     }
-                    if(!"1".equals(isreply)){
-                        if(null != userCard){
-                            //判断当前用户是否是老师
-                            if(!StringUtils.isBlank(userid)){
-                                if(userCard.getUserid() != Long.parseLong(userid)){
-                                    isreply = "2";
-                                }
-                            }else{
-                                isreply = "2";
-                            }
-                        }
-                    }
                     improve.setIsreply(isreply);
                     if (null != classroom){
                         String teacher = "";
@@ -3290,147 +3277,16 @@ public class ImproveServiceImpl implements ImproveService{
                 //TODO  要优化
                 initImproveDetailInfo(improve,userid != null?Long.parseLong(userid):null);
 
-                //TODO 是否收藏
-                if(checkIsCollectImprove(userid,impid)){
-                    improve.setHascollect("1");
-                }
                 AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(improve.getUserid()));
 
-                //TODO 好友昵称，关系初始化
+                //TODO 好友昵称
                 //获取好友昵称
                 if (StringUtils.isNotBlank(userid)){
                     this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
-                    initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
                 }
 
                 improve.setAppUserMongoEntity(appUserMongoEntity);
                 //初始化目标，榜单，圈子，教室等信息
-                switch(businesstype){
-                    case Constant.IMPROVE_SINGLE_TYPE:
-                        break;
-                    case Constant.IMPROVE_RANK_TYPE:
-                        {
-                            if("1".equals(improve.getIsbusinessdel())){
-                                break;
-                            }
-                            Rank rank = rankService.selectByRankid(improve.getBusinessid());
-                            if (null != rank){
-                                int sortnum = 0;
-                                RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(improve.getBusinessid(),improve.getUserid());
-                                if("0".equals(rank.getIsfinish())){
-
-                                }else if(rankMembers != null && "1".equals(rank.getIsfinish())){
-                                    long s = this.springJedisDao.zRevRank(Constant.REDIS_RANK_SORT+improve.getBusinessid(),improve.getUserid()+"");
-                                    sortnum = Integer.parseInt(s+"");
-                                }else{
-                                    sortnum = rankMembers.getSortnum();
-                                }
-                                improve.setBusinessEntity(rank.getPtype(),
-                                        rank.getRanktitle(),
-                                        rank.getRankinvolved(),
-                                        rank.getStarttime(),
-                                        rank.getEndtime(),
-                                        sortnum,0,
-                                        rank.getRankphotos(),
-                                        rankMembers.getIcount());
-                            }
-
-                        }
-                        break;
-                    case Constant.IMPROVE_CLASSROOM_TYPE:
-                        Classroom classroom = classroomService.selectByClassroomid(improve.getBusinessid());
-                        UserCard userCard = null;
-                        if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
-                            userCard = userCardMapper.selectByCardid(classroom.getCardid());
-                        }
-                        map.put("isteacher",classroomService.isTeacher(userid,classroom));
-                    	//获取教室微进步批复作业列表
-                    	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
-                    	String commentid = "";
-                    	String isreply = "0";
-                        if(null != replyList && replyList.size()>0){
-                            ImproveClassroom improveClassroom = replyList.get(0);
-                            AppUserMongoEntity appUserMongo = userMongoDao.getAppUser(String.valueOf(improveClassroom.getUserid()));
-                            ReplyImprove replyImprove = new ReplyImprove(improveClassroom.getImpid(),
-                                    improveClassroom.getItype(),
-                            		improveClassroom.getBrief(),
-                                    improveClassroom.getPickey(),
-                            		improveClassroom.getUserid(),
-                                    improve.getBusinessid(),
-                                    Constant.IMPROVE_CLASSROOM_REPLY_TYPE,
-                                    improveClassroom.getCreatetime());
-                            replyImprove.setFilekey(improveClassroom.getFilekey());
-                            replyImprove.setDuration(improveClassroom.getDuration());
-                            replyImprove.setPicattribute(improveClassroom.getPicattribute());
-
-                            appUserMongo.setNickname(userCard.getDisplayname());
-                            appUserMongo.setAvatar(userCard.getAvatar());
-                            appUserMongo.setUserid(userCard.getUserid().toString());
-                            appUserMongo.setId(userCard.getUserid().toString());
-                            replyImprove.setAppUserMongoEntity(appUserMongo);
-                            commentid = improveClassroom.getImpid().toString();
-                            List<Comment> list = commentMongoDao.selectCommentListByItypeid(improveClassroom.getImpid().toString(), 
-                            		improve.getBusinessid().toString(), "5", null, 2);
-                            if(null != list && list.size()>0){
-                				for (Comment comment : list) {
-                					//初始化用户信息
-                					initCommentUserInfoByUserid(comment, userid);
-                				}
-                            }
-                            replyImprove.setList(list);
-                            isreply = "1";
-                    		improve.setReplyImprove(replyImprove);
-                    	}
-                        if(!"1".equals(isreply)){
-                            if(null != userCard){
-                                //判断当前用户是否是老师
-                            	if(!StringUtils.isBlank(userid)){
-                            		if(userCard.getUserid() != Long.parseLong(userid)){
-                                        isreply = "2";
-                                    }
-                            	}else{
-                            		isreply = "2";
-                            	}
-                            }
-                        }
-                        improve.setIsreply(isreply);
-                    	if (null != classroom){
-                    		String teacher = "";
-                    		if(null != userCard){
-                    			teacher += userCard.getDisplayname();
-                    		}
-                    		improve.setBusinessEntity(classroom.getPtype(),
-                    				classroom.getClasstitle(),
-                    				classroom.getClassphotos(),
-                    				classroom.getClassinvoloed(),
-                    				teacher, commentid);
-                    	}
-                        break;
-                    case Constant.IMPROVE_CIRCLE_TYPE:
-                        break;
-                    case Constant.IMPROVE_GOAL_TYPE:
-                        UserGoal userGoal = userGoalMapper.selectByGoalId(Long.parseLong(businessid));
-                        if(null != userGoal){
-                            String photos = improve.getPickey();
-                            if(!StringUtils.isBlank(photos)){
-                                JSONArray jsonArray = JSONArray.fromObject(photos);
-                                if(jsonArray.size()>0){
-                                    photos = jsonArray.getString(0);
-                                }else
-                                    photos = null;
-                            }
-                            improve.setBusinessEntity(userGoal.getPtype(),
-                                    userGoal.getGoaltag(),
-                                    0,
-                                    userGoal.getCreatetime(),
-                                    null,
-                                    0,
-                                    userGoal.getIcount(),photos,userGoal.getIcount());
-                        }
-                        break;
-                    default:
-                        break;
-                }
                 baseResp.setExpandData(map);
                 baseResp.setData(improve);
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
@@ -4287,6 +4143,29 @@ public class ImproveServiceImpl implements ImproveService{
         return getUserCollectImproveId(userid.toString());
     }
 
+
+    public Map<String,Object> selectImproveOtherInfo(String userid,String impid,String impuserid) {
+
+        Map<String,Object> map = new HashedMap();
+        map.put("iscollect",0);
+        map.put("isfans",0);
+        map.put("isfriend",0);
+        try {
+            boolean isCollect = checkIsCollectImprove(userid,impid);
+            if (isCollect){
+                map.put("iscollect",1);
+            }
+            if(userid != null && !Constant.VISITOR_UID.equals(userid)){
+                map.put("isfriend",this.userRelationService.checkIsFriend(userid,impuserid)?"1":"0");
+                map.put("isfans",this.userRelationService.checkIsFriend(userid,impuserid)?"1":"0");
+            }
+        } catch (Exception e) {
+            logger.error("selectImproveOtherInfo userid={},impid={},impuserid={} is error:",userid,impid,impuserid);
+        }
+        return map;
+    }
+
+
     /**
      * 判断用户是否收藏了该进步
      * @param userid
@@ -4301,6 +4180,7 @@ public class ImproveServiceImpl implements ImproveService{
             return springJedisDao.sIsMember(Constant.USER_Collect_IMPROVE_REDIS_KEY+userid,improveId);
         }
         Set<String> improveIds = this.initUserCollectImproveId(userid);
+
         return improveIds.contains(improveId);
     }
 

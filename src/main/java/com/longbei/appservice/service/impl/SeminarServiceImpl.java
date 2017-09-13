@@ -8,6 +8,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.ClassroomService;
+import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.SeminarService;
 import com.netflix.discovery.converters.Auto;
 import org.apache.commons.collections.map.HashedMap;
@@ -61,7 +62,10 @@ public class SeminarServiceImpl implements SeminarService{
     private ClassroomService classroomService;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
-
+    @Autowired
+    private ImproveService improveService;
+    @Autowired
+    private TimeLineDetailDao timeLineDetailDao;
 
     @Override
     public BaseResp<String> insertSeminar(Seminar seminar) {
@@ -238,6 +242,11 @@ public class SeminarServiceImpl implements SeminarService{
                                     Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(moduleContent.getContentid()));
                                     moduleContent.setClassroom(classroom);
                                     break;
+                                case "9":
+                                    TimeLineDetail timeLineDetail = timeLineDetailDao.select(Long.parseLong(moduleContent.getContentid()));
+                                    moduleContent.setTimeLineDetail(timeLineDetail);
+                                    break;
+
                                 default:
                                     break;
                             }

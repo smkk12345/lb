@@ -87,13 +87,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 				reseResp.getExpandData().put("isteacher", classroomService.isTeacher(classroomQuestions.getUserid().toString(), classroom));
 //				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				initQuestionsUserInfoByUserid(classroomQuestions, null);
-//				String isreply = "0";
-//				if(!"1".equals(isreply)){
-//					//判断当前用户是否是老师
-//					if(userCard.getUserid() != Long.parseLong(classroomQuestions.getUserid())){
-//						isreply = "2";
-//					}
-//				}
 //				classroomQuestions.setIsreply(isreply);
 				//sourcetype 0:运营  1:app  2:商户
 				if("1".equals(classroom.getSourcetype())){
@@ -157,12 +150,6 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 	  					isreply = "1";
 	  					classroomQuestions.setClassroomQuestionsLower(classroomQuestionsLower);
 					}
-//					if(!"1".equals(isreply)){
-//	  					//判断当前用户是否是老师
-//	  					if(!StringUtils.isBlank(userid) && userCard.getUserid() != Long.parseLong(userid)){
-//	  							isreply = "2";
-//	  					}
-//	  				}
 					classroomQuestions.setIsreply(isreply);
 				}
 			}
