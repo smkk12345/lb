@@ -87,7 +87,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 
 	public AppUserMongoEntity getAppUser(String userid){
 //		logger.info("getAppUser userid={}",userid);
-		userid = userid.trim();
+		long time = System.currentTimeMillis();
 		Query query = Query.query(Criteria.where("_id").is(userid));
 		try {
 			AppUserMongoEntity mongoUser = findOne(query);
@@ -109,6 +109,8 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 		} catch (Exception e) {
 			logger.error("findOne error and msg={}",e);
 		}
+
+		logger.info("getAppUser time={}",System.currentTimeMillis()-time);
 		return null;
 	}
 

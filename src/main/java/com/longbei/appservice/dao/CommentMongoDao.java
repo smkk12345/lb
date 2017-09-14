@@ -99,7 +99,21 @@ public class CommentMongoDao {
 			Query query = Query.query(criteria);
 			list = mongoTemplate1.find(query,Comment.class);
 		} catch (Exception e) {
-			logger.error("selectCommentByItypeid businessid = {}, businesstype = {}", businessid, businesstype, e);
+			logger.error("selectCommentByItypeid businessid = {}, businesstype = {}, impid = {}", 
+					businessid, businesstype, impid, e);
+		}
+		return list;
+	}
+	
+	
+	public List<Comment> selectCommentByImpid(String impid){
+		List<Comment> list = null;
+		try {
+			Criteria criteria  = Criteria.where("impid").is(impid);
+			Query query = Query.query(criteria);
+			list = mongoTemplate1.find(query,Comment.class);
+		} catch (Exception e) {
+			logger.error("selectCommentByImpid impid = {}", impid, e);
 		}
 		return list;
 	}

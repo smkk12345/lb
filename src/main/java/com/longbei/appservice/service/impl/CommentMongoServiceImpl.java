@@ -8,11 +8,14 @@ import java.util.Map;
 
 import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant_Perfect;
+import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -62,11 +65,12 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CommentMongoServiceImpl.class);
 	
+	
 	@Override
 	public BaseResp<Object> insertComment(final Comment comment) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			insert(comment);
+			insert(comment.getImpid(), comment);
 //			comment = commentMongoDao.selectCommentByItypeid(comment.getItypeid(), comment.getItype());
 			//添加评论总数
 			insertCount(comment);
@@ -162,11 +166,14 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 //		}
 //	}
 	
-	private void insert(Comment comment){
+	//删除缓存
+	@CacheEvict(cacheNames = RedisCacheNames._COMMENT,key="'comImpid' + #impid")
+	private void insert(String impid, Comment comment) throws Exception {
 		try {
 			commentMongoDao.insertComment(comment);
 		} catch (Exception e) {
 			logger.error("insert comment = {}", JSONObject.fromObject(comment).toString(), e);
+			throw e;
 		}
 	}
 	
@@ -328,12 +335,23 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 			//删除其他的信息，评论总数及子评论信息
 			deleteCommentOther(id);
 			//后删主评论信息
-			commentMongoDao.deleteComment(id);
+			deleteComm(comment.getImpid(), id);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("deleteComment id = {}", id, e);
 		}
 		return reseResp;
+	}
+	
+	//删除缓存
+	@CacheEvict(cacheNames = RedisCacheNames._COMMENT,key="'comImpid' + #impid")
+	private void deleteComm(String impid, String id) throws Exception {
+		try {
+			commentMongoDao.deleteComment(id);
+		} catch (Exception e) {
+			logger.error("deleteComm impid = {}, id = {}", impid, id, e);
+			throw e;
+		}
 	}
 	
 	private void deleteCommentOther(String commentid){
@@ -347,21 +365,32 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 	public BaseResp<Integer> selectCommentCountSum(String businessid, String businesstype, String impid) {
 		BaseResp<Integer> reseResp = new BaseResp<Integer>();
 		try {
-			List<Comment> list = commentMongoDao.selectCommentByItypeid(businessid, businesstype, impid);
-			//获取评论总数
-			int zong = 0;
-			if(null != list && list.size()>0){
-				for (Comment comment : list) {
-					CommentCount commentCount = commentCountMongoDao.selectCommentCountByCommentid(comment.getId());
-					zong = zong + commentCount.getComcount();
-				}
-			}
+			int zong = selectSum(businessid, businesstype, impid);
 			reseResp.setData(zong);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 		} catch (Exception e) {
 			logger.error("selectCommentCountSum businessid = {}, businesstype = {}", businessid, businesstype, e);
 		}
 		return reseResp;
+	}
+	
+	@Cacheable(cacheNames = RedisCacheNames._COMMENT,key="'comImpid' + #impid")
+	private int selectSum(String businessid, String businesstype, String impid) throws Exception {
+		int zong = 0;
+        try{
+        	List<Comment> list = commentMongoDao.selectCommentByImpid(impid);
+			//获取评论总数
+			if(null != list && list.size()>0){
+				for (Comment comment : list) {
+					CommentCount commentCount = commentCountMongoDao.selectCommentCountByCommentid(comment.getId());
+					zong = zong + commentCount.getComcount();
+				}
+			}
+        }catch(Exception e){
+            logger.error("selectCommentCountSum impid = {}", impid, e);
+            throw e;
+        }
+        return zong;
 	}
 	
 	//------------------------公用方法，初始化消息中用户信息------------------------------------------
