@@ -703,7 +703,7 @@
 
   <select id="selectRankImproveCountByids" resultType="java.lang.Integer">
     SELECT count(*) FROM improve_rank
-    where itype = '2' AND isdel = '0'
+    where itype = '2' AND isdel = '0' AND filekey != ""
     <if test="users != null and users.size() > 0">
       AND userid IN
       <foreach item="user" index="index" collection="users" open="(" separator="," close=")">
@@ -725,7 +725,7 @@
     ir.flowers, ir.diamonds, ir.createtime, ir.updatetime, ir.indexnum, ir.isdel, ir.ismainimp,ir.ptype,
     ir.ispublic,ir.sourcekey,ir.complaincount,ir.duration,ir.isbusinessdel,ir.picattribute
     FROM improve_rank ir
-    where ir.itype = '2' AND ir.isdel = '0'
+    where ir.itype = '2' AND ir.isdel = '0' AND ir.filekey != ""
     <if test="users != null and users.size() > 0">
       AND ir.userid IN
       <foreach item="user" index="index" collection="users" open="(" separator="," close=")">
@@ -738,6 +738,7 @@
         #{rank.rankid}
       </foreach>
     </if>
+    ORDER BY createtime DESC
     limit #{startno},#{pagesize}
   </select>
 
