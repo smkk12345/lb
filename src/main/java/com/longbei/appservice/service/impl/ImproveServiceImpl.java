@@ -2984,7 +2984,7 @@ public class ImproveServiceImpl implements ImproveService{
                 }else{
                     icount = getImproveLFDCount(String.valueOf(improve.getImpid()));
                     List<ImproveLFD> allImproveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
-                    for (int i = 0; i < improveLFDs.size(); i++) {
+                    for (int i = 0; i < allImproveLFDs.size(); i++) {
                         ImproveLFD improveLFD = improveLFDs.get(i);
 //                        if(i<6){
                         AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
