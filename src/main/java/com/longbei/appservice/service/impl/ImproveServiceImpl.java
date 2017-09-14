@@ -4102,11 +4102,9 @@ public class ImproveServiceImpl implements ImproveService{
             ranks = rankMapper.selectListByRankTitle(ranktitle);
         }
 
-        List<Improve> improves = null;
-
         int totalcount = improveMapper.selectRankImproveCountByids(users, ranks);
         pageno = Page.setPageNo(pageno,totalcount,pagesize);
-        improves = improveMapper.selectRankImproveListByids(users, ranks, pagesize*(pageno-1), pagesize);
+        List<Improve> improves = improveMapper.selectRankImproveListByids(users, ranks, pagesize*(pageno-1), pagesize);
         if (improves != null) {
             for (Improve improve : improves) {
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(improve.getUserid().toString());

@@ -738,6 +738,7 @@
         #{rank.rankid}
       </foreach>
     </if>
+    ORDER BY createtime DESC
     limit #{startno},#{pagesize}
   </select>
 
