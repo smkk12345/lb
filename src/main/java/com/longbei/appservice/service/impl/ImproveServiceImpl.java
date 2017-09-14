@@ -2972,6 +2972,8 @@ public class ImproveServiceImpl implements ImproveService{
                 List<ImproveLFD> improveLFDs = new ArrayList<>();
                 Long icount = 0l;
                 if(springJedisDao.hasKey(key)){
+                    logger.info("hitthetarget from redis");
+                    long sTime = System.currentTimeMillis();
                     icount = springJedisDao.zCard(key);
                     Set<String> list = springJedisDao.zRevrange(key,0l,6l);
                     for (String s:list){
@@ -2981,7 +2983,10 @@ public class ImproveServiceImpl implements ImproveService{
                         improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());
                         improveLFDs.add(improveLFD);
                     }
+                    logger.info("hitthetarget from redis and time ={}",System.currentTimeMillis()-sTime);
                 }else{
+                    logger.info("hitthetarget from mongodb");
+                    long sTime = System.currentTimeMillis();
                     icount = getImproveLFDCount(String.valueOf(improve.getImpid()));
                     List<ImproveLFD> allImproveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
                     for (int i = 0; i < improveLFDs.size(); i++) {
@@ -2994,6 +2999,7 @@ public class ImproveServiceImpl implements ImproveService{
                     }
                     //异步同步到rendis中去
                     initFLDToRedis(String.valueOf(improve.getImpid()));
+                    logger.info("hitthetarget from mongodb and time ={}",System.currentTimeMillis()-sTime);
                 }
                 improve.setLfdcount(icount);
 
@@ -3074,89 +3080,27 @@ public class ImproveServiceImpl implements ImproveService{
         if (null == improve){
             return;
         }
-//        ImpAllDetail impAllDetail = new ImpAllDetail();
-//        impAllDetail.setUserid(Long.parseLong(userid));
-//        impAllDetail.setImpid(improve.getImpid());
-//        impAllDetail.setGtype(improve.getBusinesstype());
-//        impAllDetail.setStartno(0);
-//        impAllDetail.setPagesize(1);
         //是否点赞
         isLike(userid,improve);
-//        boolean islike = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-//                userid,Constant.IMPROVE_ALL_DETAIL_LIKE);
-//        if (islike) {
-//            improve.setHaslike("1");
-//        }else
-//        {
-//            improve.setHaslike("0");
-//        }
-//        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_LIKE);
-//        List<ImpAllDetail> impAllDetailLikes = impAllDetailMapper.selectOneDetail(impAllDetail);
-//        if (null != impAllDetailLikes && impAllDetailLikes.size() > 0) {
-//            improve.setHaslike("1");
-//        }
         //是否送花
         isFlower(userid,improve);
-//        boolean isflower = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-//                userid,Constant.IMPROVE_ALL_DETAIL_FLOWER);
-//        if (isflower) {
-//            improve.setHasflower("1");
-//        }else{
-//            improve.setHasflower("0");
-//        }
-//        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_FLOWER);
-//        List<ImpAllDetail> impAllDetailFlowers = impAllDetailMapper.selectOneDetail(impAllDetail);
-//        if (null != impAllDetailFlowers && impAllDetailFlowers.size() > 0) {
-//            improve.setHasflower("1");
-//        }
-        //是否送钻
-//        boolean isdiamond = improveMongoDao.exits(String.valueOf(improve.getImpid()),
-//                userid,Constant.IMPROVE_ALL_DETAIL_DIAMOND);
-//        if (isdiamond) {
-//            improve.setHasdiamond("1");
-//        }
-//        impAllDetail.setDetailtype(Constant.IMPROVE_ALL_DETAIL_DIAMOND);
-//        List<ImpAllDetail> impAllDetailDiamonds = impAllDetailMapper.selectOneDetail(impAllDetail);
-//        if (null != impAllDetailDiamonds && impAllDetailDiamonds.size() > 0) {
-//            improve.setHasdiamond("1");
-//        }
-        //是否收藏
-//        UserCollect userCollect = new UserCollect();
-//        userCollect.setUserid(Long.parseLong(userid));
-//        userCollect.setCid(improve.getImpid());
-//        List<UserCollect> userCollects = userCollectMapper.selectListByUserCollect(userCollect);
-//        if (null != userCollects && userCollects.size() > 0 ){
-//            improve.setHascollect("1");
-//        }
-//        isCollect(userid,improve);
     }
 
 
     private void isLike(String userid,Improve improve){
-        String likeListStr = springJedisDao.get("impLikeList"+improve.getImpid());
-        if (StringUtils.isBlank(likeListStr)){
-            List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
-                    (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_LIKE);
-            likeListStr = JSON.toJSONString(list);
-            springJedisDao.set("impLikeList"+improve.getImpid(),likeListStr,5);
-        }
-        if (likeListStr.contains(userid)){
+        long time = System.currentTimeMillis();
+        boolean hasLike = improveMongoDao.exits(String.valueOf(improve.getImpid()),userid,Constant.MONGO_IMPROVE_LFD_OPT_LIKE);
+        logger.info("isLike exits from mongodb time={}",System.currentTimeMillis()-time);
+        if (hasLike){
             improve.setHaslike("1");
         } else {
             improve.setHaslike("0");
         }
-
     }
 
     private void isFlower(String userid,Improve improve){
-        String likeListStr = springJedisDao.get("impFlowerList"+improve.getImpid());
-        if (StringUtils.isBlank(likeListStr)){
-            List<ImproveLFDDetail> list = improveMongoDao.getImproveLFDUserIds
-                    (String.valueOf(improve.getImpid()),Constant.IMPROVE_ALL_DETAIL_FLOWER);
-            likeListStr = JSON.toJSONString(list);
-            springJedisDao.set("impFlowerList"+improve.getImpid(),likeListStr,5);
-        }
-        if (likeListStr.contains(userid)){
+        boolean hasFlower = improveMongoDao.exits(String.valueOf(improve.getImpid()),userid,Constant.MONGO_IMPROVE_LFD_OPT_FLOWER);
+        if (hasFlower){
             improve.setHasflower("1");
         } else {
             improve.setHasflower("0");

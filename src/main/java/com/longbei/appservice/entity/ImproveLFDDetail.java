@@ -20,7 +20,7 @@ public class ImproveLFDDetail implements Serializable {
     private String id;
     private String impid;
     private String userid;
-    private String opttype;
+    private String opttype; //0 点赞 1送花 2 颂赞
     private Date createtime;
     private String businessid;
     private String businesstype;
