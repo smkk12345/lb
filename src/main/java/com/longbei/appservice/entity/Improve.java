@@ -110,10 +110,20 @@ public class Improve implements Serializable{
     private List<ImproveTopic> improveTopicList = null;//超级话题
 
     private BusinessEntity businessEntity = null;
+
+    private Rank rank;
     
 //    private ClassRoomEntity classRoomEntity = null;
 
     private String isrecommend; //是否推荐 0 - 否 1 - 是
+
+    public Rank getRank() {
+        return rank;
+    }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
 
     public String getIsrecommend() {
         return isrecommend;
