@@ -24,7 +24,7 @@ public class LiveCache {
     @Autowired
     LiveGiftMapper liveGiftMapper;
 
-    @Cacheable(cacheNames = RedisCacheNames._LIVE,key="'selectList'")
+//    @Cacheable(cacheNames = RedisCacheNames._LIVE,key="'selectList'")
     public List<LiveGift> selectList(Integer startNum, Integer endNum) {
         List<LiveGift> list = new ArrayList<>();
         try{

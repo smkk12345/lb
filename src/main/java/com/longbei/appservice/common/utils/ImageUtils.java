@@ -814,6 +814,7 @@ public class ImageUtils {
 //		String groupId = "images";
 
 //		File file = File.createTempFile(UUID.randomUUID().toString(),".png");
+		g2d.dispose();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();//存储图片文件byte数组
 		ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
 		ImageIO.write(outImage, "JPG", bos); //图片写入到 ImageOutputStream

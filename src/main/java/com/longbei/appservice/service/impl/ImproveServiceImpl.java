@@ -2562,7 +2562,9 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
                 case Constant.IMPROVE_RANK_TYPE:
                 {
+                    long stime = System.currentTimeMillis();
                     TimeLineDetail timeLineDetail = timeLineDetailDao.select(Long.parseLong(impid));
+                    logger.info("timeLineDetailDaoselect time={}",System.currentTimeMillis()-stime);
                     String suserid = timeLineDetail.getUser().getId();
                     Rank rank = rankService.selectByRankid(Long.parseLong(businessid));
                     logger.info("selectImproveBusinessInfoselectByRankid businessid={} and return rank={}",businessid,rank.getRankbrief());
@@ -2975,7 +2977,11 @@ public class ImproveServiceImpl implements ImproveService{
                     logger.info("hitthetarget from redis");
                     long sTime = System.currentTimeMillis();
                     icount = springJedisDao.zCard(key);
+                    logger.info("hitthetarget from redis zCard and time ={}",System.currentTimeMillis()-sTime);
+                    sTime = System.currentTimeMillis();
                     Set<String> list = springJedisDao.zRevrange(key,0l,6l);
+                    logger.info("hitthetarget from redis zRevrange and time ={}",System.currentTimeMillis()-sTime);
+                    sTime = System.currentTimeMillis();
                     for (String s:list){
                         ImproveLFD improveLFD = new ImproveLFD();
                         improveLFD.setUserid(s);
@@ -2990,7 +2996,7 @@ public class ImproveServiceImpl implements ImproveService{
                     icount = getImproveLFDCount(String.valueOf(improve.getImpid()));
                     List<ImproveLFD> allImproveLFDs = improveMongoDao.selectImproveLfdList(String.valueOf(improve.getImpid()));
                     for (int i = 0; i < allImproveLFDs.size(); i++) {
-                        ImproveLFD improveLFD = improveLFDs.get(i);
+                        ImproveLFD improveLFD = allImproveLFDs.get(i);
 //                        if(i<6){
                         AppUserMongoEntity appUser = userMongoDao.getAppUser(improveLFD.getUserid());
                         improveLFD.setAvatar(appUser == null?"":appUser.getAvatar());

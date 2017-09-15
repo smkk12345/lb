@@ -104,13 +104,12 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 				if(null != userInfo){
 					mongoUser = saveUserInfoToMongo(userInfo);
 				}
+				logger.info("getAppUser time={}",System.currentTimeMillis()-time);
 				return  mongoUser;
 			}
 		} catch (Exception e) {
 			logger.error("findOne error and msg={}",e);
 		}
-
-		logger.info("getAppUser time={}",System.currentTimeMillis()-time);
 		return null;
 	}
 

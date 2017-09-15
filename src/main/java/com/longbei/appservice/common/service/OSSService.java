@@ -52,8 +52,14 @@ public class OSSService {
 		ObjectMetadata meta = new ObjectMetadata();
 		meta.setContentType("image/jpeg");
 		PutObjectResult putobj = ossClient.putObject(bucketName, key, in, meta);
-
 		putobj.getETag();
+		try {
+			in.close();
+		} catch (Exception e){
+			if(null != in){
+				in = null;
+			}
+		}
 		return null;
 	}
 	/**
