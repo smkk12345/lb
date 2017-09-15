@@ -4115,6 +4115,9 @@ public class ImproveServiceImpl implements ImproveService{
             for (Improve improve : improves) {
                 AppUserMongoEntity appUser = userMongoDao.getAppUser(improve.getUserid().toString());
                 improve.setAppUserMongoEntity(appUser);
+
+                Rank rank = rankMapper.selectRankByRankid(improve.getBusinessid());
+                improve.setRank(rank);
             }
         }
 
