@@ -2976,8 +2976,10 @@ public class ImproveServiceImpl implements ImproveService{
                     long sTime = System.currentTimeMillis();
                     icount = springJedisDao.zCard(key);
                     logger.info("hitthetarget from redis zCard and time ={}",System.currentTimeMillis()-sTime);
+                    sTime = System.currentTimeMillis();
                     Set<String> list = springJedisDao.zRevrange(key,0l,6l);
                     logger.info("hitthetarget from redis zRevrange and time ={}",System.currentTimeMillis()-sTime);
+                    sTime = System.currentTimeMillis();
                     for (String s:list){
                         ImproveLFD improveLFD = new ImproveLFD();
                         improveLFD.setUserid(s);

@@ -321,12 +321,18 @@ public class GroupController {
      * @param keyword
      * @return
      */
-    @RequestMapping(value="searchGroup")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="searchGroup")
     public BaseResp<Object> searchGroup(String userid,String keyword,Integer startNum,Integer pageSize){
         logger.info("keyword={},startNum={},pageSize={}", keyword,startNum,pageSize);
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(StringUtils.hasBlankParams(keyword,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        }
+        //判断keyword是否含有中文   
+        if(keyword.getBytes().length != keyword.length()){
+        	//含有
+        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }
         if(startNum == null || startNum < 0){
             startNum = Integer.parseInt(Constant.DEFAULT_START_NO);
