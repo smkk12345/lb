@@ -157,10 +157,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             snsGroup.setAvatarArray((String[])avatars.toArray(new String[avatars.size()]));
-            InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-            String key = getGroupAvatar();
-            ossService.putObject(OssConfig.bucketName,key,inputStream);
-            snsGroup.setAvatar(key);
+//            InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+//            String key = getGroupAvatar();
+//            ossService.putObject(OssConfig.bucketName,key,inputStream);
+//            snsGroup.setAvatar(key);
             int row = snsGroupMapper.insertSelective(snsGroup);
             if(row < 1){
                 return BaseResp.fail("系统异常");
@@ -488,27 +488,27 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     }
 
     private void updateGroupAvatar(final String groupId){
-        final List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
-        threadPoolTaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try{
-//                    List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
-                    logger.info("groupList init avatar start and groupId={}",groupId);
-                    List<String> avatars = new ArrayList<>();
-                    for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
-                        avatars.add(OssConfig.url + snsGroupMembers.getAvatar());
-                        logger.info("updateGroupAvatardetail avatars={}",OssConfig.url + snsGroupMembers.getAvatar());
-                    }
-                    InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-                    String key = getGroupAvatar();
-                    ossService.putObject(OssConfig.bucketName,key,inputStream);
-                    snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
-                }catch (Exception e){
-                    logger.error("update Group Avatar error groupId:{}",groupId);
-                }
-            }
-        });
+//        final List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
+//        threadPoolTaskExecutor.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+////                    List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
+//                    logger.info("groupList init avatar start and groupId={}",groupId);
+//                    List<String> avatars = new ArrayList<>();
+//                    for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+//                        avatars.add(OssConfig.url + snsGroupMembers.getAvatar());
+//                        logger.info("updateGroupAvatardetail avatars={}",OssConfig.url + snsGroupMembers.getAvatar());
+//                    }
+//                    InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+//                    String key = getGroupAvatar();
+//                    ossService.putObject(OssConfig.bucketName,key,inputStream);
+//                    snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
+//                }catch (Exception e){
+//                    logger.error("update Group Avatar error groupId:{}",groupId);
+//                }
+//            }
+//        });
     }
 
     /**
@@ -1200,10 +1200,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     snsGroup.setCurrentnum(snsGroup.getCurrentnum()+1);
                     avatars.add(OssConfig.url+managerUser.getAvatar());
                 }
-                InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-                String key = getGroupAvatar();
-                ossService.putObject(OssConfig.bucketName,key,inputStream);
-                snsGroup.setAvatar(key);
+//                InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+//                String key = getGroupAvatar();
+//                ossService.putObject(OssConfig.bucketName,key,inputStream);
+//                snsGroup.setAvatar(key);
                 groupList.add(snsGroup);
                 this.iRongYunService.createGroup(mainGroupUserid+","+managerid,Long.parseLong(groupId),tempGroupName);
             }
@@ -1289,10 +1289,13 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         managerUser = this.userMongoDao.getAppUser(managerid.toString());
                         avatars.add(OssConfig.url+managerUser.getAvatar());
                     }
-                    InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-                    String key = getGroupAvatar();
-                    ossService.putObject(OssConfig.bucketName,key,inputStream);
-                    newSnsGroup.setAvatar(key);
+//                    InputStream inputStream = ImageUtils.getCombiInputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+//                    String key = getGroupAvatar();
+//                    ossService.putObject(OssConfig.bucketName,key,inputStream);
+//                    newnationOfhead(avatars);
+//                    String key = getGroupAvatar();
+//                    ossService.putObject(OssConfig.bucketName,key,inputStream);
+//                    newSnsGroup.setAvatar(key);
                     int insertRow = this.snsGroupMapper.insertSelective(newSnsGroup);
 
                     SnsGroupMembers newSnsGroupMember = new SnsGroupMembers();
