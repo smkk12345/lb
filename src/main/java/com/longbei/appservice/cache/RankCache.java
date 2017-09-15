@@ -47,7 +47,7 @@ public class RankCache {
     private UserMongoDao userMongoDao;
 
 
-//    @Cacheable(cacheNames = RedisCacheNames._RANK_HOME_AWARD,key="'homerankawardlist'")
+    @Cacheable(cacheNames = RedisCacheNames._RANK_HOME_AWARD,key="'homerankawardlist'")
     public List<Map<String,Object>> selectRankWinningAwardList() throws Exception{
         List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
         try{
@@ -78,7 +78,7 @@ public class RankCache {
     }
 
 
-//    @Cacheable(cacheNames = RedisCacheNames._RANK_HOME_AWARD,key = "'rankAward'.concat(#startNum).concat('-').concat(#pageSize)")
+    @Cacheable(cacheNames = RedisCacheNames._RANK_HOME_AWARD,key = "'rankAward'.concat(#startNum).concat('-').concat(#pageSize)")
     public List<Map<String,Object>> selectRankAwardList(Integer startNum, Integer pageSize) throws Exception{
         List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
         try{
@@ -108,8 +108,8 @@ public class RankCache {
         return resultList;
     }
 
-//    @Cacheable(cacheNames = RedisCacheNames._RANK_LIST,key = "#startno + '&' + #pagesize"
-//            ,condition="#status == 0")
+    @Cacheable(cacheNames = RedisCacheNames._RANK_LIST,key = "#startno + '&' + #pagesize"
+            ,condition="#status == 0")
     public Map<String,Object> selectRankListByCondition(String rankTitle,
                                                       String codeword, String pType,
                                                       String rankscope,
