@@ -761,7 +761,7 @@ public class UserServiceImpl implements UserService {
 		AppUserMongoEntity app = userMongoDao.getAppUserByNickName(nickname);
 		while (null != app||SysRulesCache.sysProtectNames.contains(nickname)){
 			nickname = nickname + RandomUtils.getRandomCode(1,10000);
-//			app = userMongoDao.getAppUserByNickName(nickname);
+			app = userMongoDao.getAppUserByNickName(nickname);
 		}
 		return nickname;
 	}
