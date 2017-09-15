@@ -29,7 +29,7 @@ public class PageCache {
     @Autowired
     private HomePictureMapper homePictureMapper;
 
-    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "'homeposter'")
+//    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "'homeposter'")
     public HomePoster selectHomePosterIsUp() throws Exception{
         HomePoster homePoster = null;
         try {
@@ -40,7 +40,7 @@ public class PageCache {
         return homePoster;
     }
 
-    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "#type")
+//    @Cacheable(cacheNames = RedisCacheNames._HOME,key = "#type")
     public List<HomePicture> selectHomePicList(String type) throws Exception{
         List<HomePicture> homePictures = null;
         try {

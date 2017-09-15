@@ -23,7 +23,7 @@ public class UserCache {
     private UserInfoMapper userInfoMapper;
 
 
-    @Cacheable(cacheNames = RedisCacheNames._USER_GRADE,key = "#userid")
+//    @Cacheable(cacheNames = RedisCacheNames._USER_GRADE,key = "#userid")
     public int selectUserGradeByUserId(String userid) throws Exception{
         int grade = 0;
         try {

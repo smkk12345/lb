@@ -743,8 +743,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 
-	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
-			,condition="#ispublic == '1'")
+//	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
+//			,condition="#ispublic == '1'")
 	@Override
 	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
 		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 

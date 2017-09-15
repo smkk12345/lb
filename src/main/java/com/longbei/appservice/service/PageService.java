@@ -6,8 +6,6 @@ import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.entity.HomePicture;
 import com.longbei.appservice.entity.HomePoster;
 import com.longbei.appservice.entity.HomeRecommend;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 

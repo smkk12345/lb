@@ -34,8 +34,8 @@ public class ImproveCache {
     @Autowired
     private ImproveService improveService;
 
-    @Cacheable(cacheNames = RedisCacheNames._SYS_RECOMMAEND,
-            key = "#startno +'&'+ #pagesize")
+//    @Cacheable(cacheNames = RedisCacheNames._SYS_RECOMMAEND,
+//            key = "#startno +'&'+ #pagesize")
     public List<Improve> selectRecommendImproveList
             (Integer startno, Integer pagesize) throws Exception{
         List<Improve> improves = new ArrayList<>();

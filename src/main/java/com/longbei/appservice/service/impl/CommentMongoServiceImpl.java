@@ -374,7 +374,7 @@ public class CommentMongoServiceImpl implements CommentMongoService {
 		return reseResp;
 	}
 	
-	@Cacheable(cacheNames = RedisCacheNames._COMMENT,key="'comImpid' + #impid")
+//	@Cacheable(cacheNames = RedisCacheNames._COMMENT,key="'comImpid' + #impid")
 	private int selectSum(String businessid, String businesstype, String impid) throws Exception {
 		int zong = 0;
         try{
