@@ -503,7 +503,6 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
                     String key = getGroupAvatar();
                     ossService.putObject(OssConfig.bucketName,key,inputStream);
-                    inputStream.close();
                     snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
                 }catch (Exception e){
                     logger.error("update Group Avatar error groupId:{}",groupId);

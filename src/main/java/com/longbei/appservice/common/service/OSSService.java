@@ -4,6 +4,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,8 +53,14 @@ public class OSSService {
 		ObjectMetadata meta = new ObjectMetadata();
 		meta.setContentType("image/jpeg");
 		PutObjectResult putobj = ossClient.putObject(bucketName, key, in, meta);
-
 		putobj.getETag();
+		try {
+			in.close();
+		} catch (Exception e){
+			if(null != in){
+				in = null;
+			}
+		}
 		return null;
 	}
 	/**
