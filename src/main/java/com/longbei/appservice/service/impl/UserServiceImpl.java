@@ -753,15 +753,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * 获取不重复的用户昵称
+	 * 获取不重复的用户昵称  把while循环改为取4次
 	 * @param nickname
 	 * @return
 	 */
 	private String getSingleNickName(String nickname) {
 		AppUserMongoEntity app = userMongoDao.getAppUserByNickName(nickname);
-		while (null != app||SysRulesCache.sysProtectNames.contains(nickname)){
+		if(null != app||SysRulesCache.sysProtectNames.contains(nickname)){
 			nickname = nickname + RandomUtils.getRandomCode(1,10000);
 			app = userMongoDao.getAppUserByNickName(nickname);
+			if(null != app||SysRulesCache.sysProtectNames.contains(nickname)){
+				nickname = nickname + RandomUtils.getRandomCode(1,10000);
+				app = userMongoDao.getAppUserByNickName(nickname);
+				if(null != app||SysRulesCache.sysProtectNames.contains(nickname)){
+					nickname = nickname + RandomUtils.getRandomCode(1,10000);
+					app = userMongoDao.getAppUserByNickName(nickname);
+					if(null != app||SysRulesCache.sysProtectNames.contains(nickname)){
+						nickname = nickname + RandomUtils.getRandomCode(1,10000);
+					}
+				}
+			}
 		}
 		return nickname;
 	}
