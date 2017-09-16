@@ -23,6 +23,7 @@ public class CodeDao extends BaseMongoDao<CodeEntity>{
 
     public enum CodeType{
         rank,
+        classroom,
         joinpwdrank
     }
 

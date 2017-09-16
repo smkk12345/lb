@@ -142,6 +142,10 @@ public class Rank implements Serializable {
 
     private String joincode; //入榜口令
 
+    private Long audiotime;//音频长度（单位毫秒）
+
+    private Long videotime;//视频长度（单位毫秒）
+
     private String ishomerecommend; //是否首页推荐 0 - 否 1 - 是
 
     private RankCard rankCard;//榜主名片
@@ -193,6 +197,22 @@ public class Rank implements Serializable {
 
     public void setJoincode(String joincode) {
         this.joincode = joincode;
+    }
+
+    public Long getAudiotime() {
+        return audiotime;
+    }
+
+    public void setAudiotime(Long audiotime) {
+        this.audiotime = audiotime;
+    }
+
+    public Long getVideotime() {
+        return videotime;
+    }
+
+    public void setVideotime(Long videotime) {
+        this.videotime = videotime;
     }
 
     public String getNotice() {

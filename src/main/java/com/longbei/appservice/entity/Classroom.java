@@ -39,6 +39,12 @@ public class Classroom implements Serializable {
     private String classtype;//教室类型。0—公共教室 1--定制教室
     
     private String ispublic; //是否所有人可见。0 所有人可见。1，部分可见
+
+	private String joincode;//口令
+
+	private Long audiotime;//音频长度（单位毫秒）
+
+	private Long videotime;//视频长度（单位毫秒）
     
     private Long userid;
     
@@ -332,6 +338,30 @@ public class Classroom implements Serializable {
 
 	public void setIspublic(String ispublic) {
 		this.ispublic = ispublic;
+	}
+
+	public String getJoincode() {
+		return joincode;
+	}
+
+	public void setJoincode(String joincode) {
+		this.joincode = joincode;
+	}
+
+	public Long getAudiotime() {
+		return audiotime;
+	}
+
+	public void setAudiotime(Long audiotime) {
+		this.audiotime = audiotime;
+	}
+
+	public Long getVideotime() {
+		return videotime;
+	}
+
+	public void setVideotime(Long videotime) {
+		this.videotime = videotime;
 	}
 
 	@JsonInclude(Include.ALWAYS)

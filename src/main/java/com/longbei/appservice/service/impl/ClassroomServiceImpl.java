@@ -12,6 +12,7 @@ import com.longbei.appservice.common.syscache.SysRulesCache;
 
 import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.entity.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
@@ -76,6 +77,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private ClassroomClassnoticeMapper classroomClassnoticeMapper;
 	@Autowired
 	private ClassroomChapterMapper classroomChapterMapper;
+	@Autowired
+	private CodeDao codeDao;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
 	
@@ -624,16 +627,16 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> insertClassroom(Classroom record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-			//sourcetype 0:运营  1:app  2:商户
-			if("1".equals(record.getSourcetype())){
-				//判断是否达到个人发教室的限制
-				Integer roomCount = classroomMapper.selectCountByUserid(record.getUserid());
-				UserInfo userInfo = userInfoMapper.selectInfoMore(record.getUserid());
-				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
-				if(roomCount >= userLevel.getClassroomnum()){
-					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1114, Constant.RTNINFO_SYS_1114);
-				}
-			}
+//			//sourcetype 0:运营  1:app  2:商户
+//			if("1".equals(record.getSourcetype())){
+//				//判断是否达到个人发教室的限制
+//				Integer roomCount = classroomMapper.selectCountByUserid(record.getUserid());
+//				UserInfo userInfo = userInfoMapper.selectInfoMore(record.getUserid());
+//				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+//				if(roomCount >= userLevel.getClassroomnum()){
+//					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1114, Constant.RTNINFO_SYS_1114);
+//				}
+//			}
 			
 			boolean temp = insert(record);
 			if (temp) {
@@ -685,6 +688,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 			//isup 0 - 未发布 。1 --已发布    默认0
 			if("1".equals(record.getIsup())){
 				record.setIsfree(classroom.getIsfree());
+				record.setIspublic(classroom.getIspublic());
+				//已发布－私密教室，更新口令
+				if ("1".equals(classroom.getIspublic())) {
+					record.setJoincode(this.getClassroomJoincode());
+				}
 			}
 			boolean temp = update(record);
 			if (temp) {
@@ -707,6 +715,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 			logger.error("updateByClassroomid record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
+	}
+
+	private String getClassroomJoincode() {
+		String joincode = codeDao.getCode(CodeDao.CodeType.classroom.toString());
+		return joincode;
 	}
 	
 	private boolean update(Classroom record){
@@ -1070,6 +1083,16 @@ public class ClassroomServiceImpl implements ClassroomService {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_1108, Constant.RTNINFO_SYS_1108);
 				return reseResp;
 			}
+			//sourcetype 0:运营  1:app  2:商户
+			if("1".equals(classroom.getSourcetype())){
+				//判断是否达到个人发教室的限制
+				Integer roomCount = classroomMapper.selectCountByUserid(classroom.getUserid());
+				UserInfo userInfo = userInfoMapper.selectInfoMore(classroom.getUserid());
+				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
+				if(roomCount >= userLevel.getClassroomnum()){
+					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1114, Constant.RTNINFO_SYS_1114);
+				}
+			}
 			int temp = classroomMapper.updateIsup(classroomid);
 			if(temp > 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -1077,6 +1100,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 				Double commission = SysRulesCache.behaviorRule.getClassroomcommission();
 				Classroom updateRoom = new Classroom();
 				updateRoom.setCommission(commission);
+
+				//私密教室，添加口令
+				if ("1".equals(classroom.getIspublic())) {
+					String joincode = codeDao.getCode(CodeDao.CodeType.classroom.toString());
+					updateRoom.setJoincode(joincode);
+				}
 				updateRoom.setClassroomid(classroomid);
 				classroomMapper.updateByPrimaryKeySelective(updateRoom);
 			}
