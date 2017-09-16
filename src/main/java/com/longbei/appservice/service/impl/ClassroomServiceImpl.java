@@ -622,7 +622,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 //		}
 //	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertClassroom(Classroom record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -637,7 +636,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 //					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1114, Constant.RTNINFO_SYS_1114);
 //				}
 //			}
-			
+			if(record.getAudiotime() == null){
+	        	Long croomimpaudiotime = SysRulesCache.behaviorRule.getCroomimpaudiotime();
+	        	record.setAudiotime(croomimpaudiotime);
+	        }
+	        if(record.getVideotime() == null){
+	        	Long croomimpvideotime = SysRulesCache.behaviorRule.getCroomimpvideotime();
+	        	record.setVideotime(croomimpvideotime);
+	        }
 			boolean temp = insert(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -696,6 +702,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 					record.setJoincode(this.getClassroomJoincode());
 				}
 			}
+			if(record.getAudiotime() == null){
+	        	Long croomimpaudiotime = SysRulesCache.behaviorRule.getCroomimpaudiotime();
+	        	record.setAudiotime(croomimpaudiotime);
+	        }
+	        if(record.getVideotime() == null){
+	        	Long croomimpvideotime = SysRulesCache.behaviorRule.getCroomimpvideotime();
+	        	record.setVideotime(croomimpvideotime);
+	        }
 			boolean temp = update(record);
 			if (temp) {
 				if(!classroom.getIsfree().equals(record.getIsfree())){

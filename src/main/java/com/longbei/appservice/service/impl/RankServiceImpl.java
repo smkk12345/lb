@@ -7,6 +7,7 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.RedisCacheNames;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -133,7 +134,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp baseResp = new BaseResp();
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
-
+        if(rankImage.getAudiotime() == null){
+        	Long croomimpaudiotime = SysRulesCache.behaviorRule.getCroomimpaudiotime();
+        	rankImage.setAudiotime(croomimpaudiotime);
+        }
+        if(rankImage.getVideotime() == null){
+        	Long croomimpvideotime = SysRulesCache.behaviorRule.getCroomimpvideotime();
+        	rankImage.setVideotime(croomimpvideotime);
+        }
         int res = 0;
         try {
             res = rankImageMapper.insertSelective(rankImage);
@@ -270,6 +278,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankImage(RankImage rankImage) {
         int res = 0;
         try {
+        	if(rankImage.getAudiotime() == null){
+            	Long croomimpaudiotime = SysRulesCache.behaviorRule.getCroomimpaudiotime();
+            	rankImage.setAudiotime(croomimpaudiotime);
+            }
+            if(rankImage.getVideotime() == null){
+            	Long croomimpvideotime = SysRulesCache.behaviorRule.getCroomimpvideotime();
+            	rankImage.setVideotime(croomimpvideotime);
+            }
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
             if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
