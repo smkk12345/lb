@@ -27,6 +27,8 @@
     <result column="flowerscore" property="flowerscore" jdbcType="INTEGER" />
     <result column="diamondscore" property="diamondscore" jdbcType="INTEGER" />
     <result column="codeword" property="codeword" jdbcType="VARCHAR" />
+    <result column="audiotime" property="audiotime" />
+    <result column="videotime" property="videotime" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="companyname" property="companyname" jdbcType="VARCHAR" />
     <result column="companyphotos" property="companyphotos" jdbcType="VARCHAR" />
@@ -58,14 +60,15 @@
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore,
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,joincode,
     joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,sponsornum,
-    sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm,autotime,maxtotalimprovenum
+    sponsormoney,rankrule,isrecommend,weight,ishomerecommend,notice,needConfirm,autotime,maxtotalimprovenum,
+    audiotime, videotime 
   </sql>
 
   <sql id="RANK_Base_Column_List" >
     r.id,r.rankid, r.ranktitle, r.rankbrief, r.rankdetail, r.ranklimite, r.rankinvolved, r.rankscope, r.rankphotos,
     r.rankrate, r.starttime, r.endtime, r.areaname, r.coordinate, r.isfinish, r.createuserid, r.ranktype,
     r.ispublic, r.rankcateid, r.createtime, r.updatetime, r.likescore, r.flowerscore, r.diamondscore,
-    r.codeword, r.ptype,r.companyname,r.companyphotos,r.companybrief,r.sourcetype,r.joincode,
+    r.codeword, r.audiotime, r.videotime, r.ptype,r.companyname,r.companyphotos,r.companybrief,r.sourcetype,r.joincode,
     r.joinlastday,r.maximprovenum,r.minimprovenum,r.ischeck,r.isgroup,r.rankcardid,r.isup,r.isdel,r.sponsornum,
     r.sponsormoney,r.rankrule,r.isrecommend,r.weight,r.ishomerecommend,r.notice,r.needConfirm,r.autotime,r.maxtotalimprovenum
   </sql>
@@ -394,6 +397,12 @@
       <if test="codeword != null" >
         codeword,
       </if>
+      <if test="audiotime != null" >
+        audiotime,
+      </if>
+      <if test="videotime != null" >
+        videotime,
+      </if>
       <if test="ptype != null" >
         ptype,
       </if>
@@ -528,6 +537,12 @@
       <if test="codeword != null" >
         #{codeword,jdbcType=VARCHAR},
       </if>
+      <if test="audiotime != null" >
+        #{audiotime},
+      </if>
+      <if test="videotime != null" >
+        #{videotime},
+      </if>
       <if test="ptype != null" >
         #{ptype,jdbcType=CHAR},
       </if>
@@ -655,6 +670,12 @@
       </if>
       <if test="codeword != null" >
         codeword = #{codeword,jdbcType=VARCHAR},
+      </if>
+      <if test="audiotime != null" >
+        audiotime = #{audiotime},
+      </if>
+      <if test="videotime != null" >
+        videotime = #{videotime},
       </if>
       <if test="ptype != null" >
         ptype = #{ptype,jdbcType=CHAR},

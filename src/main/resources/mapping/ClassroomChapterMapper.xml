@@ -67,7 +67,7 @@
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from classroom_chapter
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomChapter" >
     insert into classroom_chapter (chapterid, title, 
@@ -154,8 +154,8 @@
         updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where chapterid = #{chapterid} 
-    and classroomid = #{classroomid}
+    where classroomid = #{classroomid} 
+    and chapterid = #{chapterid}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ClassroomChapter" >
     update classroom_chapter
@@ -165,28 +165,29 @@
       isdel = #{isdel,jdbcType=CHAR},
       createtime = #{createtime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP}
-    where chapterid = #{chapterid}
+    where classroomid = #{classroomid} 
+    and chapterid = #{chapterid}
   </update>
   
   <update id="updateIsdel" >
     update classroom_chapter
     set isdel = 1 
-    where chapterid = #{chapterid} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and chapterid = #{chapterid} 
   </update>
   
   <update id="updateSortByid" >
     update classroom_chapter
     set sort = #{sort} 
-    where chapterid = #{chapterid} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and chapterid = #{chapterid}
   </update>
   
   <update id="updateDisplayByid" >
     update classroom_chapter
     set display = #{display} 
-    where chapterid = #{chapterid} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and chapterid = #{chapterid}
   </update>
 
 

@@ -769,9 +769,6 @@
       <if test="commentscore != null" >
         commentscore = #{commentscore,jdbcType=INTEGER},
       </if>
-      <if test="registercoins != null" >
-        registercoins = #{registercoins,jdbcType=INTEGER},
-      </if>
       <if test="classroomcommission != null" >
         classroomcommission = #{classroomcommission,jdbcType=INTEGER},
       </if>
@@ -797,7 +794,10 @@
         croomimpaudiotime = #{croomimpaudiotime},
       </if>
       <if test="croomimpvideotime != null" >
-        croomimpvideotime = #{croomimpvideotime}
+        croomimpvideotime = #{croomimpvideotime},
+      </if>
+      <if test="registercoins != null" >
+        registercoins = #{registercoins}
       </if>
     </set>
   </update>
@@ -867,6 +867,7 @@
       rankimpaudiotime = #{rankimpaudiotime},
       rankimpvideotime = #{rankimpvideotime},
       croomimpaudiotime = #{croomimpaudiotime},
-      croomimpvideotime = #{croomimpvideotime}
+      croomimpvideotime = #{croomimpvideotime},
+      registercoins = #{registercoins}
   </update>
 </mapper>
