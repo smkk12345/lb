@@ -676,6 +676,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Override
 	public Classroom selectByCid(long classroomid) {
 		Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
+		UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+		classroom.setUserCard(userCard);
 		return classroom;
 	}
 
