@@ -19,7 +19,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom_chapter
-    where chapterid = #{chapterid}
+    where chapterid = #{chapterid} 
   </select>
   
   <select id="selectChapterByCid" resultMap="BaseResultMap" >
