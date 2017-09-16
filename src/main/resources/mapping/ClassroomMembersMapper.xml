@@ -301,13 +301,13 @@
       userid = #{userid} 
     </set> 
     where 
+    classroomid = #{classroomid} 
     <if test="likes &lt; 0">
-      likes > ROUND(#{likes}) and
+      and likes > ROUND(#{likes}) 
     </if>
     <if test="flowers &lt; 0">
-      flowers > ROUND(#{flowers}) and
+      and flowers > ROUND(#{flowers}) 
     </if>
-    classroomid = #{classroomid} 
     and userid = #{userid} 
   </update>
 

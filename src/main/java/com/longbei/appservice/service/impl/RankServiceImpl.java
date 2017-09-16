@@ -7,6 +7,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.constant.RedisCacheNames;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -130,6 +132,14 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp baseResp = new BaseResp();
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
+
+        //设置默认音频、视频时长
+        if (rankImage.getAudiotime() == null) {
+            rankImage.setAudiotime(SysRulesCache.behaviorRule.getRankimpaudiotime());
+        }
+        if (rankImage.getVideotime() == null) {
+            rankImage.setVideotime(SysRulesCache.behaviorRule.getRankimpvideotime());
+        }
 
         int res = 0;
         try {
@@ -267,6 +277,13 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankImage(RankImage rankImage) {
         int res = 0;
         try {
+            //设置默认音频、视频时长
+            if (rankImage.getAudiotime() == null) {
+                rankImage.setAudiotime(SysRulesCache.behaviorRule.getRankimpaudiotime());
+            }
+            if (rankImage.getVideotime() == null) {
+                rankImage.setVideotime(SysRulesCache.behaviorRule.getRankimpvideotime());
+            }
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
             if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
