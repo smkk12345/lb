@@ -8,22 +8,22 @@
 */
 package com.longbei.appservice.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
-
-import com.alibaba.fastjson.JSON;
-import com.longbei.appservice.common.constant.Constant_Perfect;
-import com.longbei.appservice.common.persistence.CustomizedPropertyConfigurer;
+import com.longbei.appservice.cache.CommonCache;
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.service.mq.send.QueueMessageSendService;
-import com.longbei.appservice.common.utils.*;
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.SnsFansMapper;
+import com.longbei.appservice.dao.SnsFriendsMapper;
+import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.FriendMongoDao;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.dao.mongo.dao.UserRelationChangeDao;
 import com.longbei.appservice.dao.redis.SpringJedisDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
-import com.netflix.discovery.converters.Auto;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -32,18 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.dao.SnsFansMapper;
-import com.longbei.appservice.dao.SnsFriendsMapper;
-import com.longbei.appservice.dao.UserInfoMapper;
-import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * @author smkk
@@ -83,6 +72,8 @@ public class UserRelationServiceImpl implements UserRelationService {
 	private SpringJedisDao springJedisDao;
 	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	@Autowired
+	private CommonCache commonCache;
 
 	/**
 	* @Title: selectRemark 
@@ -1232,7 +1223,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 		JSONArray jsonArr = JSONArray.fromObject(mobileUserListStr);
 		Set<String> fids = getFriendIds(userid);
 		AppUserMongoEntity appUser = userMongoDao.getAppUser(String.valueOf(userid));
-		String shortUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid);
+		String shortUrl = commonCache.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid);
 		JSONArray resultArr = new JSONArray();
 		try {
 			for (int i = 0; i < jsonArr.size(); i++) {

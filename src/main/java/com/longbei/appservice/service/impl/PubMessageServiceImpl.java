@@ -1,11 +1,11 @@
 package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.ArticleMapper;
 import com.longbei.appservice.dao.PubMessageMapper;
@@ -41,7 +41,8 @@ public class PubMessageServiceImpl implements PubMessageService {
     private PubMessageMapper pubMessageMapper;
     @Autowired
     private ArticleMapper articleMapper;
-
+    @Autowired
+    private CommonCache commonCache;
     @Autowired
     private SeminarMapper seminarMapper;
     @Autowired
@@ -230,7 +231,7 @@ public class PubMessageServiceImpl implements PubMessageService {
                     map.put("url", AppserviceConfig.articleurl+"?articleid="+pubMessage1.getTargetid());
                 }else if("2".equals(pubMessage1.getMsgtarget())){
                     String shareurl = AppserviceConfig.seminarurl + "?seminarid=" + pubMessage1.getTargetid();
-                    String shorturl = ShortUrlUtils.getShortUrl(shareurl);
+                    String shorturl = commonCache.getShortUrl(shareurl);
                     map.put("url", shorturl);
                 }
                 map.put("url", AppserviceConfig.articleurl+"?articleid="+pubMessage1.getTargetid());

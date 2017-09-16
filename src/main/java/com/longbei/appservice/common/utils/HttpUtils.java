@@ -95,7 +95,7 @@ public class HttpUtils {
 
 	/**
 	 * 发送HTTP_GET请求
-	 * 
+	 *
 	 * @see 本方法默认的连接和读取超时均为30秒
 	 * @param httpUrl 请求地址
 	 * @param map 发送到远程主机的正文数据[a:1,b:2]
@@ -149,7 +149,7 @@ public class HttpUtils {
 
 	/**
 	 * Post追加参数
-	 * 
+	 *
 	 * @see <code>params</code>
 	 * @param reqURL
 	 *            请求地址
@@ -175,7 +175,7 @@ public class HttpUtils {
 
 	/**
 	 * Get追加参数
-	 * 
+	 *
 	 * @see <code>params</code>
 	 * @param reqURL 请求地址
 	 * @param params 发送到远程主机的正文数据[a:1,b:2]
@@ -208,7 +208,7 @@ public class HttpUtils {
 
 	/**
 	 * 编码
-	 * 
+	 *
 	 * @param source
 	 * @return
 	 */
@@ -221,7 +221,7 @@ public class HttpUtils {
 		}
 		return result;
 	}
-	
+
 	public static String postRequestForByte(String reqURL, byte bArr[]) {
 		StringBuffer sb = new StringBuffer();
 		URL url = null;

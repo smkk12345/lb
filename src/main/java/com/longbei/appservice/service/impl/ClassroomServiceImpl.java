@@ -1,41 +1,27 @@
 package com.longbei.appservice.service.impl;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.longbei.appservice.cache.CommonCache;
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.Page;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.syscache.SysRulesCache;
-
-import com.longbei.appservice.common.constant.RedisCacheNames;
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Page;
-import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
-import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.service.ClassroomQuestionsMongoService;
-import com.longbei.appservice.service.ClassroomService;
-import com.longbei.appservice.service.CommentMongoService;
-import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.UserRelationService;
+import java.util.*;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -76,6 +62,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private ClassroomClassnoticeMapper classroomClassnoticeMapper;
 	@Autowired
 	private ClassroomChapterMapper classroomChapterMapper;
+	@Autowired
+	private CommonCache commonCache;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomServiceImpl.class);
 	
@@ -506,7 +494,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				
 				//分享url
 				map.put("roomurlshare", 
-						ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));
+						commonCache.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);

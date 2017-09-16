@@ -1,27 +1,23 @@
 package com.longbei.appservice.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Rank;
 import com.longbei.appservice.entity.RankAwardRelease;
-import com.longbei.appservice.entity.RankImage;
 import com.longbei.appservice.service.RankAcceptAwardService;
 import com.longbei.appservice.service.RankService;
-import com.longbei.appservice.service.RankSortService;
 import com.longbei.appservice.service.UserBusinessConcernService;
-import com.thoughtworks.xstream.io.binary.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import scala.collection.immutable.Stream;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +41,9 @@ public class RankController {
     private RankAcceptAwardService rankAcceptAwardService;
     @Autowired
     private UserBusinessConcernService userBusinessConcernService;
+    @Autowired
+    private CommonCache commonCache;
+
     /**
      * 用户 参榜
      * @url http://ip:port/app_service/rank/insertRankMember
@@ -231,7 +230,7 @@ public class RankController {
         if(ResultUtil.isSuccess(baseResp)){
             baseResp.getData().setJoincode(null);
             baseResp.getExpandData().put("shareurl",
-                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_detail + "?rankid=" + rankId));
+                   commonCache.getShortUrl(AppserviceConfig.h5_share_rank_detail + "?rankid=" + rankId));
         }
         return baseResp;
     }
@@ -411,7 +410,7 @@ public class RankController {
         }
         baseResp = this.rankService.rankAwardDetail(rankid,userid);
         if(ResultUtil.isSuccess(baseResp)){
-            baseResp.getExpandData().put("shareurl", ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award));
+            baseResp.getExpandData().put("shareurl", commonCache.getShortUrl(AppserviceConfig.h5_share_rank_award));
         }
         return baseResp;
     }
@@ -504,7 +503,7 @@ public class RankController {
         baseResp = this.rankService.selectRankMebmerDetail(userid,rankId,currentUserId);
         if(ResultUtil.isSuccess(baseResp)){
             baseResp.getExpandData().put("shareurl",
-                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_improve
+                    commonCache.getShortUrl(AppserviceConfig.h5_share_rank_improve
                             + "?rankid=" + rankId + "&userid=" + userid));
         }
         return baseResp;

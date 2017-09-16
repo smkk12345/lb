@@ -1,16 +1,17 @@
 package com.longbei.appservice.controller;
 
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.Constant_Imp_Icon;
 import com.longbei.appservice.common.constant.Constant_point;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.config.AppserviceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/init")
 public class SysInitController extends BaseController{
 
+    @Autowired
+    private CommonCache commonCache;
     private static Logger logger = LoggerFactory.getLogger(SysInitController.class);
     /**
      * http://ip:port/app_service/init
@@ -52,7 +55,7 @@ public class SysInitController extends BaseController{
             baseResp.getExpandData().put("inviteimp", Constant_Imp_Icon.INVITE_LEVEL1);
 
             baseResp.getExpandData().put("registerurl",
-                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite));
+                    commonCache.getShortUrl(AppserviceConfig.h5_invite));
             baseResp.getExpandData().put("pcurl",AppserviceConfig.pcurl);
 
             baseResp.getExpandData().put("classosspath", AppserviceConfig.oss_media);

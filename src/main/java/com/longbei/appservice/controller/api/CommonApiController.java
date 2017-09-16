@@ -1,9 +1,9 @@
 package com.longbei.appservice.controller.api;
 
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.DictArea;
@@ -40,7 +40,8 @@ public class CommonApiController {
     private DictAreaService dictAreaService;
     @Autowired
     private SysSettingService sysSettingService;
-
+    @Autowired
+    private CommonCache commonCache;
 
     /**
      * 获取十全十美列表
@@ -102,7 +103,7 @@ public class CommonApiController {
         logger.info("shortUrl url={}",url);
         BaseResp<Object> baseResp = new BaseResp<>();
         String callback = request.getParameter("callback");
-        String shortUrl = ShortUrlUtils.getShortUrl(url);
+        String shortUrl = commonCache.getShortUrl(url);
         baseResp.setData(shortUrl);
         baseResp.initCodeAndDesp();
         String jsonObjectStr = JSONObject.fromObject(baseResp).toString();

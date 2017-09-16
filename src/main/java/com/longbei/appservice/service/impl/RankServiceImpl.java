@@ -1,16 +1,15 @@
 package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.cache.RankCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
@@ -24,8 +23,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,7 +103,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     @Autowired
     private ImproveService improveService;
     @Autowired
-    private FriendService friendService;
+    private CommonCache commonCache;
     @Autowired
     private UserRelationService userRelationService;
     @Autowired
@@ -3125,7 +3122,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             baseResp.setData(resultMap);
             baseResp.getExpandData().put("shareurl",
-                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_award + "?rankid=" + rankid));
+                    commonCache.getShortUrl(AppserviceConfig.h5_share_rank_award + "?rankid=" + rankid));
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
             logger.error("select onlyRankAward error rankid:{}",rankid);
@@ -3375,7 +3372,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rank.getRankcardid() != null){
                 RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
                 if(rankCard != null){
-                    rankCard.setRankCardUrl(rankCard.getId().toString());
+                    rankCard.setRankCardUrl(commonCache.getShortUrl(AppserviceConfig.h5_rankcard+"?rankCardId="+rankCard.getId()));
                     rank.setRankCard(rankCard);
                 }
             }
