@@ -71,6 +71,15 @@
     <result column="commentscore" property="commentscore" jdbcType="INTEGER" />
     <result column="registercoins" property="registercoins" jdbcType="INTEGER" />
     <result column="classroomcommission" property="classroomcommission" />
+    
+    <result column="singleimpaudiotime" property="singleimpaudiotime" />
+    <result column="singleimpvideotime" property="singleimpvideotime" />
+    <result column="goalimpaudiotime" property="goalimpaudiotime" />
+    <result column="goalimpvideotime" property="goalimpvideotime" />
+    <result column="rankimpaudiotime" property="rankimpaudiotime" />
+    <result column="rankimpvideotime" property="rankimpvideotime" />
+    <result column="croomimpaudiotime" property="croomimpaudiotime" />
+    <result column="croomimpvideotime" property="croomimpvideotime" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, registergoals, qqbindgoals, webbindgoals, wechatbindgoals, certificationgoals,
@@ -86,7 +95,11 @@
     improveimpcoinsmax, improveimpcoinstimes, joinrankgoalstimes, joincirclegoalstimes,
     shareMaxCount,shareGroupCount,joinclassroomgoalstimes,friendregisterimpcoins2,friendregisterimpcoins3,
     friendregisterimpcoins4,friendregisterimpcoins5,inviteimprovenum,likescore,flowerscore,commentscore,registercoins,
-    classroomcommission
+    classroomcommission, 
+    singleimpaudiotime, singleimpvideotime, 
+    goalimpaudiotime, goalimpvideotime, 
+    rankimpaudiotime, rankimpvideotime, 
+    croomimpaudiotime, croomimpvideotime 
   </sql>
   <select id="selectOne" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
@@ -120,7 +133,11 @@
     improvegoalsmax, improveimpcoinsmin, improveimpcoinsmax,
     improveimpcoinstimes, joinrankgoalstimes,
     joincirclegoalstimes, shareMaxCount,shareGroupCount,
-    joinclassroomgoalstimes
+    joinclassroomgoalstimes, 
+    singleimpaudiotime, singleimpvideotime, 
+    goalimpaudiotime, goalimpvideotime, 
+    rankimpaudiotime, rankimpvideotime, 
+    croomimpaudiotime, croomimpvideotime
     )
     values (#{id,jdbcType=BIGINT}, #{registergoals,jdbcType=INTEGER}, #{qqbindgoals,jdbcType=INTEGER},
     #{webbindgoals,jdbcType=INTEGER}, #{wechatbindgoals,jdbcType=INTEGER}, #{certificationgoals,jdbcType=INTEGER},
@@ -144,7 +161,11 @@
     #{improvegoalsmax,jdbcType=INTEGER}, #{improveimpcoinsmin,jdbcType=INTEGER}, #{improveimpcoinsmax,jdbcType=INTEGER},
     #{improveimpcoinstimes,jdbcType=INTEGER}, #{joinrankgoalstimes,jdbcType=INTEGER},
     #{joincirclegoalstimes,jdbcType=INTEGER}, #{shareMaxCount,jdbcType=INTEGER},
-    #{shareGroupCount,jdbcType=INTEGER},#{joinclassroomgoalstimes,jdbcType=INTEGER}
+    #{shareGroupCount,jdbcType=INTEGER},#{joinclassroomgoalstimes,jdbcType=INTEGER},
+    #{singleimpaudiotime}, #{singleimpvideotime}, 
+    #{goalimpaudiotime}, #{goalimpvideotime}, 
+    #{rankimpaudiotime}, #{rankimpvideotime}, 
+    #{croomimpaudiotime}, #{croomimpvideotime} 
     )
   </insert>
   <insert id="insertSelective" parameterType="com.longbei.appservice.entity.BehaviorRule" >
@@ -324,6 +345,30 @@
       <if test="joinclassroomgoalstimes != null" >
         joinclassroomgoalstimes,
       </if>
+      <if test="singleimpaudiotime != null" >
+        singleimpaudiotime,
+      </if>
+      <if test="singleimpvideotime != null" >
+        singleimpvideotime,
+      </if>
+      <if test="goalimpaudiotime != null" >
+        goalimpaudiotime,
+      </if>
+      <if test="goalimpvideotime != null" >
+        goalimpvideotime,
+      </if>
+      <if test="rankimpaudiotime != null" >
+        rankimpaudiotime,
+      </if>
+      <if test="rankimpvideotime != null" >
+        rankimpvideotime,
+      </if>
+      <if test="croomimpaudiotime != null" >
+        croomimpaudiotime,
+      </if>
+      <if test="croomimpvideotime != null" >
+        croomimpvideotime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -499,6 +544,30 @@
       </if>
       <if test="joinclassroomgoalstimes != null" >
         #{joinclassroomgoalstimes,jdbcType=INTEGER},
+      </if>
+      <if test="singleimpaudiotime != null" >
+        #{singleimpaudiotime},
+      </if>
+      <if test="singleimpvideotime != null" >
+        #{singleimpvideotime},
+      </if>
+      <if test="goalimpaudiotime != null" >
+        #{goalimpaudiotime},
+      </if>
+      <if test="goalimpvideotime != null" >
+        #{goalimpvideotime},
+      </if>
+      <if test="rankimpaudiotime != null" >
+        #{rankimpaudiotime},
+      </if>
+      <if test="rankimpvideotime != null" >
+        #{rankimpvideotime},
+      </if>
+      <if test="croomimpaudiotime != null" >
+        #{croomimpaudiotime},
+      </if>
+      <if test="croomimpvideotime != null" >
+        #{croomimpvideotime},
       </if>
     </trim>
   </insert>
@@ -706,6 +775,30 @@
       <if test="classroomcommission != null" >
         classroomcommission = #{classroomcommission,jdbcType=INTEGER},
       </if>
+      <if test="singleimpaudiotime != null" >
+        singleimpaudiotime = #{singleimpaudiotime},
+      </if>
+      <if test="singleimpvideotime != null" >
+        singleimpvideotime = #{singleimpvideotime},
+      </if>
+      <if test="goalimpaudiotime != null" >
+        goalimpaudiotime = #{goalimpaudiotime},
+      </if>
+      <if test="goalimpvideotime != null" >
+        goalimpvideotime = #{goalimpvideotime},
+      </if>
+      <if test="rankimpaudiotime != null" >
+        rankimpaudiotime = #{rankimpaudiotime},
+      </if>
+      <if test="rankimpvideotime != null" >
+        rankimpvideotime = #{rankimpvideotime},
+      </if>
+      <if test="croomimpaudiotime != null" >
+        croomimpaudiotime = #{croomimpaudiotime},
+      </if>
+      <if test="croomimpvideotime != null" >
+        croomimpvideotime = #{croomimpvideotime}
+      </if>
     </set>
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.BehaviorRule" >
@@ -766,6 +859,14 @@
       joincirclegoalstimes = #{joincirclegoalstimes,jdbcType=INTEGER},
       shareMaxCount = #{shareMaxCount,jdbcType=INTEGER},
       shareGroupCount = #{shareGroupCount,jdbcType=INTEGER},
-      joinclassroomgoalstimes = #{joinclassroomgoalstimes,jdbcType=INTEGER}
+      joinclassroomgoalstimes = #{joinclassroomgoalstimes,jdbcType=INTEGER},
+      singleimpaudiotime = #{singleimpaudiotime},
+      singleimpvideotime = #{singleimpvideotime},
+      goalimpaudiotime = #{goalimpaudiotime},
+      goalimpvideotime = #{goalimpvideotime},
+      rankimpaudiotime = #{rankimpaudiotime},
+      rankimpvideotime = #{rankimpvideotime},
+      croomimpaudiotime = #{croomimpaudiotime},
+      croomimpvideotime = #{croomimpvideotime}
   </update>
 </mapper>

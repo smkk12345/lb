@@ -322,7 +322,26 @@ public class BehaviorRule implements Serializable {
 
 
     private Double classroomcommission; //教室提成
+    
+    
+    private Long singleimpaudiotime; //独立进步音频时长（单位秒）
+    
+    private Long singleimpvideotime; //独立进步视频时长（单位秒）
+    
+    private Long goalimpaudiotime; //目标进步音频时长（单位秒）
+    
+    private Long goalimpvideotime; //目标进步视频时长（单位秒）
+    
+    private Long rankimpaudiotime; //榜单进步音频时长（单位秒）
+    
+    private Long rankimpvideotime; //榜单进步视频时长（单位秒）
+    
+    private Long croomimpaudiotime; //教室进步音频时长（单位秒）
+    
+    private Long croomimpvideotime; //教室进步视频时长（单位秒）
 
+    
+    
     public Double getClassroomcommission() {
         return classroomcommission;
     }
@@ -882,4 +901,68 @@ public class BehaviorRule implements Serializable {
     public void setJoinclassroomgoalstimes(Integer joinclassroomgoalstimes) {
         this.joinclassroomgoalstimes = joinclassroomgoalstimes;
     }
+
+	public Long getSingleimpaudiotime() {
+		return singleimpaudiotime;
+	}
+
+	public void setSingleimpaudiotime(Long singleimpaudiotime) {
+		this.singleimpaudiotime = singleimpaudiotime;
+	}
+
+	public Long getSingleimpvideotime() {
+		return singleimpvideotime;
+	}
+
+	public void setSingleimpvideotime(Long singleimpvideotime) {
+		this.singleimpvideotime = singleimpvideotime;
+	}
+
+	public Long getGoalimpaudiotime() {
+		return goalimpaudiotime;
+	}
+
+	public void setGoalimpaudiotime(Long goalimpaudiotime) {
+		this.goalimpaudiotime = goalimpaudiotime;
+	}
+
+	public Long getGoalimpvideotime() {
+		return goalimpvideotime;
+	}
+
+	public void setGoalimpvideotime(Long goalimpvideotime) {
+		this.goalimpvideotime = goalimpvideotime;
+	}
+
+	public Long getRankimpaudiotime() {
+		return rankimpaudiotime;
+	}
+
+	public void setRankimpaudiotime(Long rankimpaudiotime) {
+		this.rankimpaudiotime = rankimpaudiotime;
+	}
+
+	public Long getRankimpvideotime() {
+		return rankimpvideotime;
+	}
+
+	public void setRankimpvideotime(Long rankimpvideotime) {
+		this.rankimpvideotime = rankimpvideotime;
+	}
+
+	public Long getCroomimpaudiotime() {
+		return croomimpaudiotime;
+	}
+
+	public void setCroomimpaudiotime(Long croomimpaudiotime) {
+		this.croomimpaudiotime = croomimpaudiotime;
+	}
+
+	public Long getCroomimpvideotime() {
+		return croomimpvideotime;
+	}
+
+	public void setCroomimpvideotime(Long croomimpvideotime) {
+		this.croomimpvideotime = croomimpvideotime;
+	}
 }
