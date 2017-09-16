@@ -73,6 +73,9 @@ public class RankImage implements Serializable {
 
     private String codeword;//口令
 
+    private Long audiotime;//音频长度（单位秒）
+
+    private Long videotime;//视频长度（单位秒）
 
     private String ptype;//十全十美类型
 
@@ -826,6 +829,22 @@ public class RankImage implements Serializable {
      */
     public void setCodeword(String codeword) {
         this.codeword = codeword == null ? null : codeword.trim();
+    }
+
+    public Long getAudiotime() {
+        return audiotime;
+    }
+
+    public void setAudiotime(Long audiotime) {
+        this.audiotime = audiotime;
+    }
+
+    public Long getVideotime() {
+        return videotime;
+    }
+
+    public void setVideotime(Long videotime) {
+        this.videotime = videotime;
     }
 
     /**

@@ -637,7 +637,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 //					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1114, Constant.RTNINFO_SYS_1114);
 //				}
 //			}
-			
+			if (record.getAudiotime() == null) {
+				record.setAudiotime(SysRulesCache.behaviorRule.getCroomimpaudiotime());
+			}
+			if (record.getVideotime() == null) {
+				record.setVideotime(SysRulesCache.behaviorRule.getCroomimpvideotime());
+			}
 			boolean temp = insert(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -695,6 +700,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 				if ("1".equals(classroom.getIspublic())) {
 					record.setJoincode(this.getClassroomJoincode());
 				}
+			}
+			//设置默认音频、视频时长
+			if (record.getAudiotime() == null) {
+				record.setAudiotime(SysRulesCache.behaviorRule.getCroomimpaudiotime());
+			}
+			if (record.getVideotime() == null) {
+				record.setVideotime(SysRulesCache.behaviorRule.getCroomimpvideotime());
 			}
 			boolean temp = update(record);
 			if (temp) {

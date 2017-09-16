@@ -142,9 +142,9 @@ public class Rank implements Serializable {
 
     private String joincode; //入榜口令
 
-    private Long audiotime;//音频长度（单位毫秒）
+    private Long audiotime;//音频长度（单位秒）
 
-    private Long videotime;//视频长度（单位毫秒）
+    private Long videotime;//视频长度（单位秒）
 
     private String ishomerecommend; //是否首页推荐 0 - 否 1 - 是
 
