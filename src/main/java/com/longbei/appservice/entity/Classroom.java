@@ -42,9 +42,9 @@ public class Classroom implements Serializable {
 
 	private String joincode;//口令
 
-	private Long audiotime;//音频长度（单位毫秒）
+	private Long audiotime;//音频长度（单位秒）
 
-	private Long videotime;//视频长度（单位毫秒）
+	private Long videotime;//视频长度（单位秒）
     
     private Long userid;
     

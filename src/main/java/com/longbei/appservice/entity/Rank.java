@@ -1,10 +1,7 @@
 package com.longbei.appservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -12,7 +9,13 @@ import java.util.Date;
 import java.util.List;
 
 public class Rank implements Serializable {
-    private Integer id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+
+	private Integer id;
 
     private Long rankid;  //榜单id
 
@@ -142,9 +145,9 @@ public class Rank implements Serializable {
 
     private String joincode; //入榜口令
 
-    private Long audiotime;//音频长度（单位毫秒）
+    private Long audiotime;//音频长度（单位秒）
 
-    private Long videotime;//视频长度（单位毫秒）
+    private Long videotime;//视频长度（单位秒）
 
     private String ishomerecommend; //是否首页推荐 0 - 否 1 - 是
 
