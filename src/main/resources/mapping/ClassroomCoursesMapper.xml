@@ -39,15 +39,15 @@
     select 
     <include refid="Base_Column_List" />
     from classroom_courses
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id}
   </select>
   
   <select id="select" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from classroom_courses
-    where id = #{id} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </select>
   
   <select id="selectSortByCid" resultMap="BaseResultMap" >
@@ -229,7 +229,7 @@
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from classroom_courses
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.ClassroomCourses" useGeneratedKeys="true" keyProperty="id" >
     insert into classroom_courses (id, coursetitle, coursesort, 
@@ -456,8 +456,8 @@
         status = #{status}
       </if>
     </set>
-    where id = #{id} 
-    and classroomid = #{classroomid}
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
   <update id="updateByPrimaryKey" parameterType="com.longbei.appservice.entity.ClassroomCourses" >
     update classroom_courses
@@ -477,7 +477,8 @@
       duration = #{duration}, 
       createtime = #{createtime,jdbcType=TIMESTAMP},
       udpatetime = #{udpatetime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where classroomid = #{classroomid} 
+    and id = #{id}
   </update>
   
   <update id="updateIsdefaultByClassroomid" >
@@ -495,30 +496,30 @@
   <update id="updateIsdel" >
     update classroom_courses
     set isdel = 1 
-    where id = #{id} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
   
   <update id="updateSortByid" >
     update classroom_courses
     set coursesort = #{coursesort}  
-    where id = #{id} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
   
   <update id="updateIsupByid" >
     update classroom_courses
     set isup = #{isup}  
-    where id = #{id} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
   
   <update id="updateStreamingIsupByid" >
     update classroom_courses
     set isup = #{isup},
     liveid = #{liveid}   
-    where id = #{id} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
   
   <update id="updateCoursetypeByClassroomid" >
@@ -530,15 +531,15 @@
   <update id="updateCoursetypeByid" >
     update classroom_courses
     set coursetype = #{coursetype}  
-    where id = #{id} 
-    and classroomid = #{classroomid} 
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
 
   <update id="updateLiveStatus" >
     update classroom_courses
     set status = #{status}
-    where id = #{id}
-    and classroomid = #{classroomid}
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
   
   <update id="updateTeachingLiveStatus" >
@@ -556,8 +557,8 @@
     update classroom_courses
     set fileurl = #{filekey},
         duration = #{duration}
-    where id = #{id}
-    and classroomid = #{classroomid}
+    where classroomid = #{classroomid} 
+    and id = #{id} 
   </update>
 
 

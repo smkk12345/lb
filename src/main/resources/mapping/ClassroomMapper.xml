@@ -306,7 +306,7 @@
   
   <delete id="deleteByPrimaryKey" >
     delete from classroom
-    where classroomid = #{classroomid,jdbcType=INTEGER}
+    where classroomid = #{classroomid}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
     insert into classroom (id, classroomid, userid, classtitle, classphotos, 
@@ -573,7 +573,7 @@
       cardid = #{cardid},
       freecoursenum = #{freecoursenum,jdbcType=INTEGER},
       ispublic = #{ispublic,jdbcType=CHAR} 
-    where classroomid = #{classroomid,jdbcType=INTEGER} 
+    where classroomid = #{classroomid} 
     and userid = #{userid,jdbcType=INTEGER}
   </update>
   
