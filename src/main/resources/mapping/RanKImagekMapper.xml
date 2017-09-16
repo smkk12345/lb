@@ -27,6 +27,8 @@
     <result column="flowerscore" property="flowerscore" jdbcType="INTEGER" />
     <result column="diamondscore" property="diamondscore" jdbcType="INTEGER" />
     <result column="codeword" property="codeword" jdbcType="VARCHAR" />
+    <result column="audiotime" property="audiotime" />
+    <result column="videotime" property="videotime" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="companyname" property="companyname" jdbcType="VARCHAR" />
     <result column="companyphotos" property="companyphotos" jdbcType="VARCHAR" />
@@ -56,7 +58,9 @@
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,joincode,rankrule,needconfirm,maxtotalimprovenum
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,
+    notice,joincode,rankrule,needconfirm,maxtotalimprovenum,
+    audiotime,videotime 
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -299,6 +303,12 @@
       <if test="codeword != null" >
         codeword,
       </if>
+      <if test="audiotime != null" >
+        audiotime,
+      </if>
+      <if test="videotime != null" >
+        videotime,
+      </if>
       <if test="ptype != null" >
         ptype,
       </if>
@@ -436,6 +446,12 @@
       <if test="codeword != null" >
         #{codeword,jdbcType=VARCHAR},
       </if>
+      <if test="audiotime != null" >
+        #{audiotime},
+      </if>
+      <if test="videotime != null" >
+        #{videotime},
+      </if>
       <if test="ptype != null" >
         #{ptype,jdbcType=CHAR},
       </if>
@@ -569,6 +585,12 @@
       </if>
       <if test="codeword != null" >
         codeword = #{codeword,jdbcType=VARCHAR},
+      </if>
+      <if test="audiotime != null" >
+        audiotime = #{audiotime},
+      </if>
+      <if test="videotime != null" >
+        videotime = #{videotime},
       </if>
       <if test="ptype != null" >
         ptype = #{ptype,jdbcType=CHAR},
