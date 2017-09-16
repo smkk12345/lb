@@ -134,14 +134,15 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp baseResp = new BaseResp();
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
-        if(rankImage.getAudiotime() == null){
-        	Long croomimpaudiotime = SysRulesCache.behaviorRule.getCroomimpaudiotime();
-        	rankImage.setAudiotime(croomimpaudiotime);
+
+        //设置默认音频、视频时长
+        if (rankImage.getAudiotime() == null) {
+            rankImage.setAudiotime(SysRulesCache.behaviorRule.getRankimpaudiotime());
         }
-        if(rankImage.getVideotime() == null){
-        	Long croomimpvideotime = SysRulesCache.behaviorRule.getCroomimpvideotime();
-        	rankImage.setVideotime(croomimpvideotime);
+        if (rankImage.getVideotime() == null) {
+            rankImage.setVideotime(SysRulesCache.behaviorRule.getRankimpvideotime());
         }
+
         int res = 0;
         try {
             res = rankImageMapper.insertSelective(rankImage);
@@ -278,13 +279,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankImage(RankImage rankImage) {
         int res = 0;
         try {
-        	if(rankImage.getAudiotime() == null){
-            	Long croomimpaudiotime = SysRulesCache.behaviorRule.getCroomimpaudiotime();
-            	rankImage.setAudiotime(croomimpaudiotime);
+            //设置默认音频、视频时长
+            if (rankImage.getAudiotime() == null) {
+                rankImage.setAudiotime(SysRulesCache.behaviorRule.getRankimpaudiotime());
             }
-            if(rankImage.getVideotime() == null){
-            	Long croomimpvideotime = SysRulesCache.behaviorRule.getCroomimpvideotime();
-            	rankImage.setVideotime(croomimpvideotime);
+            if (rankImage.getVideotime() == null) {
+                rankImage.setVideotime(SysRulesCache.behaviorRule.getRankimpvideotime());
             }
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));

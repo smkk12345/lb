@@ -50,6 +50,8 @@
     <result column="rankrule" property="rankrule" jdbcType="VARCHAR" />
     <result column="needconfirm" property="needconfirm" jdbcType="CHAR" />
     <result column="maxtotalimprovenum" property="maxtotalimprovenum" jdbcType="INTEGER" />
+    <result column="audiotime" property="audiotime" jdbcType="BIGINT" />
+    <result column="videotime" property="videotime" jdbcType="BIGINT" />
   </resultMap>
 
 
@@ -58,9 +60,8 @@
     rankrate, starttime, endtime, areaname, coordinate, isfinish, createuserid, ranktype, 
     ispublic, rankcateid, createtime, updatetime, likescore, flowerscore, diamondscore, 
     codeword, ptype,companyname,companyphotos,companybrief,sourcetype,checkstatus,isauto,autotime,
-    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,
-    notice,joincode,rankrule,needconfirm,maxtotalimprovenum,
-    audiotime,videotime 
+    joinlastday,maximprovenum,minimprovenum,ischeck,isgroup,rankcardid,isup,isdel,notice,joincode,rankrule,
+    needconfirm,maxtotalimprovenum,audiotime,videotime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -369,6 +370,12 @@
       <if test="maxtotalimprovenum != null and maxtotalimprovenum != ''" >
         maxtotalimprovenum,
       </if>
+      <if test="audiotime != null and audiotime != ''" >
+        audiotime,
+      </if>
+      <if test="videotime != null and videotime != ''" >
+        videotime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -512,6 +519,12 @@
       <if test="maxtotalimprovenum != null and  maxtotalimprovenum != ''" >
         #{maxtotalimprovenum},
       </if>
+      <if test="audiotime != null and  audiotime != ''" >
+        #{audiotime},
+      </if>
+      <if test="videotime != null and  videotime != ''" >
+        #{videotime},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.longbei.appservice.entity.RankImage" >
@@ -651,6 +664,12 @@
       </if>
       <if test="maxtotalimprovenum != null and  maxtotalimprovenum != ''" >
         maxtotalimprovenum = #{maxtotalimprovenum},
+      </if>
+      <if test="audiotime != null and  audiotime != ''" >
+        audiotime = #{audiotime},
+      </if>
+      <if test="videotime != null and  videotime != ''" >
+        videotime = #{videotime},
       </if>
     </set>
     where rankid = #{rankid,jdbcType=BIGINT}
