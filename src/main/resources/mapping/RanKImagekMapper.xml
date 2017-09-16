@@ -27,8 +27,6 @@
     <result column="flowerscore" property="flowerscore" jdbcType="INTEGER" />
     <result column="diamondscore" property="diamondscore" jdbcType="INTEGER" />
     <result column="codeword" property="codeword" jdbcType="VARCHAR" />
-    <result column="audiotime" property="audiotime" />
-    <result column="videotime" property="videotime" />
     <result column="ptype" property="ptype" jdbcType="CHAR" />
     <result column="companyname" property="companyname" jdbcType="VARCHAR" />
     <result column="companyphotos" property="companyphotos" jdbcType="VARCHAR" />
@@ -304,12 +302,6 @@
       <if test="codeword != null" >
         codeword,
       </if>
-      <if test="audiotime != null" >
-        audiotime,
-      </if>
-      <if test="videotime != null" >
-        videotime,
-      </if>
       <if test="ptype != null" >
         ptype,
       </if>
@@ -453,12 +445,6 @@
       <if test="codeword != null" >
         #{codeword,jdbcType=VARCHAR},
       </if>
-      <if test="audiotime != null" >
-        #{audiotime},
-      </if>
-      <if test="videotime != null" >
-        #{videotime},
-      </if>
       <if test="ptype != null" >
         #{ptype,jdbcType=CHAR},
       </if>
@@ -598,12 +584,6 @@
       </if>
       <if test="codeword != null" >
         codeword = #{codeword,jdbcType=VARCHAR},
-      </if>
-      <if test="audiotime != null" >
-        audiotime = #{audiotime},
-      </if>
-      <if test="videotime != null" >
-        videotime = #{videotime},
       </if>
       <if test="ptype != null" >
         ptype = #{ptype,jdbcType=CHAR},
