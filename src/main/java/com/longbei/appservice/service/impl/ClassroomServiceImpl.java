@@ -635,22 +635,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public BaseResp<Object> insertClassroom(Classroom record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
-//			//sourcetype 0:运营  1:app  2:商户
-//			if("1".equals(record.getSourcetype())){
-//				//判断是否达到个人发教室的限制
-//				Integer roomCount = classroomMapper.selectCountByUserid(record.getUserid());
-//				UserInfo userInfo = userInfoMapper.selectInfoMore(record.getUserid());
-//				UserLevel userLevel = userLevelMapper.selectByGrade(userInfo.getGrade());
-//				if(roomCount >= userLevel.getClassroomnum()){
-//					return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1114, Constant.RTNINFO_SYS_1114);
-//				}
-//			}
-			if (record.getAudiotime() == null) {
-				record.setAudiotime(SysRulesCache.behaviorRule.getCroomimpaudiotime());
-			}
-			if (record.getVideotime() == null) {
-				record.setVideotime(SysRulesCache.behaviorRule.getCroomimpvideotime());
-			}
+			//设置默认音频、视频时长
+			setClassroomAudioAndVideoTime(record);
 			boolean temp = insert(record);
 			if (temp) {
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -659,6 +645,19 @@ public class ClassroomServiceImpl implements ClassroomService {
 			logger.error("insertClassroom record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
+	}
+
+	/**
+	 * 设置默认音频、视频时长
+	 * @param record
+	 */
+	private void setClassroomAudioAndVideoTime(Classroom record) {
+		if (record.getAudiotime() == null) {
+			record.setAudiotime(SysRulesCache.behaviorRule.getCroomimpaudiotime());
+		}
+		if (record.getVideotime() == null) {
+			record.setVideotime(SysRulesCache.behaviorRule.getCroomimpvideotime());
+		}
 	}
 	
 	private boolean insert(Classroom record){
@@ -710,12 +709,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				}
 			}
 			//设置默认音频、视频时长
-			if (record.getAudiotime() == null) {
-				record.setAudiotime(SysRulesCache.behaviorRule.getCroomimpaudiotime());
-			}
-			if (record.getVideotime() == null) {
-				record.setVideotime(SysRulesCache.behaviorRule.getCroomimpvideotime());
-			}
+			setClassroomAudioAndVideoTime(record);
 			boolean temp = update(record);
 			if (temp) {
 				if(!classroom.getIsfree().equals(record.getIsfree())){
