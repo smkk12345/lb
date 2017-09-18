@@ -1,6 +1,7 @@
 package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.cache.RankCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
@@ -121,6 +122,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private StatisticService statisticService;
     @Autowired
     private RankCache rankCache;
+    @Autowired
+    private CommonCache commonCache;
 
     /**
      *  @author luye
@@ -3409,30 +3412,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         if (null == rank){
             return;
         }
-        if(rank.getRankcardid() != null){
-            RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
-            if(rankCard != null){
-                rankCard.setRankCardUrl(rankCard.getId().toString());
-                rank.setRankCard(rankCard);
-            }
-        }
 
-        //pc端发榜
-        if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-            AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-            rank.setCreateusernickname(appUser.getNickname());
-
-            //封装pc榜主名片
-            if(rank.getRankCard() == null){
-                RankCard rankCard = new RankCard();
-                rankCard.setCreateuserid(rank.getCreateuserid());
-                rankCard.setAdminname(appUser.getNickname());
-                rankCard.setAdminpic(appUser.getAvatar());
-                rankCard.setAdminbrief(appUser.getBrief());
-                //rankCard.setRankCardUrl(null);//pc端没有榜主名片id
-                rank.setRankCard(rankCard);
-            }
-        }
+        RankCard rankCard = new RankCard();
+        String shortUrl = commonCache.getShortUrl(AppserviceConfig.h5_rankcard+"?rankCardId="+rank.getRankcardid());
+        rankCard.setRankCardUrl(shortUrl);
+        rank.setRankCard(rankCard);
     }
 
 
