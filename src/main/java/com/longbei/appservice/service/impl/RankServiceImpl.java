@@ -345,6 +345,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         if (!Constant.RANKIMAGE_STATUS_4.equals(rankImage.getCheckstatus())){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_60, Constant.RTNINFO_SYS_60);
         }
+        //更新榜单奖品缓存
+        rankCache.updateRankAwardCache(rankImageId);
         Rank rank = new Rank();
         try {
             BeanUtils.copyProperties(rank,rankImage);
@@ -374,8 +376,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
                     res = rankMapper.insertSelective(rank);
                     if (res > 0) {
-                        //更新榜单奖品缓存
-                        rankCache.updateRankAwardCache(rankImageId);
+
                         //榜单发布成功，更新系统今日发榜数
                         statisticService.updateStatistics(Constant.SYS_RANK_NUM,1);
                         //pc端定制榜，发布成功后给榜主发送消息
