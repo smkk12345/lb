@@ -1032,6 +1032,10 @@ public class UserServiceImpl implements UserService {
 
 	private BaseResp<Object> canAbleLogin(String deviceindex,String username,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
+		//帐号冻结
+		if(userAccountService.isFreezing(userid)) {
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_113, Constant.RTNINFO_SYS_113);
+		}
 		if(username.equals("13716832441")){
 			return baseResp.initCodeAndDesp();
 		}
@@ -1050,11 +1054,6 @@ public class UserServiceImpl implements UserService {
 		baseResp = deviceIndexChange(deviceindex,userid);
 		if(ResultUtil.fail(baseResp)){
 			return baseResp;
-		}
-		//帐号冻结
-		if(userAccountService.isFreezing(userid))
-		{
-			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_113, Constant.RTNINFO_SYS_113);
 		}
 		return baseResp.initCodeAndDesp();
 	}
@@ -1831,6 +1830,8 @@ public class UserServiceImpl implements UserService {
 					}else{
 						userInfos.get(i).setFreezestatus(userAccount.getStatus());
 					}
+				}else {
+					userInfos.get(i).setFreezestatus("0");
 				}
 			}
 			page.setTotalCount(totalcount);

@@ -36,11 +36,9 @@ public class UserAccountServiceImpl implements UserAccountService {
             UserAccount userAccount = userAccountMapper.selectUserAccountByUserId(userId);
             if(null != userAccount)
             {
-                Date updatetime = DateUtils.formatDate(userAccount.getUpdatetime(), "yyyy-MM-dd HH:mm:ss");
-                userAccount.setUpdatetime(DateUtils.formatDateTime1(updatetime));
-                Long endtime = updatetime.getTime()+userAccount.getFreezetime()*1000;
+                Long endtime = userAccount.getUpdatetime().getTime()+userAccount.getFreezetime()*1000;
                 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                userAccount.setEndtime(df.format(endtime));
+                userAccount.setEndtime(DateUtils.formatDate(df.format(endtime),null));
                 baseResp.setData(userAccount);
 
                 switch (userAccount.getFreezetime()+"") {
@@ -77,10 +75,10 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public BaseResp<Object> insertUserAccount(UserAccount userAccount,String strFreezeTime){
         BaseResp<Object> baseResp = new BaseResp<Object>();
-        String strDate = DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
+        Date date =new Date();
         userAccount.setStatus("1");
-        userAccount.setCreatetime(strDate);
-        userAccount.setUpdatetime(strDate);
+        userAccount.setCreatetime(date);
+        userAccount.setUpdatetime(date);
         try {
             initFreezeTime(userAccount,strFreezeTime);
             int n = userAccountMapper.insertUserAccount(userAccount);
@@ -99,7 +97,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public 	BaseResp<Object> updateUserAccountByUserId(UserAccount userAccount,String strFreezeTime) {
         BaseResp<Object> baseResp = new BaseResp<Object>();
         if(null == userAccount.getUpdatetime()){
-        userAccount.setUpdatetime(DateUtils.getDate("yyyy-MM-dd HH:mm:ss"));
+        userAccount.setUpdatetime(new Date());
         }
         try {
             if (!StringUtils.isBlank(strFreezeTime)){
@@ -155,18 +153,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     public Boolean isFreezing(Long userId){
         BaseResp<UserAccount> baseResp1 = userAccountService.selectUserAccountByUserId(userId);
         UserAccount userAccount = baseResp1.getData();
-        if(null != userAccount)
-        {
-            Date nowdate = new Date();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date freezeUpdatetime = null;
-            try {
-                freezeUpdatetime = format.parse(userAccount.getUpdatetime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        if(null != userAccount) {
             Long freezetime = userAccount.getFreezetime();
-            Long second = (nowdate.getTime()-freezeUpdatetime.getTime())/1000;
+            Long second = (new Date().getTime()-userAccount.getUpdatetime().getTime())/1000;
             if(freezetime > second){
                 logger.info("CompareUserAccount freezetime={},second={}",freezetime,second);
             return true;
