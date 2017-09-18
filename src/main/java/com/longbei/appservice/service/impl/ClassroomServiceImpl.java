@@ -11,7 +11,6 @@ import java.util.Map;
 
 import com.longbei.appservice.common.syscache.SysRulesCache;
 
-import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.entity.*;
@@ -19,7 +18,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -447,6 +445,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("isfree", classroom.getIsfree());
 				map.put("charge", classroom.getCharge());
 				map.put("ptype", classroom.getPtype());
+				map.put("ispublic", classroom.getIspublic());
+				map.put("audiotime", classroom.getAudiotime());
+				map.put("videotime", classroom.getVideotime());
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
@@ -630,7 +631,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 //		}
 //	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> insertClassroom(Classroom record) {
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -781,7 +781,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
 //			,condition="#ispublic == '1'")
 	@Override
-	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
+	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic,String isup, String ptype, int startNum, int endNum) {
 		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 
 				ispublic, startNum, endNum);
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -789,9 +789,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 			List<Classroom> list = new ArrayList<>();
 			if("-1".equals(ptype)){
 				//isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, "", "1", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, "", "1", startNum, endNum);
 			}else{
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, "", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, ptype, "", startNum, endNum);
 			}
 			if(null != list && list.size()>0){
 				//操作
@@ -1096,6 +1096,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 		return reseResp;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public BaseResp<Object> uproom(long classroomid){
 		BaseResp<Object> reseResp = new BaseResp<>();
