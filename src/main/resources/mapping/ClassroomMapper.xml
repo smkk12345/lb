@@ -274,7 +274,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where isdel = 0 and allcourses != 0 
+    where isdel = 0 and allcourses != 0 and ispublic = 0
     <if test="keyword != null" >
     	AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
     	<!--  
