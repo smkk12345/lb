@@ -781,7 +781,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
 //			,condition="#ispublic == '1'")
 	@Override
-	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
+	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic,String isup, String ptype, int startNum, int endNum) {
 		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 
 				ispublic, startNum, endNum);
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -789,9 +789,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 			List<Classroom> list = new ArrayList<>();
 			if("-1".equals(ptype)){
 				//isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, "", "1", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, "", "1", startNum, endNum);
 			}else{
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, "", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, ptype, "", startNum, endNum);
 			}
 			if(null != list && list.size()>0){
 				//操作

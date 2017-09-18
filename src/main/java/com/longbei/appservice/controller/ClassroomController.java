@@ -821,7 +821,8 @@ public class ClassroomController {
 		}
   		try {
   			//ispublic  是否所有人可见。0 所有人可见。1，部分可见
-  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "1", ptype, sNo, sSize);
+  			baseResp = classroomService.selectClassroomListByIspublic(
+  					Long.parseLong(userid), "0","1", ptype, sNo, sSize);
   		} catch (Exception e) {
   			logger.error("selectClassroomList userid = {}, startNo = {}, pageSize = {}",
   					userid, startNo, pageSize, e);
