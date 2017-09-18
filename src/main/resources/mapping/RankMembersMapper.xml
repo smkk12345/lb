@@ -82,7 +82,10 @@
         count(1)
     from rank_members
     <where>
-     	1 = 1 
+     	1 = 1
+        <if test="rankid != null">
+            and rankid=#{rankid}
+        </if>
         <if test="isfashionman != null and isfashionman != ''">
           and isfashionman = #{isfashionman}
         </if>
@@ -116,9 +119,7 @@
           </foreach>
         </if>
         AND status = '1'
-      <if test="rankid != null">
-        and rankid=#{rankid}
-      </if>
+
       <if test="userid != null">
         and userid=#{userid}
       </if>
@@ -135,11 +136,11 @@
       <include refid="Base_Column_List" />
     FROM rank_members
     <where>
-        <if test="rankmember.isfashionman != null and rankmember.isfashionman != ''">
-          AND isfashionman = #{rankmember.isfashionman}
-        </if>
         <if test="rankmember.rankid != null and rankmember.rankid != ''">
             AND rankid = #{rankmember.rankid}
+        </if>
+        <if test="rankmember.isfashionman != null and rankmember.isfashionman != ''">
+          AND isfashionman = #{rankmember.isfashionman}
         </if>
         <if test="rankmember.checkstatus != null">
           <choose>
@@ -237,8 +238,11 @@
               inner join rank on rank_members.rankid = rank.rankid
           </if>
         <where>
+            <if test="rankid != null">
+                and rank_members.rankid=#{rankid}
+            </if>
             <if test="isfashionman != null and isfashionman != ''">
-                isfashionman = #{isfashionman}
+                AND isfashionman = #{isfashionman}
             </if>
             <if test="checkstatus != null">
                 <choose>
@@ -268,9 +272,7 @@
                     #{item}
                 </foreach>
             </if>
-            <if test="rankid != null">
-                and rank_members.rankid=#{rankid}
-            </if>
+
             <if test="userid != null">
                 and rank_members.userid=#{userid}
             </if>
@@ -720,8 +722,8 @@
       from
         rank_members
       <where>
-            status = 1
-          and rankId = #{rankId}
+          rankId = #{rankId}
+          and status = 1
       </where>
       <if test="sortType == 1">
           <if test="searchIsfinishFiled != null and searchIsfinishFiled == 1">
@@ -756,13 +758,14 @@
         </if>
       </set>
       WHERE
-          <if test="type != null and type == 'less'">
-            icount &lt; #{minImproveNum}
-          </if>
-          <if test="type != null and type == 'greater'">
-            icount >= #{minImproveNum}
-          </if>
-          and rankid = #{rankId}
+      rankid = #{rankId}
+      and
+      <if test="type != null and type == 'less'">
+          icount &lt; #{minImproveNum}
+      </if>
+      <if test="type != null and type == 'greater'">
+          icount >= #{minImproveNum}
+      </if>
   </update>
 
   <!-- 根据条件查询 rankMembers -->
@@ -815,8 +818,8 @@
     where
 --     award.id= rank_members.awardid
 --       and
-       iswinning = 1
-      and rankid = #{rankid}
+        rankid = #{rankid}
+      and iswinning = 1
     group by awardlevel
     order by awardlevel
   </select>
@@ -829,9 +832,9 @@
     from
         rank_members
     where
-      rank_members.iswinning = 1
+      rank_members.rankid =#{rankid}
       and rank_members.checkstatus = 3
-      and rank_members.rankid =#{rankid}
+      and rank_members.iswinning = 1
     order by rank_members.awardlevel
   </select>
 
@@ -842,10 +845,10 @@
       from
         rank_members
       where
-        updatetime &lt; #{lastUpdateTime}
+        rankid = #{rankId}
       and status = 1
       and icount = 0
-      and rankid = #{rankId}
+      and updatetime &lt; #{lastUpdateTime}
   </select>
 
   <!-- 移除超时未发布进步的榜成员 -->
@@ -876,10 +879,10 @@
         from
           rank_members temp
         where
-          temp.updatetime &lt; #{lastUpdateTime}
+        temp.rankid = #{rankId}
         and temp.status = 1
         and temp.icount = 0
-        and temp.rankid = #{rankId}
+        and temp.updatetime &lt; #{lastUpdateTime}
         order by temp.updatetime
         limit 1
     </select>
@@ -889,9 +892,9 @@
         select
             <include refid="Base_Column_List" />
         from rank_members
-        where iswinning = 1
+        where rankid = #{rankid}
             and checkstatus = 3
-            and rankid = #{rankid}
+            and iswinning = 1
         order by awardlevel,sortnum
         <if test="startNum != null">
             limit #{startNum},#{pageSize}
