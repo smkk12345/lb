@@ -167,6 +167,7 @@ public class UserServiceImpl implements UserService {
 				logger.error("query userInfo null userid:{}",userid);
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
 			}
+			userInfo = initRongYunToken(userInfo);
 //			if(lookid != userid){
 //				//获取好友昵称
 //				String remark = userRelationService.selectRemark(lookid, userid);
@@ -991,19 +992,7 @@ public class UserServiceImpl implements UserService {
 			baseResp.getExpandData().put("token", token);
 			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(username);
 			UserInfo userInfo = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
-			if(StringUtils.isBlank(userInfo.getRytoken())){
-				try {
-					BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userInfo.getUserid()+"", username, "#");
-					if(ResultUtil.isSuccess(tokenRtn)){
-						userInfo.setRytoken((String)tokenRtn.getData());
-						userInfoMapper.updateByUseridSelective(userInfo);
-					}
-				}catch (Exception e){
-					logger.error("userid={},username={} getRYToken error",
-							userInfo.getUserid(),userInfo.getUsername(),e);
-				}
-			}
-
+			userInfo = initRongYunToken(userInfo);
 			returnResp.setData(userInfo);
 			returnResp.getExpandData().put("token", token);
 			if(null == userInfo){
@@ -1022,6 +1011,22 @@ public class UserServiceImpl implements UserService {
 			returnResp.initCodeAndDesp(baseResp.getCode(),baseResp.getRtnInfo());
 		}
 		return returnResp;
+	}
+
+	private UserInfo initRongYunToken(UserInfo userInfo){
+		if(StringUtils.isBlank(userInfo.getRytoken())){
+			try {
+				BaseResp<Object> tokenRtn = iRongYunService.getRYToken(userInfo.getUserid()+"", userInfo.getUsername(), "#");
+				if(ResultUtil.isSuccess(tokenRtn)){
+					userInfo.setRytoken((String)tokenRtn.getData());
+					userInfoMapper.updateByUseridSelective(userInfo);
+				}
+			}catch (Exception e){
+				logger.error("userid={},username={} getRYToken error",
+						userInfo.getUserid(),userInfo.getUsername(),e);
+			}
+		}
+		return userInfo;
 	}
 
 
