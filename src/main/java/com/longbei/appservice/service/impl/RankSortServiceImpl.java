@@ -97,7 +97,6 @@ public class RankSortServiceImpl extends BaseServiceImpl implements RankSortServ
      * @param rank
      * @return
      */
-    @Transactional
     @Override
     public boolean checkRankEnd(Rank rank) {
         try{

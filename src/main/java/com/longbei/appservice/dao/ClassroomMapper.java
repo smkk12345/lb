@@ -29,7 +29,8 @@ public interface ClassroomMapper {
     /**
 	 * @author yinxc
 	 * 获取教室信息
-	 * param isup 是否所有人可见。0 所有人可见。1，部分可见
+	 * @param ispublic 是否所有人可见。0 所有人可见。1，部分可见
+	 * param isup
 	 * param isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
 	 * param pageNo   pageSize
 	 * 2017年3月3日

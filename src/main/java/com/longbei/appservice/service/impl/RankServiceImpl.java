@@ -8,6 +8,7 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.RedisCacheNames;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -139,6 +140,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 
         int res = 0;
         try {
+            //设置默认音频、视频时长
+            setRankAudioAndVideoTime(rankImage);
             res = rankImageMapper.insertSelective(rankImage);
             if(res>0){
                 baseResp.initCodeAndDesp();
@@ -153,6 +156,19 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             logger.error("insert rank:{} is error:{}", JSONObject.fromObject(rankImage),e);
         }
         return baseResp;
+    }
+
+    /**
+     * 设置默认音频视频时间
+     * @param rankImage
+     */
+    private void setRankAudioAndVideoTime(RankImage rankImage) {
+        if (rankImage.getAudiotime() == null) {
+            rankImage.setAudiotime(SysRulesCache.behaviorRule.getRankimpaudiotime());
+        }
+        if (rankImage.getVideotime() == null) {
+            rankImage.setVideotime(SysRulesCache.behaviorRule.getRankimpvideotime());
+        }
     }
 
     @Override
@@ -273,6 +289,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankImage(RankImage rankImage) {
         int res = 0;
         try {
+            //设置默认音频、视频时长
+            setRankAudioAndVideoTime(rankImage);
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
             if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
@@ -356,6 +374,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
                     res = rankMapper.insertSelective(rank);
                     if (res > 0) {
+                        //更新榜单奖品缓存
+                        rankCache.updateRankAwardCache(rankImageId);
                         //榜单发布成功，更新系统今日发榜数
                         statisticService.updateStatistics(Constant.SYS_RANK_NUM,1);
                         //pc端定制榜，发布成功后给榜主发送消息
@@ -3412,10 +3432,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         if (null == rank){
             return;
         }
-
         RankCard rankCard = new RankCard();
         String shortUrl = commonCache.getShortUrl(AppserviceConfig.h5_rankcard+"?rankCardId="+rank.getRankcardid());
         rankCard.setRankCardUrl(shortUrl);
+        rankCard.setCreateuserid(rank.getCreateuserid());
         rank.setRankCard(rankCard);
     }
 

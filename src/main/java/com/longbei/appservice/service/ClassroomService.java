@@ -106,7 +106,7 @@ public interface ClassroomService {
 	 * 2017年2月28日
 	 */
 	BaseResp<Object> selectClassroomListByIspublic(long userid,String isup, String ispublic, String ptype, int startNum, int endNum);
-	
+
 	/**
 	 * @author yinxc
 	 * 获取教室信息
