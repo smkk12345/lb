@@ -3412,10 +3412,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         if (null == rank){
             return;
         }
-
         RankCard rankCard = new RankCard();
         String shortUrl = commonCache.getShortUrl(AppserviceConfig.h5_rankcard+"?rankCardId="+rank.getRankcardid());
         rankCard.setRankCardUrl(shortUrl);
+        rankCard.setCreateuserid(rank.getCreateuserid());
         rank.setRankCard(rankCard);
     }
 
