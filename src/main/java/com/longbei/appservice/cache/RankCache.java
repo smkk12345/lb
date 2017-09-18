@@ -108,6 +108,18 @@ public class RankCache {
         return resultList;
     }
 
+    @Cacheable(cacheNames = RedisCacheNames._RANK_AWARD_LIST,key="#rankid")
+    public List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
+        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
+        for (RankAwardRelease rankAward : rankAwards){
+            if(!StringUtils.isBlank(rankAward.getAwardid())){
+                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
+                rankAward.setAward(award != null?award:new Award());
+            }
+        }
+        return rankAwards;
+    }
+
     @Cacheable(cacheNames = RedisCacheNames._RANK_LIST,key = "#startno + '&' + #pagesize"
             ,condition="#status == 0")
     public Map<String,Object> selectRankListByCondition(String rankTitle,
