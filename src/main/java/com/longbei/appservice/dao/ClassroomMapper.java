@@ -1,10 +1,9 @@
 package com.longbei.appservice.dao;
 
-import java.util.List;
-
+import com.longbei.appservice.entity.Classroom;
 import org.apache.ibatis.annotations.Param;
 
-import com.longbei.appservice.entity.Classroom;
+import java.util.List;
 
 public interface ClassroomMapper {
     int deleteByPrimaryKey(@Param("classroomid") long classroomid);
@@ -35,7 +34,8 @@ public interface ClassroomMapper {
 	 * param pageNo   pageSize
 	 * 2017年3月3日
 	 */
-    List<Classroom> selectClassroomListByIspublic(@Param("isup") String isup,
+    List<Classroom> selectClassroomListByIspublic(@Param("ispublic") String ispublic,
+												  @Param("isup") String isup,
 												  @Param("ptype") String ptype,
 												  @Param("isrecommend") String isrecommend,
 												  @Param("startNum") int startNum, @Param("endNum") int endNum);
@@ -69,13 +69,17 @@ public interface ClassroomMapper {
 	 * param pageNo   pageSize
 	 * 2017年2月27日
 	 */
-    List<Classroom> selectListByPtype(@Param("ptype") String ptype, @Param("keyword") String keyword, 
-    		@Param("startNum") int startNum, @Param("endNum") int endNum);
+    List<Classroom> selectListByPtype(@Param("ptype") String ptype,
+									  @Param("keyword") String keyword,
+									  @Param("searchByCodeword") String searchByCodeword,
+									  @Param("startNum") int startNum, @Param("endNum") int endNum);
     
     /*
      * 获取count
      */
-    Integer selectCountByPtype(@Param("ptype") String ptype, @Param("keyword") String keyword);
+    Integer selectCountByPtype(@Param("ptype") String ptype,
+							   @Param("keyword") String keyword,
+							   @Param("searchByCodeword") String searchByCodeword);
     
     /**
 	 * @author yinxc

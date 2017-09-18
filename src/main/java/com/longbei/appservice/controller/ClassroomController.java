@@ -756,23 +756,24 @@ public class ClassroomController {
 	
 	/**
     * @Title: http://ip:port/app_service/classroom/selectRoomSearch
-    * @Description: 教室标题搜索
+    * @Description: 教室标题/教室口令搜索
     * @param @param keyword  搜索标题关键字
 	* @param @param ptype 十全十美类型    可为null---教室标题搜索
 	* 				0：学习    1：运动   2：社交   3：艺术   4：生活   
 	* 				5：公益    6：文学    7：劳动   8：修养   9：健康
     * @param @param startNo   pageSize
+	* @param searchByCodeword 根据入榜口令搜索榜单 可不传 传入的值是0/1 1代表按照榜口令搜索榜 0代表按照榜名称搜索榜
     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
     * @auther yinxc
     * @currentdate:2017年2月28日
 	*/
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectRoomSearch")
-    public BaseResp<Object> selectRoomSearch(String keyword, String ptype, Integer startNo, Integer pageSize) {
+    public BaseResp<Object> selectRoomSearch(String keyword, String ptype,String searchByCodeword, Integer startNo, Integer pageSize) {
 		logger.info("selectRoomSearch keyword={},ptype={},startNo={},pageSize={}",
 				keyword,ptype,startNo,pageSize);
 		BaseResp<Object> baseResp = new BaseResp<>();
-  		if (StringUtils.hasBlankParams(keyword)) {
+  		if (StringUtils.hasBlankParams(keyword) || ("1".equals(searchByCodeword) && StringUtils.isEmpty(keyword))) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		int sNo = Integer.parseInt(Constant.DEFAULT_START_NO);
@@ -783,8 +784,12 @@ public class ClassroomController {
 		if(null != pageSize){
 			sSize = pageSize.intValue();
 		}
+		if(StringUtils.isEmpty(searchByCodeword)){
+			searchByCodeword = "0";
+		}
+
   		try {
-  			baseResp = classroomService.selectListByPtype(ptype, keyword, sNo, sSize);
+  			baseResp = classroomService.selectListByPtype(ptype, keyword,searchByCodeword, sNo, sSize);
   		} catch (Exception e) {
   			logger.error("selectRoomSearch keyword = {}, ptype = {}, startNo = {}, pageSize = {}",
   					keyword, ptype, startNo, pageSize, e);
@@ -821,7 +826,7 @@ public class ClassroomController {
 		}
   		try {
   			//ispublic  是否所有人可见。0 所有人可见。1，部分可见
-  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid), "1", ptype, sNo, sSize);
+  			baseResp = classroomService.selectClassroomListByIspublic(Long.parseLong(userid),"1", "0", ptype, sNo, sSize);
   		} catch (Exception e) {
   			logger.error("selectClassroomList userid = {}, startNo = {}, pageSize = {}",
   					userid, startNo, pageSize, e);

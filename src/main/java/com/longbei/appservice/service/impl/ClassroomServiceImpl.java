@@ -1,26 +1,5 @@
 package com.longbei.appservice.service.impl;
 
-import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import com.longbei.appservice.common.syscache.SysRulesCache;
-
-import com.longbei.appservice.common.constant.RedisCacheNames;
-import com.longbei.appservice.dao.*;
-import com.longbei.appservice.dao.mongo.dao.CodeDao;
-import com.longbei.appservice.entity.*;
-import org.apache.commons.collections.map.HashedMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.cache.CommonCache;
@@ -33,6 +12,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
@@ -781,7 +761,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
 //			,condition="#ispublic == '1'")
 	@Override
-	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
+	public BaseResp<Object> selectClassroomListByIspublic(long userid,String isup, String ispublic, String ptype, int startNum, int endNum) {
 		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 
 				ispublic, startNum, endNum);
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -789,9 +769,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 			List<Classroom> list = new ArrayList<>();
 			if("-1".equals(ptype)){
 				//isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, "", "1", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, "", "1", startNum, endNum);
 			}else{
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, "", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, ptype, "", startNum, endNum);
 			}
 			if(null != list && list.size()>0){
 				//操作
@@ -914,13 +894,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 	
 
 	@Override
-	public BaseResp<Object> selectListByPtype(String ptype, String keyword, int startNum, int endNum) {
+	public BaseResp<Object> selectListByPtype(String ptype, String keyword,String searchByCodeword, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			if(StringUtils.isBlank(ptype)){
 				ptype = null;
 			}
-			List<Classroom> list = classroomMapper.selectListByPtype(ptype, keyword, startNum, endNum);
+			List<Classroom> list = classroomMapper.selectListByPtype(ptype, keyword,searchByCodeword, startNum, endNum);
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);
@@ -930,7 +910,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				return reseResp;
 			}
 			reseResp.setData(list);
-			Integer roomsize = classroomMapper.selectCountByPtype(ptype, keyword);
+			Integer roomsize = classroomMapper.selectCountByPtype(ptype, keyword,searchByCodeword);
 			Map<String, Object> expandData = new HashMap<String, Object>();
 			expandData.put("roomsize", roomsize);
 			reseResp.setExpandData(expandData);

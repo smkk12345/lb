@@ -274,33 +274,42 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where isdel = 0 and allcourses != 0 
-    <if test="keyword != null" >
-    	AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
-    	<!--  
-       	or classbrief LIKE CONCAT(CONCAT('%', #{keyword}),'%')
-       	or classnotice LIKE CONCAT(CONCAT('%', #{keyword}),'%') -->
-    </if>
-    <if test="ptype != null" >
-    	and ptype = #{ptype} 
-    </if>
-    and isup = 1 
-    order by weight desc, createtime desc 
-    <if test="endNum != 0" >
-      limit #{startNum},#{endNum}
-    </if>
+    where allcourses != 0
+      <if test="searchByCodeword == 0 and keyword != null and keyword != ''">
+          AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+          and ispublic = 0
+      </if>
+      <if test="searchByCodeword == 1 and keyword != null and keyword != ''">
+        and joincode = #{keyword}
+        AND ispublic = 1
+      </if>
+      <if test="ptype != null" >
+          and ptype = #{ptype}
+      </if>
+      and isdel = 0
+      and isup = 1
+      order by weight desc, createtime desc
+      <if test="endNum != 0" >
+        limit #{startNum},#{endNum}
+      </if>
   </select>
   
   <select id="selectCountByPtype" resultType="java.lang.Integer" >
-    select count(*) 
+    select count(1)
     from classroom
-    where isdel = 0 and allcourses != 0 
-    <if test="keyword != null" >
-    	AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+    where allcourses != 0
+    <if test="searchByCodeword == 0 and keyword != null and keyword != ''">
+      AND (classtitle LIKE CONCAT(CONCAT('%', #{keyword}),'%'))
+      and ispublic = 0
+    </if>
+    <if test="searchByCodeword == 1 and keyword != null and keyword != ''">
+      and joincode = #{keyword}
+      AND ispublic = 1
     </if>
     <if test="ptype != null" >
-    	and ptype = #{ptype} 
+    	and ptype = #{ptype}
     </if>
+    and isdel = 0
     and isup = 1 
   </select>
   
