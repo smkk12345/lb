@@ -1,12 +1,10 @@
 package com.longbei.appservice.common.utils;
 
-import java.net.URLEncoder;
-import java.util.Date;
-
 import com.longbei.appservice.common.constant.Constant;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import java.net.URLEncoder;
 
 public class ShortUrlUtils {
 	/**

@@ -1,6 +1,7 @@
 package com.longbei.appservice.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
@@ -45,6 +46,8 @@ public class RankController {
     private RankAcceptAwardService rankAcceptAwardService;
     @Autowired
     private UserBusinessConcernService userBusinessConcernService;
+    @Autowired
+    private CommonCache commonCache;
     /**
      * 用户 参榜
      * @url http://ip:port/app_service/rank/insertRankMember
@@ -231,7 +234,7 @@ public class RankController {
         if(ResultUtil.isSuccess(baseResp)){
             baseResp.getData().setJoincode(null);
             baseResp.getExpandData().put("shareurl",
-                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_detail + "?rankid=" + rankId));
+                    commonCache.getShortUrl(AppserviceConfig.h5_share_rank_detail + "?rankid=" + rankId));
         }
         return baseResp;
     }

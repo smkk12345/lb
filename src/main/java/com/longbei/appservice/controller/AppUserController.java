@@ -1,13 +1,13 @@
 package com.longbei.appservice.controller;
 
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.longbei.appservice.cache.CommonCache;
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.syscache.SysRulesCache;
+import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
+import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
@@ -20,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.common.web.BaseController;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -65,6 +64,8 @@ public class AppUserController extends BaseController {
     private SysSensitiveService sysSensitiveService;
     @Autowired
     private UserPointDetailService userPointDetailService;
+    @Autowired
+    private CommonCache commonCache;
 
     private static Logger logger = LoggerFactory.getLogger(AppUserController.class);
     
@@ -219,7 +220,7 @@ public class AppUserController extends BaseController {
  			baseResp = userCheckinDetailService.selectIsCheckIn(Long.parseLong(userid));
             baseResp.getExpandData().put("hasnewmsg","1");
             baseResp.getExpandData().put("hasnewaskfriend","1");
-            String shortUrl = ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid);
+            String shortUrl = commonCache.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid);
             baseResp.getExpandData().put("registerurl",shortUrl);
         } catch (Exception e) {
             logger.error("init userid = {} ", userid, e);

@@ -19,10 +19,13 @@ public class RedisCacheNames {
     public static final String _SYS_RECOMMAEND = "6";//推荐的
     public static final String _HOME = "7";//首页相关
     public static final String _RANK_AWARD = "8";//奖品相关
+    public static final String _RANK_AWARD_LIST = "16";//奖品相关
     public static final String _RANK_HOME_AWARD = "10";//获奖公示
     public static final String _USER_GRADE = "11";//用户等级
     public static final String _LIVE = "12";//直播
     public static final String _COMMENT = "15"; //评论
+    public static final String _SHORT_URL = "17"; //短链接
+
 
     public static final String _ROOM_LIST = "9";//教室列表
 
@@ -39,6 +42,7 @@ public class RedisCacheNames {
     public static final Long _PERIOD_SECOND_60X5 = 300L;//
     public static final Long _PERIOD_SECOND_60X30 = 1800L;//
     public static final Long _PERIOD_SECOND_60X60 = 3600L;//
+    public static final Long _PERIOD_SECOND_60X60X24 = 3600*24L;//
     public static final Long _COMMENT_SECOND_60X60X24X30X3 = 7776000L;
 
     // 根据key设定具体的缓存时间
@@ -59,6 +63,8 @@ public class RedisCacheNames {
         expiresMap.put(_USER_GRADE,_PERIOD_SECOND_60X60);
         expiresMap.put(_LIVE,_PERIOD_SECOND_30);
         expiresMap.put(_COMMENT,_COMMENT_SECOND_60X60X24X30X3);
+        expiresMap.put(_RANK_AWARD_LIST,_PERIOD_SECOND_60X60X24);
+        expiresMap.put(_SHORT_URL,_COMMENT_SECOND_60X60X24X30X3);
     }
 
     public Map<String, Long> getExpiresMap(){

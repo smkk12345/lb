@@ -1,13 +1,13 @@
 package com.longbei.appservice.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.cache.RankCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.constant.RedisCacheNames;
-import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.NumberUtil;
 import com.longbei.appservice.common.utils.ResultUtil;
@@ -122,6 +122,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     private StatisticService statisticService;
     @Autowired
     private RankCache rankCache;
+    @Autowired
+    private CommonCache commonCache;
 
     /**
      *  @author luye
@@ -134,14 +136,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         BaseResp baseResp = new BaseResp();
         rankImage.setRankid(idGenerateService.getUniqueIdAsLong());
         rankImage.setCreatetime(new Date());
-
-        //设置默认音频、视频时长
-        if (rankImage.getAudiotime() == null) {
-            rankImage.setAudiotime(SysRulesCache.behaviorRule.getRankimpaudiotime());
-        }
-        if (rankImage.getVideotime() == null) {
-            rankImage.setVideotime(SysRulesCache.behaviorRule.getRankimpvideotime());
-        }
 
         int res = 0;
         try {
@@ -279,13 +273,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public boolean updateRankImage(RankImage rankImage) {
         int res = 0;
         try {
-            //设置默认音频、视频时长
-            if (rankImage.getAudiotime() == null) {
-                rankImage.setAudiotime(SysRulesCache.behaviorRule.getRankimpaudiotime());
-            }
-            if (rankImage.getVideotime() == null) {
-                rankImage.setVideotime(SysRulesCache.behaviorRule.getRankimpvideotime());
-            }
             res = rankImageMapper.updateByPrimaryKeySelective(rankImage);
             rankAwardMapper.deleteByRankid(String.valueOf(rankImage.getRankid()));
             if (Constant.RANK_SOURCE_TYPE_1.equals(rankImage.getSourcetype())){
@@ -711,17 +698,10 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
      * @return
      */
     public Rank initRankAward(Rank rank){
-        try{
-            List<RankAwardRelease> awardList = this.rankAwardReleaseMapper.findRankAward(rank.getRankid());
-            if(awardList != null && awardList.size() > 0){
-                if (!StringUtils.isBlank(awardList.get(0).getAwardid())){
-                    awardList.get(0).setAward(awardMapper.selectByPrimaryKey(Long.parseLong(awardList.get(0).getAwardid())));
-                }
-                rank.setRankAwards(awardList);
-            }
-        }catch(Exception e){
-            logger.error("setAward error msg:{}",e);
+        if(null == rank){
+            return null;
         }
+        rank.setRankAwards(rankCache.selectRankAwardByRankidRelease(String.valueOf(rank.getRankid())));
         return rank;
     }
 
@@ -910,7 +890,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
     public BaseResp<List<RankAwardRelease>> selectRankAward(Long rankId) {
         BaseResp<List<RankAwardRelease>> baseResp = new BaseResp<List<RankAwardRelease>>();
         try{
-            List<RankAwardRelease> rankAwardList = selectRankAwardByRankidRelease(rankId+"");
+            List<RankAwardRelease> rankAwardList = rankCache.selectRankAwardByRankidRelease(rankId+"");
             baseResp.setData(rankAwardList);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
@@ -3318,16 +3298,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         return baseResp;
     }
 
-    private List<RankAwardRelease> selectRankAwardByRankidRelease(String rankid){
-        List<RankAwardRelease> rankAwards = rankAwardReleaseMapper.selectListByRankid(rankid);
-        for (RankAwardRelease rankAward : rankAwards){
-            if(!StringUtils.isBlank(rankAward.getAwardid())){
-                Award award = awardMapper.selectByPrimaryKey(Long.parseLong(rankAward.getAwardid()));
-                rankAward.setAward(award != null?award:new Award());
-            }
-        }
-        return rankAwards;
-    }
+
 
     /**
      * 更改榜中的参榜人数
@@ -3369,13 +3340,18 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             if(rank == null){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_914,Constant.RTNINFO_SYS_914);
             }
-            rankSortService.checkRankEnd(rank);
+            final Rank rank1 = rank;
+            threadPoolTaskExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    rankSortService.checkRankEnd(rank1);
+                }
+            });
             if(queryCreateUser != null && queryCreateUser){
                 if (Constant.RANK_TYEP_APP.equals(rank.getRanktype())){
                     rank.setAppUserMongoEntity(userMongoDao.getAppUser(rank.getCreateuserid()+""));
                 }
             }
-
             //只有当参榜人数满的时候,才获取可以挤掉的榜成员
             if(rank.getRankinvolved() >= rank.getRanklimite()) {
                 //获取可以挤掉的用户数量
@@ -3385,33 +3361,11 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             if(queryAward != null && queryAward ){
-                rank.setRankAwards(selectRankAwardByRankidRelease(String.valueOf(rankId)));
+                //初始化榜单奖品
+                initRankAward(rank);
             }
-
-            if(rank.getRankcardid() != null){
-                RankCard rankCard = this.rankCardMapper.selectByPrimaryKey(Integer.parseInt(rank.getRankcardid()));
-                if(rankCard != null){
-                    rankCard.setRankCardUrl(rankCard.getId().toString());
-                    rank.setRankCard(rankCard);
-                }
-            }
-
-            //pc端发榜
-            if(Constant.RANK_SOURCE_TYPE_1.equals(rank.getSourcetype())){
-                AppUserMongoEntity appUser = userMongoDao.getAppUser(rank.getCreateuserid());
-                rank.setCreateusernickname(appUser.getNickname());
-
-                //封装pc榜主名片
-                if(rank.getRankCard() == null){
-                    RankCard rankCard = new RankCard();
-                    rankCard.setCreateuserid(rank.getCreateuserid());
-                    rankCard.setAdminname(appUser.getNickname());
-                    rankCard.setAdminpic(appUser.getAvatar());
-                    rankCard.setAdminbrief(appUser.getBrief());
-                    //rankCard.setRankCardUrl(null);//pc端没有榜主名片id
-                    rank.setRankCard(rankCard);
-                }
-            }
+            //初始化榜主名片
+            initRankCard(rank);
 
             int userRankMemberStatus = 0;//可参榜
             //用户是否可参榜
@@ -3433,16 +3387,6 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             }
             resultMap.put("userRankMemberStatus",userRankMemberStatus);
 
-            //加载评论数
-//            BaseResp<Integer> commentResp = this.commonMongoService.selectCommentCountSum(rankId,"10", "");
-//            if(commentResp.getCode() == 0){
-//                resultMap.put("commentCount",commentResp.getData());
-//                rank.setCommentCount(commentResp.getData());
-//            }else{
-//                resultMap.put("commentCount","0");
-//                rank.setCommentCount(0);
-//            }
-
             //计算入榜截止时间
             Date endJoinTime = rank.getEndtime();
             if(StringUtils.isNotEmpty(rank.getJoinlastday()) && !"0".equals(rank.getJoinlastday())){
@@ -3458,6 +3402,24 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
         }
         return baseResp;
     }
+
+
+    /**
+     * 初始化榜主名片
+     * @param rank
+     */
+    private void initRankCard(Rank rank){
+        if (null == rank){
+            return;
+        }
+
+        RankCard rankCard = new RankCard();
+        String shortUrl = commonCache.getShortUrl(AppserviceConfig.h5_rankcard+"?rankCardId="+rank.getRankcardid());
+        rankCard.setRankCardUrl(shortUrl);
+        rank.setRankCard(rankCard);
+    }
+
+
 
     /**
      * 获取用户是否可参榜的状态

@@ -1,18 +1,15 @@
 package com.longbei.appservice.controller;
 
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.common.web.BaseController;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.entity.UserGoal;
 import com.longbei.appservice.service.GoalService;
-
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by smkk on 17/2/10.
@@ -32,12 +30,14 @@ public class GoalController extends BaseController {
 
     @Autowired
     private GoalService goalService;
+    @Autowired
+    private CommonCache commonCache;
+
     private static Logger logger = LoggerFactory.getLogger(GoalController.class);
 
     /**
      * @url http://ip:port/app_service/goal/insert
      * @param userid 用户id
-     * @param goaltag  目标名称
      * @param ptype 十全十美类别
      * @param ispublic 可见程度 0 私密 1 好友可见 2 全部可见
      * @param needwarn 0 不需要提醒 1 需要提醒
@@ -178,7 +178,7 @@ public class GoalController extends BaseController {
             baseResp = goalService.selectUserGoal(StringUtils.isEmpty(userid)?null:Long.parseLong(userid), Long.parseLong(goalid));
             if(ResultUtil.isSuccess(baseResp)){
                 baseResp.getExpandData().put("shareurl",
-                        ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_goal_detail + "?goalid=" + goalid));
+                        commonCache.getShortUrl(AppserviceConfig.h5_share_goal_detail + "?goalid=" + goalid));
             }
         }catch(Exception e){
             logger.error("getGoalDetail userid = {}, goalid = {}", userid, goalid, e);

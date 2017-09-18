@@ -1,8 +1,8 @@
 package com.longbei.appservice.controller.api;
 
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.Module;
 import com.longbei.appservice.entity.Seminar;
@@ -12,7 +12,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +31,8 @@ public class SeminarApiController {
 
     @Autowired
     private SeminarService seminarService;
+    @Autowired
+    private CommonCache commonCache;
 
     /**
      * 获取专题列表
@@ -96,7 +97,7 @@ public class SeminarApiController {
         BaseResp<Seminar> baseResp = new BaseResp();
         try {
             String shareurl = AppserviceConfig.seminarurl + "?seminarid=" + seminarid + "&ref=share";
-            String shorturl = ShortUrlUtils.getShortUrl(shareurl);
+            String shorturl = commonCache.getShortUrl(shareurl);
             baseResp = seminarService.selectSeminarAllDetail(seminarid);
             Map<String,Object> map = new HashedMap();
             map.put("shorturl",shorturl);

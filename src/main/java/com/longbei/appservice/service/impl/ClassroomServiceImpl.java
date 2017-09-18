@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,23 +19,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.service.ClassroomQuestionsMongoService;
-import com.longbei.appservice.service.ClassroomService;
-import com.longbei.appservice.service.CommentMongoService;
-import com.longbei.appservice.service.UserMsgService;
-import com.longbei.appservice.service.UserRelationService;
+import com.longbei.appservice.entity.*;
+import com.longbei.appservice.service.*;
+import org.apache.commons.collections.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -75,6 +81,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private ClassroomClassnoticeMapper classroomClassnoticeMapper;
 	@Autowired
 	private ClassroomChapterMapper classroomChapterMapper;
+	@Autowired
+	private CommonCache commonCache;
 	@Autowired
 	private CodeDao codeDao;
 
@@ -510,7 +518,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				
 				//分享url
 				map.put("roomurlshare", 
-						ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));
+						commonCache.getShortUrl(AppserviceConfig.h5_share_classroom_detail + "?classroomid=" + classroomid));
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -773,7 +781,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
 //			,condition="#ispublic == '1'")
 	@Override
-	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic, String ptype, int startNum, int endNum) {
+	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic,String isup, String ptype, int startNum, int endNum) {
 		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 
 				ispublic, startNum, endNum);
 		BaseResp<Object> reseResp = new BaseResp<>();
@@ -781,9 +789,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 			List<Classroom> list = new ArrayList<>();
 			if("-1".equals(ptype)){
 				//isrecommend 是否推荐。0 - 没有推荐 1 - 推荐
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, "", "1", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, "", "1", startNum, endNum);
 			}else{
-				list = classroomMapper.selectClassroomListByIspublic(ispublic, ptype, "", startNum, endNum);
+				list = classroomMapper.selectClassroomListByIspublic(ispublic,isup, ptype, "", startNum, endNum);
 			}
 			if(null != list && list.size()>0){
 				//操作
