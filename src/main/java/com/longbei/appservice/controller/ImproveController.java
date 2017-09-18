@@ -1,10 +1,17 @@
 package com.longbei.appservice.controller;
 
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.*;
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.RequestUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.entity.*;
+import com.longbei.appservice.entity.ImpAllDetail;
+import com.longbei.appservice.entity.ImpComplaints;
+import com.longbei.appservice.entity.Improve;
+import com.longbei.appservice.entity.UserInfo;
 import com.longbei.appservice.service.ImpComplaintsService;
 import com.longbei.appservice.service.ImproveService;
 import com.longbei.appservice.service.SysSensitiveService;
@@ -17,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +49,8 @@ public class ImproveController {
     private SysSensitiveService sysSensitiveService;
     @Autowired
     private UserServiceImpl userService;
-
+    @Autowired
+    private CommonCache commonCache;
 
     /**
      * url : http://ip:port/app_service/improve/line/daylist
@@ -813,7 +820,7 @@ public class ImproveController {
                     businessid = "";
                 }
                 baseResp.getExpandData().put("shareurl",
-                        ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_improve_detail
+                        commonCache.getShortUrl(AppserviceConfig.h5_share_improve_detail
                                 + "?impid=" + impid + "&businesstype=" + businesstype + "&businessid=" + businessid));
             }
             return baseResp;

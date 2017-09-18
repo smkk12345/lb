@@ -1,9 +1,12 @@
 package com.longbei.appservice.controller;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
+import com.longbei.appservice.cache.CommonCache;
+import com.longbei.appservice.common.BaseResp;
+import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.DateUtils;
+import com.longbei.appservice.common.utils.ResultUtil;
+import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
 import org.apache.commons.collections.map.HashedMap;
@@ -14,13 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.longbei.appservice.common.BaseResp;
-import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
-import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.config.AppserviceConfig;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/classroom")
@@ -38,6 +37,8 @@ public class ClassroomController {
 	private ImproveService improveService;
 	@Autowired
 	private ClassroomChapterService classroomChapterService;
+	@Autowired
+	private CommonCache commonCache;
 
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
 	
@@ -195,7 +196,7 @@ public class ClassroomController {
             		Long.parseLong(impid), Long.parseLong(businessid));
             if(ResultUtil.isSuccess(baseResp)){
             	baseResp.getExpandData().put("shareurl",
-                        ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_improve_detail
+                        commonCache.getShortUrl(AppserviceConfig.h5_share_improve_detail
                                 + "?impid=" + impid + "&businesstype=5&businessid=" + businessid));
             }
         } catch (Exception e) {
@@ -264,7 +265,7 @@ public class ClassroomController {
 					Long.parseLong(userid), Long.parseLong(currentUserId));
 			if(ResultUtil.isSuccess(baseResp)){
 	            baseResp.getExpandData().put("shareurl",
-	                    ShortUrlUtils.getShortUrl(AppserviceConfig.h5_share_rank_improve
+	                    commonCache.getShortUrl(AppserviceConfig.h5_share_rank_improve
 	                            + "?rankid=" + classroomid + "&userid=" + userid + "&businesstype=4"));
 	        }
 		} catch (Exception e) {

@@ -38,12 +38,16 @@
     <result column="commission" property="commission" />
     <result column="status" property="status"/>
     <result column="noticeid" property="noticeid"/>
+    <result column="joincode" property="joincode"/>
+    <result column="audiotime" property="audiotime"/>
+    <result column="videotime" property="videotime"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, classroomid, classtitle, classphotos, classcateid, classinvoloed, classlimited, classbrief, 
     classnotice, createtime, updatetime, ptype, classtype, ispublic, userid, cardid, 
     charge, isfree, freecoursenum, isdel, sourcetype, isrecommend, isup, cusername, 
-    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses, earnings, commission,status,noticeid
+    closedate, closeremark, syllabus, crowd, weight, ishomerecommend, allcourses,
+    earnings, commission,status,noticeid, joincode, audiotime, videotime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
     select 
@@ -73,6 +77,9 @@
     <if test="isup != null and isup != ''" >
     	and isup = #{isup}
     </if>
+    <if test="ispublic != null and ispublic != ''" >
+      and ispublic = #{ispublic}
+    </if>
     <if test="isrecommend != null and isrecommend != ''" >
     	and isrecommend = #{isrecommend}
     </if>
@@ -91,7 +98,8 @@
 	r.charge, r.isfree, r.freecoursenum, r.isdel, r.sourcetype, 
 	r.isrecommend, r.isup, r.cusername,      
 	r.closedate, r.closeremark, r.syllabus, r.crowd, r.weight, 
-	r.ishomerecommend, r.allcourses, r.earnings, r.commission, r.status 
+	r.ishomerecommend, r.allcourses, r.earnings, r.commission, r.status,
+    r.joincode, r.audiotime, r.videotime
     from classroom  r inner join classroom_members cm 
           on r.classroomid = cm.classroomid
       where r.isdel = 0
@@ -133,6 +141,9 @@
     <if test="isup != null and isup != ''" >
       and isup = #{isup}
     </if>
+    <if test="ispublic != null and ispublic != ''" >
+      and ispublic = #{ispublic}
+    </if>
     <if test="isdel != null and isdel != ''" >
     	and isdel = #{isdel}
     </if>
@@ -172,6 +183,9 @@
     where 1 = 1 
     <if test="classroom.isup != null and classroom.isup != ''" >
       	and isup = #{classroom.isup}
+    </if>
+    <if test="classroom.ispublic != null and classroom.ispublic != ''" >
+      and ispublic = #{classroom.ispublic}
     </if>
     <if test="classroom.isdel != null and classroom.isdel != ''" >
     	and isdel = #{classroom.isdel}
@@ -292,7 +306,7 @@
   
   <delete id="deleteByPrimaryKey" >
     delete from classroom
-    where classroomid = #{classroomid,jdbcType=INTEGER}
+    where classroomid = #{classroomid}
   </delete>
   <insert id="insert" parameterType="com.longbei.appservice.entity.Classroom" >
     insert into classroom (id, classroomid, userid, classtitle, classphotos, 
@@ -357,6 +371,15 @@
       </if>
       <if test="ispublic != null and ispublic != ''" >
         ispublic,
+      </if>
+      <if test="joincode != null and joincode != ''" >
+        joincode,
+      </if>
+      <if test="audiotime != null and audiotime != ''" >
+        audiotime,
+      </if>
+      <if test="videotime != null and videotime != ''" >
+        videotime,
       </if>
       <if test="charge != null and charge != ''" >
         charge,
@@ -428,6 +451,15 @@
       </if>
       <if test="ispublic != null and ispublic != ''" >
         #{ispublic},
+      </if>
+      <if test="joincode != null and joincode != ''" >
+        #{joincode},
+      </if>
+      <if test="audiotime != null and audiotime != ''" >
+        #{audiotime},
+      </if>
+      <if test="videotime != null and videotime != ''" >
+        #{videotime},
       </if>
       <if test="charge != null and charge != ''" >
         #{charge},
@@ -503,6 +535,15 @@
       <if test="ispublic != null" >
         ispublic = #{ispublic}, 
       </if>
+      <if test="joincode != null" >
+        joincode = #{joincode},
+      </if>
+      <if test="audiotime != null" >
+        audiotime = #{audiotime},
+      </if>
+      <if test="videotime != null" >
+        videotime = #{videotime},
+      </if>
       <if test="syllabus != null and syllabus != ''" >
         syllabus = #{syllabus}, 
       </if>
@@ -532,7 +573,7 @@
       cardid = #{cardid},
       freecoursenum = #{freecoursenum,jdbcType=INTEGER},
       ispublic = #{ispublic,jdbcType=CHAR} 
-    where classroomid = #{classroomid,jdbcType=INTEGER} 
+    where classroomid = #{classroomid} 
     and userid = #{userid,jdbcType=INTEGER}
   </update>
   

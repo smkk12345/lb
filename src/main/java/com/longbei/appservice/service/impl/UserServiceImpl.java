@@ -1,5 +1,6 @@
 package com.longbei.appservice.service.impl;
 
+import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
@@ -115,10 +116,10 @@ public class UserServiceImpl implements UserService {
 	private SysNicknamesMapper sysNicknamesMapper;
 	@Autowired
 	private SysSensitiveService sysSensitiveService;
-//	@Autowired
-//	private SysProtectnamesService sysProtectnamesService;
 	@Autowired
 	private UserSpecialcaseService userSpecialcaseService;
+	@Autowired
+	private CommonCache commonCache;
 
 	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
@@ -197,7 +198,7 @@ public class UserServiceImpl implements UserService {
 //			int fansCount = snsFansMapper.selectCountFans(userid);
 			expandData.put("fansCount", userInfo.getTotalfans());
 			expandData.put("registerurl",
-					ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid));
+					commonCache.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid));
 			//查询好友数量
 			Integer friendCount = userRelationService.selectFriendsCount(userid);
 			expandData.put("friendCount", friendCount);
@@ -2045,7 +2046,7 @@ public class UserServiceImpl implements UserService {
 		map.put("invitecoin",SysRulesCache.behaviorRule.getFriendregisterimpcoins());
 		map.put("maxlevel",5);
 		map.put("inviteawardinfo",createInviteAwardInfo());
-		map.put("inviteurl",ShortUrlUtils.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid));
+		map.put("inviteurl",commonCache.getShortUrl(AppserviceConfig.h5_invite+"?userid="+userid));
 		map.put("invitetitle","我正在玩“龙杯”，推荐给你!");
 		map.put("invitecontent","总是设立美好的目标，但也总是光说不练，那么神仙也帮不了你！来龙杯，我们一起进步！还有海量进步币等你来拿。");
 		map.put("inviteruleurl",AppserviceConfig.h5_invite_rule);

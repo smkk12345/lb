@@ -300,8 +300,9 @@ public class ClassroomApiController {
         try {
         	long classroomid = idGenerateService.getUniqueIdAsLong();
         	classroom.setClassroomid(classroomid);
-        	classroom.setCreatetime(new Date());
-        	classroom.setUpdatetime(new Date());
+        	Date date = new Date();
+        	classroom.setCreatetime(date);
+        	classroom.setUpdatetime(date);
         	classroom.setClassinvoloed(0);
         	classroom.setIsdel("0");
         	classroom.setIsrecommend("0");
