@@ -356,6 +356,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
 //                    logger.warn("rank info : {}", com.alibaba.fastjson.JSON.toJSONString(rank));
                     res = rankMapper.insertSelective(rank);
                     if (res > 0) {
+                        //更新榜单奖品缓存
+                        rankCache.updateRankAwardCache(rankImageId);
                         //榜单发布成功，更新系统今日发榜数
                         statisticService.updateStatistics(Constant.SYS_RANK_NUM,1);
                         //pc端定制榜，发布成功后给榜主发送消息
