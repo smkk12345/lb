@@ -504,6 +504,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				Date startdate = selectDate(-Constant.LIVE_START);
 				
 				Date enddate = selectDate(-Constant.LIVE_END);
+				logger.info("selectRoomHeadDetail startdate = {}, enddate = {}", 
+						DateUtils.formatDateTime1(startdate), DateUtils.formatDateTime1(enddate));
 				
 				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, 
 						startdate, enddate);
