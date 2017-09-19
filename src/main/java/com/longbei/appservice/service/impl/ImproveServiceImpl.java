@@ -1686,6 +1686,7 @@ public class ImproveServiceImpl implements ImproveService{
             if(improve == null){
                 continue;
             }
+
             improve.setLikes(getLikeFromRedis(String.valueOf(improve.getImpid()),
                     improve.getBusinessid()+"",improve.getBusinesstype()));
             //初始化评论数量
@@ -1696,6 +1697,7 @@ public class ImproveServiceImpl implements ImproveService{
             initImproveUserInfo(improve,(userid != null && !"-1".equals(userid))?Long.parseLong(userid):null);
             //初始化是否 点赞 送花 送钻 收藏
             initIsOptionForImprove(userid,improve);
+            //收藏
         	Set<String> improveIds = this.getUserCollectImproveId(userid);
         	if(improveIds.contains(improve.getImpid().toString())){
                 improve.setHascollect("1");
@@ -3800,16 +3802,16 @@ public class ImproveServiceImpl implements ImproveService{
         try{
             baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
             if(ResultUtil.isSuccess(baseResp)) {
-                List<Improve> list = baseResp.getData();
-                Set<String> improveIds = this.getUserCollectImproveId(curuserid);
-                for (int i = 0; i < list.size(); i++) {
-                    Improve improve = list.get(i);
-                    if(improveIds.contains(improve.getImpid().toString())){
-                        improve.setHascollect("1");
-                    }
-                    initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
-                    initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
-                }
+//                List<Improve> list = baseResp.getData();
+//                Set<String> improveIds = this.getUserCollectImproveId(curuserid);
+//                for (int i = 0; i < list.size(); i++) {
+//                    Improve improve = list.get(i);
+//                    if(improveIds.contains(improve.getImpid().toString())){
+//                        improve.setHascollect("1");
+//                    }
+//                    initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+//                    initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+//                }
                 int count =0;
                 if(startno == 0 && selectCount){
                     switch (businesstype) {
@@ -3857,7 +3859,8 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid,
                                                     String businesstype, Integer startno, Integer pagesize) {
-        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
+        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(curuserid,businessid,null,
+                businesstype,startno,pagesize,false);
         if(ResultUtil.isSuccess(baseResp)){
 //            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
         	Classroom classroom = null;
@@ -3870,12 +3873,12 @@ public class ImproveServiceImpl implements ImproveService{
         	}
         	
             List<Improve> list = baseResp.getData();
-            Set<String> userCollectImproveIds = this.getUserCollectImproveId(curuserid);
+//            Set<String> userCollectImproveIds = this.getUserCollectImproveId(curuserid);
             for (int i = 0; i < list.size(); i++) {
                 Improve improve = list.get(i);
-                if(userCollectImproveIds.contains(improve.getImpid().toString())){
-                    improve.setHascollect("1");
-                }
+//                if(userCollectImproveIds.contains(improve.getImpid().toString())){
+//                    improve.setHascollect("1");
+//                }
                 
                 if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
                 	baseResp.getExpandData().put("isteacher", classroomService.isTeacher(userid.toString(), classroom));
@@ -3895,9 +3898,9 @@ public class ImproveServiceImpl implements ImproveService{
 //                    }
                     improve.setIsreply(isreply);
                 }
-                initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+//                initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
 //                initUserRelateInfo();
-                initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
+//                initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
 //                if (!StringUtils.isBlank(remark)){
 //                    improve.getAppUserMongoEntity().setNickname(remark);
 //                }

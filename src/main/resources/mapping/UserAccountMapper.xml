@@ -105,6 +105,7 @@
       </if>
     </set>
     where userid = #{userid,jdbcType=BIGINT}
+    and status=1
       <if test="id != null" >
        and  id = #{id,jdbcType=INTEGER}
       </if>

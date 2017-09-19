@@ -14,6 +14,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -119,6 +120,12 @@ public class RankCache {
         }
         return rankAwards;
     }
+
+    @CacheEvict(cacheNames = RedisCacheNames._RANK_AWARD_LIST,key = "#rankid")
+    public void updateRankAwardCache(String rankid){
+        return;
+    }
+
 
     @Cacheable(cacheNames = RedisCacheNames._RANK_LIST,key = "#startno + '&' + #pagesize"
             ,condition="#status == 0")
@@ -257,6 +264,10 @@ public class RankCache {
 
         }
     }
+
+
+
+
 
 
 }

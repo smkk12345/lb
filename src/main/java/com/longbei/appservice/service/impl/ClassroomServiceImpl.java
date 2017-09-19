@@ -31,6 +31,7 @@ import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
@@ -503,6 +504,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				Date startdate = selectDate(-Constant.LIVE_START);
 				
 				Date enddate = selectDate(-Constant.LIVE_END);
+				logger.info("selectRoomHeadDetail startdate = {}, enddate = {}", 
+						DateUtils.formatDateTime1(startdate), DateUtils.formatDateTime1(enddate));
 				
 				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, 
 						startdate, enddate);
@@ -775,8 +778,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 //	@Cacheable(cacheNames = RedisCacheNames._ROOM_LIST,key = "#userid +'&'+ #startNum +'&'+ #endNum +'&' +#ptype "
 //			,condition="#ispublic == '1'")
 	@Override
-	public BaseResp<Object> selectClassroomListByIspublic(long userid, String ispublic,String isup, String ptype, int startNum, int endNum) {
-		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}", 
+	public BaseResp<Object> selectClassroomListByIspublic(long userid,String isup, String ispublic, String ptype, int startNum, int endNum) {
+		logger.info("selectClassroomListByIspublic ispublic = {}, startNum = {}, endNum = {}",
 				ispublic, startNum, endNum);
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
@@ -908,13 +911,13 @@ public class ClassroomServiceImpl implements ClassroomService {
 	
 
 	@Override
-	public BaseResp<Object> selectListByPtype(String ptype, String keyword, int startNum, int endNum) {
+	public BaseResp<Object> selectListByPtype(String ptype, String keyword,String searchByCodeword, int startNum, int endNum) {
 		BaseResp<Object> reseResp = new BaseResp<>();
 		try {
 			if(StringUtils.isBlank(ptype)){
 				ptype = null;
 			}
-			List<Classroom> list = classroomMapper.selectListByPtype(ptype, keyword, startNum, endNum);
+			List<Classroom> list = classroomMapper.selectListByPtype(ptype, keyword,searchByCodeword, startNum, endNum);
 			if(null != list && list.size()>0){
 				//操作
 				list = selectList(list);
@@ -924,7 +927,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				return reseResp;
 			}
 			reseResp.setData(list);
-			Integer roomsize = classroomMapper.selectCountByPtype(ptype, keyword);
+			Integer roomsize = classroomMapper.selectCountByPtype(ptype, keyword,searchByCodeword);
 			Map<String, Object> expandData = new HashMap<String, Object>();
 			expandData.put("roomsize", roomsize);
 			reseResp.setExpandData(expandData);

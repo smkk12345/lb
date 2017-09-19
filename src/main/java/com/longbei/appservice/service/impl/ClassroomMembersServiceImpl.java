@@ -242,11 +242,13 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				return reseResp;
 			}
 			//判断当前用户是否是老师
-			int isteacher = isTeacher(userid + "", classroom);
+			int isteacher = isTeacher(currentUserId + "", classroom);
 			if(isteacher != 1){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
 			}
-			
+//			if("0".equals(classroom.getIspublic())){
+//				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
+//			}
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
 				//修改教室教室参与人数 classinvoloed
