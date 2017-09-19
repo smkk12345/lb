@@ -105,10 +105,8 @@ public interface ClassroomService {
 	 * param pageNo   pageSize
 	 * 2017年2月28日
 	 */
-	BaseResp<Object> selectClassroomListByIspublic(
-			long userid, String ispublic, String isup,
-			String ptype, int startNum, int endNum);
-	
+	BaseResp<Object> selectClassroomListByIspublic(long userid,String isup, String ispublic, String ptype, int startNum, int endNum);
+
 	/**
 	 * @author yinxc
 	 * 获取教室信息
@@ -145,7 +143,7 @@ public interface ClassroomService {
 	 * param pageNo   pageSize
 	 * 2017年2月28日
 	 */
-	BaseResp<Object> selectListByPtype(String ptype, String keyword, int startNum, int endNum);
+	BaseResp<Object> selectListByPtype(String ptype, String keyword,String searchByCodeword, int startNum, int endNum);
 	
 	/**
 	 * @author yinxc
