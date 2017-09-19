@@ -20,7 +20,8 @@ spring:
                   max-wait: 10000
       data:
             mongodb:
-                  uri: mongodb://longbei:LongXiao@015@172.22.1.7:27017/longbei
+#                  uri: mongodb://longbei:LongXiao@015@172.22.1.7:27017/longbei
+                  uri: mongodb://longbei:longbei3.0@47.92.55.171:10005/longbeipro
                   host: 172.22.1.7
                   port: 27017
                   database: longbei
