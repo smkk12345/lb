@@ -1441,22 +1441,22 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<Improve> list = selectImproveListByUser(targetuserid,null,
                     Constant.TIMELINE_IMPROVE_SELF,lastdate,pagesize,ispublic);
-            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
-            //获取好友昵称
-            this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
-
-            initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
-            if (null != list && list.size() != 0){
-                Set<String> improveIds = this.getUserCollectImproveId(userid);
-                for (Improve improve : list){
-                    //初始化是否 点赞 送花 送钻 收藏
-                    initIsOptionForImprove(userid+"",improve);
-                    if(improveIds.contains(improve.getImpid().toString())){
-                        improve.setHascollect("1");
-                    }
-                    improve.setAppUserMongoEntity(appUserMongoEntity);
-                }
-            }
+//            AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(targetuserid);
+//            //获取好友昵称
+//            this.userRelationService.updateFriendRemark(userid,appUserMongoEntity);
+//
+//            initUserRelateInfo(Long.parseLong(userid),appUserMongoEntity);
+//            if (null != list && list.size() != 0){
+//                Set<String> improveIds = this.getUserCollectImproveId(userid);
+//                for (Improve improve : list){
+//                    //初始化是否 点赞 送花 送钻 收藏
+//                    initIsOptionForImprove(userid+"",improve);
+//                    if(improveIds.contains(improve.getImpid().toString())){
+//                        improve.setHascollect("1");
+//                    }
+//                    improve.setAppUserMongoEntity(appUserMongoEntity);
+//                }
+//            }
             baseResp.initCodeAndDesp();
             baseResp.setData(list);
         } catch (Exception e) {
