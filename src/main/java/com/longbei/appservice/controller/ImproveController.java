@@ -809,11 +809,8 @@ public class ImproveController {
         }
         logger.info("inprove select userid={},impid={}", userid, impid);
         try {
-            if(RequestUtils.isIos(version)){
-                baseResp = improveService.selectForIos(userid, impid, businesstype, businessid);
-            } else {
-                baseResp = improveService.select(userid, impid, businesstype, businessid);
-            }
+
+            baseResp = improveService.select(userid, impid, businesstype, businessid);
 
             if(ResultUtil.isSuccess(baseResp)){
                 if(StringUtils.isBlank(businessid)){

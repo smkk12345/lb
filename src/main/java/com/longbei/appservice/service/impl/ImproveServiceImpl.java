@@ -1545,9 +1545,10 @@ public class ImproveServiceImpl implements ImproveService{
         List<Improve> improves = new ArrayList<>();
         Long uid = Long.parseLong(userid);
         Long s = System.currentTimeMillis();
-        Set<String> friendids = this.userRelationService.getFriendIds(uid);
-        Set<String> fansIds = this.userRelationService.getFansIds(uid);
         Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
+//        Set<String> friendids = this.userRelationService.getFriendIds(uid);
+        Set<String> friendids = map.keySet();
+        Set<String> fansIds = this.userRelationService.getFansIds(uid);
         Long s1 = System.currentTimeMillis();
         Set<String> userCollectImproveIds = this.getUserCollectImproveId(userid);
         Long s2 = System.currentTimeMillis();
@@ -2312,7 +2313,8 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
             Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(userid);
-            Set<String> friendIds = this.userRelationService.getFriendIds(userid);
+//            Set<String> friendIds = this.userRelationService.getFriendIds(userid);
+            Set<String> friendIds = friendRemark.keySet();
             for (ImpAllDetail impAllDetail : impAllDetails) {
     			AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(String.valueOf(impAllDetail.getUserid()));
     			if(null != appUserMongoEntity){
@@ -3669,9 +3671,10 @@ public class ImproveServiceImpl implements ImproveService{
         List<Improve> improves = new ArrayList<>();
         try {
             Long uid = Long.parseLong(userid);
-            Set<String> friendids = this.userRelationService.getFriendIds(uid);
-            Set<String> fansIds = this.userRelationService.getFansIds(uid);
             Map<String, String> map = userRelationService.selectFriendRemarkList(userid);
+            Set<String> friendids = map.keySet();
+//            Set<String> friendids = this.userRelationService.getFriendIds(uid);
+            Set<String> fansIds = this.userRelationService.getFansIds(uid);
             Set<String> userCollectImproveIds = getUserCollectImproveId(userid);
             improves = improveCache.selectRecommendImproveList(startno,pagesize);
             for (Improve improve : improves){
