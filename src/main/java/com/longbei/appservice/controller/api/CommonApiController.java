@@ -6,6 +6,7 @@ import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.entity.DictArea;
 import com.longbei.appservice.entity.PerfectTen;
 import com.longbei.appservice.entity.SysAppupdate;
@@ -42,6 +43,8 @@ public class CommonApiController {
     private SysSettingService sysSettingService;
     @Autowired
     private CommonCache commonCache;
+    @Autowired
+    private CodeDao codeDao;
 
     /**
      * 获取十全十美列表
@@ -86,6 +89,20 @@ public class CommonApiController {
             baseResp.initCodeAndDesp();
         } catch (Exception e) {
             logger.error("getYuanToMoney is error:{}", e);
+        }
+        return baseResp;
+    }
+
+    @RequestMapping(value = "getJoincode")
+    @ResponseBody
+    public BaseResp<Object> getJoincode() {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        try {
+            String joincode = codeDao.getRankPwdCode(CodeDao.CodeType.joinpwdrank.toString());
+            baseResp.initCodeAndDesp();
+            baseResp.setData(joincode);
+        } catch (Exception e) {
+            logger.error("getJoincode is error:{}", e);
         }
         return baseResp;
     }

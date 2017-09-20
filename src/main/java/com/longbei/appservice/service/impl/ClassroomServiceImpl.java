@@ -18,30 +18,18 @@ import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
-import com.longbei.appservice.dao.*;
-import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
-import org.apache.commons.collections.map.HashedMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -706,10 +694,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if("1".equals(record.getIsup())){
 				record.setIsfree(classroom.getIsfree());
 				record.setIspublic(classroom.getIspublic());
-				//已发布－私密教室，更新口令
-				if ("1".equals(classroom.getIspublic())) {
-					record.setJoincode(this.getClassroomJoincode());
-				}
 			}
 			//设置默认音频、视频时长
 			setClassroomAudioAndVideoTime(record);
@@ -734,11 +718,6 @@ public class ClassroomServiceImpl implements ClassroomService {
 			logger.error("updateByClassroomid record = {}", JSONArray.toJSON(record).toString(), e);
 		}
 		return reseResp;
-	}
-
-	private String getClassroomJoincode() {
-		String joincode = codeDao.getCode(CodeDao.CodeType.classroom.toString());
-		return joincode;
 	}
 	
 	private boolean update(Classroom record){
@@ -1123,7 +1102,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 
 				//私密教室，添加口令
 				if ("1".equals(classroom.getIspublic())) {
-					String joincode = codeDao.getCode(CodeDao.CodeType.classroom.toString());
+					String joincode = codeDao.getRankPwdCode(CodeDao.CodeType.joinpwdrank.toString());
 					updateRoom.setJoincode(joincode);
 				}
 				updateRoom.setClassroomid(classroomid);
