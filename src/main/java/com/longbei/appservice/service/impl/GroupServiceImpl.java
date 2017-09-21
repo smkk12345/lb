@@ -157,10 +157,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                 }
             }
             snsGroup.setAvatarArray((String[])avatars.toArray(new String[avatars.size()]));
-//            InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-//            String key = getGroupAvatar();
-//            ossService.putObject(OssConfig.bucketName,key,inputStream);
-//            snsGroup.setAvatar(key);
+            InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+            String key = getGroupAvatar();
+            ossService.putObject(OssConfig.bucketName,key,inputStream);
+            snsGroup.setAvatar(key);
             int row = snsGroupMapper.insertSelective(snsGroup);
             if(row < 1){
                 return BaseResp.fail("系统异常");
@@ -488,27 +488,27 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
     }
 
     private void updateGroupAvatar(final String groupId){
-//        final List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
-//        threadPoolTaskExecutor.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                try{
-////                    List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
-//                    logger.info("groupList init avatar start and groupId={}",groupId);
-//                    List<String> avatars = new ArrayList<>();
-//                    for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
-//                        avatars.add(OssConfig.url + snsGroupMembers.getAvatar());
-//                        logger.info("updateGroupAvatardetail avatars={}",OssConfig.url + snsGroupMembers.getAvatar());
-//                    }
-//                    InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-//                    String key = getGroupAvatar();
-//                    ossService.putObject(OssConfig.bucketName,key,inputStream);
-//                    snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
-//                }catch (Exception e){
-//                    logger.error("update Group Avatar error groupId:{}",groupId);
-//                }
-//            }
-//        });
+        final List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
+        threadPoolTaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try{
+//                    List<SnsGroupMembers> snsGroupMembersList = this.snsGroupMembersMapper.groupMemberList(groupId.toString(),1,null,null,0,9);
+                    logger.info("groupList init avatar start and groupId={}",groupId);
+                    List<String> avatars = new ArrayList<>();
+                    for(SnsGroupMembers snsGroupMembers:snsGroupMembersList){
+                        avatars.add(OssConfig.url + snsGroupMembers.getAvatar());
+                        logger.info("updateGroupAvatardetail avatars={}",OssConfig.url + snsGroupMembers.getAvatar());
+                    }
+                    InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+                    String key = getGroupAvatar();
+                    ossService.putObject(OssConfig.bucketName,key,inputStream);
+                    snsGroupMapper.updateAvatar(Long.parseLong(groupId),key);
+                }catch (Exception e){
+                    logger.error("update Group Avatar error groupId:{}",groupId);
+                }
+            }
+        });
     }
 
     /**
@@ -1200,27 +1200,23 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     snsGroup.setCurrentnum(snsGroup.getCurrentnum()+1);
                     avatars.add(OssConfig.url+managerUser.getAvatar());
                 }
-//                InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-//                String key = getGroupAvatar();
-//                ossService.putObject(OssConfig.bucketName,key,inputStream);
-//                snsGroup.setAvatar(key);
+                InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+                String key = getGroupAvatar();
+                ossService.putObject(OssConfig.bucketName,key,inputStream);
+                snsGroup.setAvatar(key);
                 groupList.add(snsGroup);
-                this.iRongYunService.createGroup(mainGroupUserid+","+managerid,Long.parseLong(groupId),tempGroupName);
             }
-//            this.iRongYunService.createGroup(mainGroupUserid+","+managerid+,groupId,);
 
-//            BaseResp<Object> ryBaseResp = this.iRongYunService.
-//                    batchCreateGroup(mainGroupUserid,groupIds.toString().substring(1),
-//                            groupname,managerid.toString());
-//            if(ryBaseResp.getCode() == Constant.STATUS_SYS_00){
+            BaseResp<Object> ryBaseResp = this.iRongYunService.batchCreateGroup(mainGroupUserid,groupIds.toString().substring(1),groupname,managerid.toString());
+            if(ryBaseResp.getCode() == Constant.STATUS_SYS_00){
                 //批量插入到数据库
-            int insertRow = this.snsGroupMapper.batchInsertGroup(groupList);
-            if(insertRow > 0){
-                int temp =this.snsGroupMembersMapper.batchInsertGroupMembersBySnsGroupMember(snsGroupMembersList);
-                baseResp.setData(resultList);
-                baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                int insertRow = this.snsGroupMapper.batchInsertGroup(groupList);
+                if(insertRow > 0){
+                    int temp =this.snsGroupMembersMapper.batchInsertGroupMembersBySnsGroupMember(snsGroupMembersList);
+                    baseResp.setData(resultList);
+                    baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+                }
             }
-//            }
         }catch(Exception e){
             logger.error("batch create group mainGroupUserid:{} groupname:{} errorMsg:{}",mainGroupUserid,groupname,e);
         }
@@ -1289,13 +1285,10 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                         managerUser = this.userMongoDao.getAppUser(managerid.toString());
                         avatars.add(OssConfig.url+managerUser.getAvatar());
                     }
-//                    InputStream inputStream = ImageUtils.getCombiInputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
-//                    String key = getGroupAvatar();
-//                    ossService.putObject(OssConfig.bucketName,key,inputStream);
-//                    newnationOfhead(avatars);
-//                    String key = getGroupAvatar();
-//                    ossService.putObject(OssConfig.bucketName,key,inputStream);
-//                    newSnsGroup.setAvatar(key);
+                    InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
+                    String key = getGroupAvatar();
+                    ossService.putObject(OssConfig.bucketName,key,inputStream);
+                    newSnsGroup.setAvatar(key);
                     int insertRow = this.snsGroupMapper.insertSelective(newSnsGroup);
 
                     SnsGroupMembers newSnsGroupMember = new SnsGroupMembers();
@@ -1316,7 +1309,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
                     int groupMemberRow = snsGroupMembersMapper.batchInsertGroupMembers(insertMap);
                     if(groupMemberRow > 0){
                         resultMap.put("newgroup",1);
-                        resultMap.put("groupid",groupid.toString());
+                        resultMap.put("groupid",newGroupId);
                         resultMap.put("groupname",groupname);
                         baseResp.setData(resultMap);
                         return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
