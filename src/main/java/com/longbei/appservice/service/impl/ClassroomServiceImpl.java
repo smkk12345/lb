@@ -818,9 +818,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private List<Classroom> selectUserList(List<Classroom> list, long userid){
 		//把教室没有课程视频的去掉
 		//isadd 访问用户是否已加入教室  0：未加入  1：加入
-		for (int i = 0; i < list.size(); i++) {
+		for (Classroom classroom : list) {
 			String isadd = "0";
-			Classroom classroom = list.get(i);
+			if(null == classroom){
+				continue;
+			}
 			//获取老师名片信息
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			classroom.setUserCard(userCard);
@@ -868,6 +870,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if(null != concernList && concernList.size()>0){
 				for (UserBusinessConcern userBusinessConcern : concernList) {
 					Classroom classroom = classroomMapper.selectByPrimaryKey(userBusinessConcern.getBusinessid());
+					if(null == classroom){
+						continue;
+					}
 					roomlist.add(classroom);
 				}
 			}

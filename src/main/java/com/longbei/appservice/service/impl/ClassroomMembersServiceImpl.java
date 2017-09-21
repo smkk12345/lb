@@ -246,9 +246,13 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			if(isteacher != 1){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
 			}
-//			if("0".equals(classroom.getIspublic())){
-//				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
-//			}
+			if("0".equals(classroom.getIspublic())){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
+			}
+			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+			if(null == classroomMembers){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1119, Constant.RTNINFO_SYS_1119);
+			}
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
 				//修改教室教室参与人数 classinvoloed
