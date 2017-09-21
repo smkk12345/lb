@@ -897,7 +897,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 baseResp.setData(num==null?0:Integer.parseInt(num));
             }
         }catch(Exception e){
-            logger.error("selectownRankCount userid={} searchType={} is error:",userId,searchType,e);
+            logger.error("selectownRankCount u serid={} searchType={} is error:",userId,searchType,e);
         }
         return baseResp;
     }
@@ -1157,7 +1157,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 }
             }
             //查看口令是否正确
-            if(("1".equals(rank.getRanktype()) || "1".equals(rank.getIspublic())) && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getJoincode()))){
+            if(("1".equals(rank.getRanktype()) || "1".equals(rank.getIspublic()))
+                    && (StringUtils.isEmpty(codeword) || !codeword.equals(rank.getJoincode()))){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_61,Constant.RTNINFO_SYS_61);
             }
             if("1".equals(rank.getIsrealname())){
@@ -1186,7 +1187,8 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     }
                 }
             }
-            BaseResp<Object> baseResp1 = userBehaviourService.hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,rank);
+            BaseResp<Object> baseResp1 = userBehaviourService.
+                    hasPrivilege(userInfo,Constant.PrivilegeType.joinranknum,rank);
             if(!ResultUtil.isSuccess(baseResp1)){
                 return baseResp1;
             }
