@@ -100,8 +100,15 @@ public class ClassroomController {
    			Integer status = 0;
    			if(resResp.getCode() == 0){
    				ClassroomCourses classroomCourses = resResp.getData();
-   				if(classroomCourses.getCoursesort() != 1){
-   					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+   				ClassroomMembers classroomMembers = classroomMembersService.selectListByClassroomidAndUserid(Long.parseLong(classroomid), Long.parseLong(userid), "0");
+   				if(null == classroomMembers){
+   					Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+   					int isTeacher = classroomService.isTeacher(userid,classroom);
+   					if(isTeacher != 1){
+   						if(classroomCourses.getCoursesort() != 1){
+   	   	   					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+   	   	   				}
+   					}
    				}
    				status = classroomCourses.getStatus();
    			}
