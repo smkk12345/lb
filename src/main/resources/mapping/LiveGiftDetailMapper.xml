@@ -13,11 +13,12 @@
     <result column="createtime" property="createtime" />
     <result column="updatetime" property="updatetime" />
     <result column="status" property="status" />
+    <result column="gtype" property="gtype" />
     <result column="picurl" property="picurl" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, fromuid, touid, giftid, num, gifttitle, businessid, businesstype,createtime,updatetime,status
+    id, fromuid, touid, giftid, num, gifttitle, businessid, businesstype,createtime,updatetime,status, gtype
   </sql>
 
   <select id="selectOwnGiftList" resultMap="BaseResultMap" >
@@ -100,6 +101,9 @@
             <if test="liveGiftDetail.status != null">
                 ,status
             </if>
+            <if test="liveGiftDetail.gtype != null">
+                ,gtype
+            </if>
         </trim>
         )values(
         <trim prefixOverrides=",">
@@ -132,6 +136,9 @@
             </if>
             <if test="liveGiftDetail.status != null">
                 ,#{liveGiftDetail.status}
+            </if>
+            <if test="liveGiftDetail.gtype != null">
+                ,#{liveGiftDetail.gtype}
             </if>
         </trim>
         )

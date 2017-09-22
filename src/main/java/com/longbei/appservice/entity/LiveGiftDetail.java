@@ -6,6 +6,10 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * Created by lixb on 2017/8/12.
@@ -29,6 +33,8 @@ public class LiveGiftDetail implements Serializable {
     private String businesstype;
 
     private String status; 
+    
+    private String gtype; //礼物类型 0 直播礼物 1 非直播礼物
 
     private Date createtime;
 
@@ -89,6 +95,7 @@ public class LiveGiftDetail implements Serializable {
         this.status = status;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Long getBusinessid() {
         return businessid;
     }
@@ -105,6 +112,7 @@ public class LiveGiftDetail implements Serializable {
         this.gifttitle = gifttitle;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Integer getNum() {
         return num;
     }
@@ -113,6 +121,7 @@ public class LiveGiftDetail implements Serializable {
         this.num = num;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Long getGiftid() {
         return giftid;
     }
@@ -121,6 +130,7 @@ public class LiveGiftDetail implements Serializable {
         this.giftid = giftid;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Long getTouid() {
         return touid;
     }
@@ -129,6 +139,7 @@ public class LiveGiftDetail implements Serializable {
         this.touid = touid;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Long getFromuid() {
         return fromuid;
     }
@@ -145,6 +156,7 @@ public class LiveGiftDetail implements Serializable {
         this.id = id;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public void setBusinesstype(String businesstype) {
         this.businesstype = businesstype;
     }
@@ -167,6 +179,15 @@ public class LiveGiftDetail implements Serializable {
 
 	public void setPicurl(String picurl) {
 		this.picurl = picurl;
+	}
+
+	@JsonInclude(Include.ALWAYS)
+	public String getGtype() {
+		return gtype;
+	}
+
+	public void setGtype(String gtype) {
+		this.gtype = gtype;
 	}
 
 }
