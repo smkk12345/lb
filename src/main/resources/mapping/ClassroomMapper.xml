@@ -600,6 +600,10 @@
     set 
       classinvoloed = classinvoloed + #{num} 
     where classroomid = #{classroomid} 
+    <if test="num &lt; 0">
+      and classinvoloed > 0 
+    </if>
+    
   </update>
   
   <update id="updateAllcoursesByClassroomid" >
