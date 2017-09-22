@@ -67,6 +67,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Autowired
 	private LiveInfoMongoMapper liveInfoMongoMapper;
 	@Autowired
+	private LiveGiftDetailMapper liveGiftDetailMapper;
+	@Autowired
 	private ClassroomClassnoticeMapper classroomClassnoticeMapper;
 	@Autowired
 	private ClassroomChapterMapper classroomChapterMapper;
@@ -274,17 +276,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 				int isTeacher = isTeacher(String.valueOf(userid),classroom);
 				map.put("isteacher",isTeacher);
 
-
+				Integer giftsum = 0;
 				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
-					//获取当前用户在教室发作业的总数
-//					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
-//					if(null == impNum){
-//						impNum = 0;
-//					}
-//					map.put("impNum", impNum);
+					giftsum = liveGiftDetailMapper.selectSum(classroomid, "4");
 					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(isTeacher == 1){
-//						map.put("classroomMembers", null);
 						map.put("shownotice", "1"); //教室公告 1 显示  0 不显示
 					}else{
 						if(null != classroomMembers){
@@ -297,27 +293,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 							}else{
 								map.put("shownotice", "1"); //教室公告
 							}
-//							map.put("classroomMembers", classroomMembers);
 						}else{
-//							map.put("classroomMembers", null);
 							map.put("shownotice", "1"); //教室公告
 						}
 					}
-					//itype 0—加入教室 1—退出教室     为null查全部
-//					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(null != classroomMembers){
 						isadd = "1";
 					}
 				}else{
-//					map.put("classroomMembers", null);
 					map.put("shownotice", "1"); //教室公告
 				}
-				
+				map.put("giftsum", giftsum);
 				map.put("isadd", isadd);
-				//获取最新加入成员头像5个
-//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
-//				initUserInfoString(memberList);
-//				map.put("membersImageList", memberList); //成员头像列表
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
