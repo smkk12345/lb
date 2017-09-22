@@ -71,19 +71,47 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     }
 
     @Override
-    public BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,
-                                     long businessid,String businesstype) {
+    public BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId, long liveid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         LiveGift liveGift = liveGiftMapper.selectLiveGiftByGiftId(giftId);
         UserInfo userInfo = userInfoMapper.selectByUserid(fromUid);
         if(null == liveGift||null == userInfo){
             return baseResp;
         }
-        LiveInfo liveInfo = liveInfoMongoMapper.selectLiveInfoByLiveid(businessid);
+        LiveInfo liveInfo = liveInfoMongoMapper.selectLiveInfoByLiveid(liveid);
         if(null == liveInfo){
             return baseResp;
         }
         long classroomid = liveInfo.getClassroomid();
+        if(hasEnoughMoney(liveGift,userInfo,num)){
+            //扣除龙币 生成记录
+            //1，兑换礼物 2，送礼物
+            //插入一条明细
+            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,Constant.IMPROVE_CLASSROOM_TYPE);
+            if(n > 0){ //String origin, int number, long friendid
+                int giveMoney = liveGift.getPrice()*num;
+                userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
+                //添加教室收益
+                userInComeService.updateUserInCome(String.valueOf(classroomid),String.valueOf(toUId),
+                        String.valueOf(fromUid),"1","0",giveMoney,null);
+            }
+            baseResp.initCodeAndDesp();
+            baseResp.setData(userInfo.getTotalmoney()-num*liveGift.getPrice());
+        }else {
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_1301, Constant.RTNINFO_SYS_1301);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,
+                                     long classroomid,String businesstype) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        LiveGift liveGift = liveGiftMapper.selectLiveGiftByGiftId(giftId);
+        UserInfo userInfo = userInfoMapper.selectByUserid(fromUid);
+        if(null == liveGift||null == userInfo){
+            return baseResp;
+        }
         if(hasEnoughMoney(liveGift,userInfo,num)){
             //扣除龙币 生成记录
             //1，兑换礼物 2，送礼物

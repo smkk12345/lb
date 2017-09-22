@@ -29,6 +29,8 @@ public interface LiveGiftService {
      * @param toUId
      * @return
      */
+    BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,long liveid);
+
     BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,long businessid,String businesstype);
 
 

@@ -2,14 +2,22 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.utils.AES;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.entity.LiveGift;
+import com.longbei.appservice.service.LiveGiftService;
 import com.longbei.appservice.service.LiveInfoMongoService;
 import com.longbei.appservice.service.impl.ClassroomServiceImpl;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixb on 2017/8/23.
@@ -25,6 +33,8 @@ public class LiveAppController{
     private ClassroomServiceImpl classroomService;
     @Autowired
     private LiveInfoMongoService liveInfoMongoService;
+    @Autowired
+    private LiveGiftService liveGiftService;
     
     /**
      * url online/startOnLineRoom
@@ -67,6 +77,64 @@ public class LiveAppController{
         baseResp = classroomService.updateOnlineStatus(roomid,courseid,userid,"2");
 
         return baseResp.initCodeAndDesp();
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "giftList")
+    public BaseResp<List<LiveGift>> giftList(String startnum, String endnum) {
+        logger.info("giftList startNum={},endNum={}",startnum,endnum);
+        BaseResp<List<LiveGift>> baseResp = new BaseResp<>();
+        int startn = 0;
+        if(!StringUtils.isBlank(startnum)){
+            startn = Integer.parseInt(startnum);
+        }
+        int endn = 15;
+        if(!StringUtils.isBlank(endnum)){
+            endn = Integer.parseInt(endnum);
+        }
+        try {
+            baseResp = liveGiftService.selectList(startn,endn);
+        } catch (Exception e) {
+            logger.error("giftList startNum={},endNum={}",startnum,endnum,e);
+        }
+        return baseResp;
+    }
+
+    /**
+     * 送礼物
+     * @param giftid
+     * @param fromuid
+     * @param num
+     * @param touid
+     * @param classroomid 教室id
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    @RequestMapping(value = "giveGift")
+    public BaseResp<Object> giveGift(String giftid,
+                                       String fromuid,
+                                       String num,
+                                       String touid,
+                                       String classroomid) {
+        logger.info("giveGift giftId={},fromUid={},num={},toUId={}" +
+                "",giftid,fromuid,num,touid);
+        BaseResp<Object> baseResp = new BaseResp<>();
+        if(StringUtils.hasBlankParams(giftid,fromuid,num,touid,classroomid)){
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+            return baseResp;
+        }
+        try {
+            baseResp = liveGiftService.giveGift(
+                    Long.parseLong(giftid),
+                    Long.parseLong(fromuid),
+                    Integer.parseInt(num),
+                    Long.parseLong(touid),
+                    Long.parseLong(classroomid),
+                    Constant.IMPROVE_CLASSROOM_TYPE);
+        } catch (Exception e) {
+            logger.error("giveGift giftId={},fromUid={},num={},toUId={}",giftid,fromuid,num,touid,e);
+        }
+        return baseResp;
     }
 
 }

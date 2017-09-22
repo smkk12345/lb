@@ -81,7 +81,15 @@ public class LiveController {
     }
 
 
-
+    /**
+     *
+     * @param giftid
+     * @param fromuid
+     * @param num
+     * @param touid
+     * @param classroomid  直播专用 liveid
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @RequestMapping(value = "giveGift")
     public Map<String,String> giveGift(String giftid,
@@ -104,8 +112,8 @@ public class LiveController {
                     Long.parseLong(fromuid),
                     Integer.parseInt(num),
                     Long.parseLong(touid),
-                    Long.parseLong(classroomid),
-                    Constant.IMPROVE_CLASSROOM_TYPE);
+                    Long.parseLong(classroomid)
+                    );
         } catch (Exception e) {
             logger.error("giveGift giftId={},fromUid={},num={},toUId={}",giftid,fromuid,num,touid,e);
         }
