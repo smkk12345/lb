@@ -270,6 +270,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("charge", classroom.getCharge()); //课程价格
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
 				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
+				map.put("audiotime", classroom.getAudiotime());
+				map.put("videotime", classroom.getVideotime());
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
