@@ -87,7 +87,8 @@ public class LiveGiftServiceImpl implements LiveGiftService {
             //扣除龙币 生成记录
             //1，兑换礼物 2，送礼物
             //插入一条明细
-            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,Constant.IMPROVE_CLASSROOM_TYPE);
+        	//gtype  礼物类型 0 直播礼物 1 非直播礼物
+            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,Constant.IMPROVE_CLASSROOM_TYPE, "0");
             if(n > 0){ //String origin, int number, long friendid
                 int giveMoney = liveGift.getPrice()*num;
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
@@ -116,7 +117,8 @@ public class LiveGiftServiceImpl implements LiveGiftService {
             //扣除龙币 生成记录
             //1，兑换礼物 2，送礼物
             //插入一条明细
-            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,businesstype);
+        	//gtype  礼物类型 0 直播礼物 1 非直播礼物
+            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,businesstype, "1");
             if(n > 0){ //String origin, int number, long friendid
                 int giveMoney = liveGift.getPrice()*num;
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
@@ -259,7 +261,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private int insertLiveGiftDetail(long fromuid,long touid
                                      ,int num,LiveGift liveGift,
                                      Long businessid,
-                                     String businesstype){
+                                     String businesstype, String gtype){
         int result = 0;
         LiveGiftDetail liveGiftDetail = new LiveGiftDetail(fromuid,
                 touid,liveGift.getGiftid(),liveGift.getTitle(),
@@ -267,6 +269,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
         Date date = new Date();
         liveGiftDetail.setCreatetime(date);
         liveGiftDetail.setUpdatetime(date);
+        liveGiftDetail.setGtype(gtype);
         try{
             result = liveGiftDetailMapper.insertGiftDetail(liveGiftDetail);
         }catch (Exception e){

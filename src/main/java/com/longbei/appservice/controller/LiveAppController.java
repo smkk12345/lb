@@ -2,22 +2,17 @@ package com.longbei.appservice.controller;
 
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.utils.AES;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.service.LiveGiftService;
-import com.longbei.appservice.service.LiveInfoMongoService;
 import com.longbei.appservice.service.impl.ClassroomServiceImpl;
-import net.sf.json.JSONObject;
+
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lixb on 2017/8/23.
@@ -31,8 +26,8 @@ public class LiveAppController{
 
     @Autowired
     private ClassroomServiceImpl classroomService;
-    @Autowired
-    private LiveInfoMongoService liveInfoMongoService;
+//    @Autowired
+//    private LiveInfoMongoService liveInfoMongoService;
     @Autowired
     private LiveGiftService liveGiftService;
     
@@ -44,7 +39,8 @@ public class LiveAppController{
      * @param userid
      * @return
      */
-    @RequestMapping(value="startOnLineRoom")
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="startOnLineRoom")
     public BaseResp startOnLineRoom(String roomid, String courseid, String userid){
         logger.info("startOnLineRoom roomid:{} courseid:{} userid:{}",
                 roomid,courseid,userid);
@@ -79,7 +75,6 @@ public class LiveAppController{
         return baseResp.initCodeAndDesp();
     }
 
-    @SuppressWarnings("unchecked")
     @RequestMapping(value = "giftList")
     public BaseResp<List<LiveGift>> giftList(String startnum, String endnum) {
         logger.info("giftList startNum={},endNum={}",startnum,endnum);
