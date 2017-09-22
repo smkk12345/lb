@@ -62,7 +62,8 @@ public class MoneyController {
   		try {
   			baseResp = liveGiftService.selectGiftSumList(Long.parseLong(userid), classroomid);
         } catch (Exception e) {
-            logger.error("selectLiveGift userid = {}, classroomid = {}",userid, classroomid, e);
+            logger.error("selectLiveGift userid = {}, classroomid = {}", 
+            		userid, classroomid, e);
         }
   		return baseResp;
     }
@@ -80,8 +81,8 @@ public class MoneyController {
  	@RequestMapping(value = "selectLiveGiftDetail")
     public BaseResp<List<LiveGiftDetail>> selectLiveGiftDetail(String userid, String classroomid, 
     		Integer startNo, Integer pageSize) {
-		logger.info("selectOwnGiftList userid = {}, startNo = {}, pageSize = {}", 
-            		userid, startNo, pageSize);
+		logger.info("selectOwnGiftList userid = {}, classroomid = {}, startNo = {}, pageSize = {}", 
+            		userid, classroomid, startNo, pageSize);
 		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -97,8 +98,8 @@ public class MoneyController {
   		try {
   			baseResp = liveGiftService.selectOwnGiftList(Long.parseLong(userid), classroomid, sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectOwnGiftList userid = {}, startNo = {}, pageSize = {}", 
-            		userid, startNo, pageSize, e);
+            logger.error("selectOwnGiftList userid = {}, classroomid = {}, startNo = {}, pageSize = {}", 
+            		userid, classroomid, startNo, pageSize, e);
         }
   		return baseResp;
     }
@@ -118,8 +119,8 @@ public class MoneyController {
  	@RequestMapping(value = "selectGiftDetailList")
     public BaseResp<List<LiveGiftDetail>> selectGiftDetailList(String userid, String classroomid, String giftid, 
     		Integer startNo, Integer pageSize) {
-		logger.info("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
-        		userid, giftid, startNo, pageSize);
+		logger.info("selectGiftListByGiftid userid = {}, classroomid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+        		userid, classroomid, giftid, startNo, pageSize);
 		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, giftid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -135,8 +136,8 @@ public class MoneyController {
   		try {
   			baseResp = liveGiftService.selectGiftListByGiftid(Long.parseLong(userid), classroomid, Long.parseLong(giftid), sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
-            		userid, giftid, startNo, pageSize, e);
+            logger.error("selectGiftListByGiftid userid = {}, classroomid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+            		userid, classroomid, giftid, startNo, pageSize, e);
         }
   		return baseResp;
     }

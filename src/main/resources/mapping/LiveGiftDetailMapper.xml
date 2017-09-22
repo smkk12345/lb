@@ -74,7 +74,8 @@
   <select id="selectSum" resultType="java.lang.Integer">
       SELECT sum(num) FROM live_gift_detail 
       WHERE businessid = #{businessid} 
-      AND businesstype = #{businesstype}  
+      AND businesstype = #{businesstype} 
+      and touid =  #{userid} 
   </select>
 
     <select id="selectGiftList" resultMap="BaseResultMap" >

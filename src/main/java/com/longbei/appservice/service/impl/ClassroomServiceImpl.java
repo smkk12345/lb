@@ -278,7 +278,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 
 				Integer giftsum = 0;
 				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
-					giftsum = liveGiftDetailMapper.selectSum(classroomid, "4");
+					giftsum = liveGiftDetailMapper.selectSum(userid, classroomid, "4");
 					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(isTeacher == 1){
 						map.put("shownotice", "1"); //教室公告 1 显示  0 不显示
