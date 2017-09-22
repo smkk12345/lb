@@ -75,6 +75,13 @@ public class LiveAppController{
         return baseResp.initCodeAndDesp();
     }
 
+    /**
+     * url online/giftList
+     * @param startnum
+     * @param endnum
+     * @return
+     */
+    @SuppressWarnings("unchecked")
     @RequestMapping(value = "giftList")
     public BaseResp<List<LiveGift>> giftList(String startnum, String endnum) {
         logger.info("giftList startNum={},endNum={}",startnum,endnum);
@@ -97,6 +104,7 @@ public class LiveAppController{
 
     /**
      * 送礼物
+     * url online/giveGift
      * @param giftid
      * @param fromuid
      * @param num
