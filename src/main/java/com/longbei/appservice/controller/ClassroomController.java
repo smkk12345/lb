@@ -100,15 +100,9 @@ public class ClassroomController {
    			Integer status = 0;
    			if(resResp.getCode() == 0){
    				ClassroomCourses classroomCourses = resResp.getData();
-//   				if(classroomCourses.getStatus().equals("1")){
-//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-//   				}else if(classroomCourses.getStatus().equals("0")){
-//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"直播未开始");
-//   				}else if(classroomCourses.getStatus().equals("2")||classroomCourses.getStatus().equals("3")){
-//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"直播已结束");
-//   				}else{
-//   					//doNothing
-//   				}
+   				if(classroomCourses.getCoursesort() != 1){
+   					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+   				}
    				status = classroomCourses.getStatus();
    			}
    			baseResp.getExpandData().put("status", status);

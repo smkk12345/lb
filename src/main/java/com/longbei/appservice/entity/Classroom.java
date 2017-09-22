@@ -38,7 +38,7 @@ public class Classroom implements Serializable {
     
     private String classtype;//教室类型。0—公共教室 1--定制教室
     
-    private String ispublic; //是否所有人可见。0 所有人可见。1，部分可见
+    private String ispublic; //是否所有人可见。0 公开。1，私密
 
 	private String joincode;//口令
 
