@@ -112,7 +112,7 @@
     from classroom_members
     where classroomid = #{classroomid} 
     and userid = #{userid} 
-    <if test="itype != null" >
+    <if test="itype != null and itype != ''" >
     	and itype = #{itype} 
     </if>
   </select>
