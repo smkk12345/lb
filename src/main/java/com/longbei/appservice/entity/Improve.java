@@ -64,7 +64,7 @@ public class Improve implements Serializable{
 
     protected String sourcekey;//原始的文件key
     
-    protected long pimpid; //批复父进步 id
+    protected Long pimpid; //批复父进步 id
     
     protected String isresponded; //0 不是批复。1 是批复
 
@@ -633,11 +633,15 @@ public class Improve implements Serializable{
     }
 
     @JsonInclude(Include.ALWAYS)
-	public long getPimpid() {
+	public Long getPimpid() {
 		return pimpid;
 	}
 
-	public void setPimpid(long pimpid) {
+	public void setPimpid(Long pimpid) {
+        if(null != pimpid && pimpid.intValue() != 0){
+            isreply = "1";
+        }else
+            isreply = "0";
 		this.pimpid = pimpid;
 	}
 

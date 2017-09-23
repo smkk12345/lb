@@ -84,7 +84,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			insert(classroomQuestions);
 			Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomQuestions.getClassroomid()));
 			if(null != classroom){
-				reseResp.getExpandData().put("isteacher", classroomService.isTeacher(classroomQuestions.getUserid().toString(), classroom));
+				reseResp.getExpandData().put("isteacher", classroomService.isTeacher(classroomQuestions.getUserid().toString(), classroom.getUserid()));
 //				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				initQuestionsUserInfoByUserid(classroomQuestions, null);
 //				classroomQuestions.setIsreply(isreply);
@@ -157,7 +157,7 @@ public class ClassroomQuestionsMongoServiceImpl implements ClassroomQuestionsMon
 			Map<String, Object> expandData = new HashMap<>();
 			expandData.put("cardid", userCard.getUserid());
 			//是否为老师
-			expandData.put("isteacher",classroomService.isTeacher(userid,classroom));
+			expandData.put("isteacher",classroomService.isTeacher(userid,classroom.getUserid()));
 			reseResp.setExpandData(expandData);
 			if(list.size() == 0){
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_35);

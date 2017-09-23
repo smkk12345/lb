@@ -117,7 +117,7 @@ public class ClassroomServiceImpl implements ClassroomService {
             if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
                 userCard = userCardMapper.selectByCardid(classroom.getCardid());
             }
-            map.put("isteacher", isTeacher(userid.toString(), classroom));
+            map.put("isteacher", isTeacher(userid.toString(), classroom.getUserid()));
 			//获取教室微进步批复作业列表
             ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(impid);
             ReplyImprove replyImprove = null;
@@ -275,7 +275,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
-				int isTeacher = isTeacher(String.valueOf(userid),classroom);
+				int isTeacher = isTeacher(String.valueOf(userid),classroom.getUserid());
 				map.put("isteacher",isTeacher);
 
 				Integer giftsum = 0;
@@ -431,7 +431,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 				map.put("cardid", userCard.getUserid());
 				map.put("classroomid", classroomid);
-				int isTeacher = isTeacher(String.valueOf(userid),classroom);
+				int isTeacher = isTeacher(String.valueOf(userid),classroom.getUserid());
 				map.put("isteacher",isTeacher);
 				//是否已经关注教室
 				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
@@ -970,7 +970,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
 			}
 			//判断当前用户是否是老师
-			int isteacher = isTeacher(userid + "", classroom);
+			int isteacher = isTeacher(userid + "", classroom.getUserid());
 			if(isteacher != 1){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1107, Constant.RTNINFO_SYS_1107);
 			}
@@ -1512,12 +1512,12 @@ public class ClassroomServiceImpl implements ClassroomService {
 	}
 
 	@Override
-	public int isTeacher(String userid,Classroom classroom){
+	public int isTeacher(String userid,Long tuserid){
 		//游客
 		if(StringUtils.isBlank(userid)){
 			return 0;
 		}
-		if (userid.equals(classroom.getUserid() + ""))
+		if (userid.equals(tuserid + ""))
 			return 1;
 		return 0;
 	}

@@ -103,7 +103,7 @@ public class ClassroomController {
    				ClassroomMembers classroomMembers = classroomMembersService.selectListByClassroomidAndUserid(Long.parseLong(classroomid), Long.parseLong(userid), "0");
    				if(null == classroomMembers){
    					Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
-   					int isTeacher = classroomService.isTeacher(userid,classroom);
+   					int isTeacher = classroomService.isTeacher(userid,classroom.getUserid());
    					if(isTeacher != 1){
    						if(classroomCourses.getCoursesort() != 1){
    	   	   					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
@@ -159,7 +159,7 @@ public class ClassroomController {
    			List<Improve> list = improveService.selectCroomImpList(userid, classroomid, type, sNo, sSize);
    			baseResp.setData(list);
    			Map<String,Object> map = new HashedMap();
-   			map.put("isteacher",classroomService.isTeacher(userid,classroom));
+   			map.put("isteacher",classroomService.isTeacher(userid,classroom.getUserid()));
    			baseResp.setExpandData(map);
    		} catch (Exception e) {
    			logger.error("selectCroomIsreplyList userid = {}, classroomid = {}, type = {}, startNo = {}, pageSize = {}",
@@ -941,7 +941,7 @@ public class ClassroomController {
    			baseResp.setData(list);
    			Map<String,Object> map = new HashedMap();
       		Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
-      		map.put("isteacher",classroomService.isTeacher(userid,classroom));
+      		map.put("isteacher",classroomService.isTeacher(userid,classroom.getUserid()));
       		baseResp.setExpandData(map);
    		} catch (Exception e) {
    			logger.error("classroomMembersDateList userid = {}, classroomid = {}, sift = {}, type = {}, startNo = {}, pageSize = {}",

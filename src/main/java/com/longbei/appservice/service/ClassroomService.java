@@ -295,10 +295,10 @@ public interface ClassroomService {
 	/**
 	 * 当前用户是否为老师
 	 * @param userid
-	 * @param classroom
+	 * @param tuserid
 	 * @return
 	 */
-	int isTeacher(String userid,Classroom classroom);
+	int isTeacher(String userid,Long tuserid);
 
 	BaseResp updateOnlineStatus(String roomid, String courseid, String userid,String status);
 	

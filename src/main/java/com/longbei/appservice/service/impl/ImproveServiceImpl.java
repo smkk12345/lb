@@ -2621,7 +2621,7 @@ public class ImproveServiceImpl implements ImproveService{
                     if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
                         userCard = userCardMapper.selectByCardid(classroom.getCardid());
                     }
-                    map.put("isteacher",classroomService.isTeacher(userid,classroom));
+                    map.put("isteacher",classroomService.isTeacher(userid,classroom.getUserid()));
                     //获取教室微进步批复作业列表
                     List<ImproveClassroom> replyList = improveClassroomMapper.
                             selectListByBusinessid(Long.parseLong(businessid),Long.parseLong(impid));
@@ -3327,7 +3327,7 @@ public class ImproveServiceImpl implements ImproveService{
                         if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
                             userCard = userCardMapper.selectByCardid(classroom.getCardid());
                         }
-                        map.put("isteacher",classroomService.isTeacher(userid,classroom));
+                        map.put("isteacher",classroomService.isTeacher(userid,classroom.getUserid()));
                         //获取教室微进步批复作业列表
                         List<ImproveClassroom> replyList = improveClassroomMapper.
                                 selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
@@ -3910,64 +3910,33 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid,
                                                     String businesstype, Integer startno, Integer pagesize) {
-        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(curuserid,businessid,null,
+        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,
                 businesstype,startno,pagesize,false);
         if(ResultUtil.isSuccess(baseResp)){
-//            String remark = userRelationService.selectRemark(Long.parseLong(userid),Long.parseLong(curuserid));
-        	Classroom classroom = null;
-//        	UserCard userCard = null;
-        	if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
-        		classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
-//                if(null != classroom && !StringUtils.isBlank(classroom.getCardid() + "")){
-//                    userCard = userCardMapper.selectByCardid(classroom.getCardid());
-//                }
-        	}
-        	
-            List<Improve> list = baseResp.getData();
-//            Set<String> userCollectImproveIds = this.getUserCollectImproveId(curuserid);
-            for (int i = 0; i < list.size(); i++) {
-                Improve improve = list.get(i);
-//                if(userCollectImproveIds.contains(improve.getImpid().toString())){
-//                    improve.setHascollect("1");
-//                }
-                
-                if(businesstype.equals(Constant.IMPROVE_CLASSROOM_TYPE)){
-                	baseResp.getExpandData().put("isteacher", classroomService.
-                            isTeacher(userid.toString(), classroom));
-                	//获取教室微进步批复作业列表
-                	List<ImproveClassroom> replyList = improveClassroomMapper.
-                            selectListByBusinessid(improve.getBusinessid(), improve.getImpid());
-                	String isreply = "0";
-                    if(null != replyList && replyList.size()>0){
-                    	isreply = "1";
+            switch (businesstype){
+                case Constant.IMPROVE_RANK_TYPE:
+                    int currentUserImpCount = 0;
+                    if(startno == 0){
+                        RankMembers rankMembers = rankMembersMapper.
+                                selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
+                        if(null != rankMembers){
+                            currentUserImpCount = rankMembers.getIcount();
+                        }
                     }
-//                    if(!"1".equals(isreply)){
-//                        if(null != userCard){
-//                            //判断当前用户是否是老师
-//                            if(userCard.getUserid() != Long.parseLong(userid)){
-//                                isreply = "2";
-//                            }
-//                        }
-//                    }
-                    improve.setIsreply(isreply);
-                }
-//                initImproveInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
-//                initUserRelateInfo();
-//                initImproveUserInfo(improve,curuserid ==null?null:Long.parseLong(curuserid));
-//                if (!StringUtils.isBlank(remark)){
-//                    improve.getAppUserMongoEntity().setNickname(remark);
-//                }
+                    baseResp.getExpandData().put("currentUserImpCount",currentUserImpCount);
+                    break;
+                case Constant.IMPROVE_CLASSROOM_TYPE:
+                    if(StringUtils.isBlank(curuserid)){
+                    }else {
+                        Classroom classroom = classroomService.selectByCid(Long.parseLong(businessid));
+                        baseResp.getExpandData().put("isteacher", classroomService.
+                                isTeacher(curuserid.toString(), classroom.getUserid()));
+                    }
+                    break;
+                default:
+                    break;
             }
         }
-        int currentUserImpCount = 0;
-        if(startno == 0){
-            RankMembers rankMembers = rankMembersMapper.
-                    selectByRankIdAndUserId(Long.parseLong(businessid),Long.parseLong(userid));
-            if(null != rankMembers){
-                currentUserImpCount = rankMembers.getIcount();
-            }
-        }
-        baseResp.getExpandData().put("currentUserImpCount",currentUserImpCount);
         return baseResp;
     }
 
