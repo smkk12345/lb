@@ -819,6 +819,8 @@ public class Constant {
 	public static final String JPUSH_TAG_COUNT_1307 = "1307";//老师认证未通过
 	public static final String JPUSH_TAG_COUNT_1308 = "1308";//创建教室权限被禁用
 	public static final String JPUSH_TAG_COUNT_1309 = "1309";//创建教室权限被恢复
+	
+	public static final String JPUSH_TAG_COUNT_1401 = "1401";//请出教室成员
 	//14开头 好友对话  前端推送
 //	public static final String JPUSH_TAG_COUNT_1401 = "1401";
 	//15 龙榜消息
