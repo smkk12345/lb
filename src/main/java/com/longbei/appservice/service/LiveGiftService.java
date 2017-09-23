@@ -29,17 +29,21 @@ public interface LiveGiftService {
      * @param toUId
      * @return
      */
+    BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,long liveid);
+
     BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,long businessid,String businesstype);
 
 
     /**
      * 查询用户收到的礼物列表
      * @param userid 当前登录者id
+     * @param classroomid 
      * @param startNum
      * @param endNUm
      * @return
      */
-    BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid,Integer startNum,Integer endNum);
+    BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid, String classroomid,
+    		Integer startNum,Integer endNum);
     
     /**
      * 查询用户收到的礼物类型列表
@@ -48,13 +52,14 @@ public interface LiveGiftService {
      * @param startNum
      * @param endNum
      */
-    BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid,Long giftid,Integer startNum,Integer endNum);
+    BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid, String classroomid,Long giftid,Integer startNum,Integer endNum);
     
     /**
      * 查询用户收到的各礼物类型总数
      * @param userid
+     * @param classroomid
      */
-    BaseResp<List<Map<String,String>>> selectGiftSumList(long userid);
+    BaseResp<List<Map<String,String>>> selectGiftSumList(long userid, String classroomid);
 
     BaseResp<List<LiveGiftDetail>> selectGiftList(long userid,Integer startNum,Integer endNum);
 

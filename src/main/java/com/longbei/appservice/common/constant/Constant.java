@@ -234,6 +234,8 @@ public class Constant {
 	public static final int STATUS_SYS_1115 = -1115;
 	public static final int STATUS_SYS_1116 = -1116;
 	public static final int STATUS_SYS_1117 = -1117;
+	public static final int STATUS_SYS_1118 = -1118;
+	public static final int STATUS_SYS_1119 = -1119;
 
 	/******* 12 开头 媒体资源库 相关  **********/
 	public static final int STATUS_SYS_1201 = -1201;
@@ -419,6 +421,8 @@ public class Constant {
 	public static final String RTNINFO_SYS_1115 = "视频转码中，请稍后重试";
 	public static final String RTNINFO_SYS_1116 = "章节中已有课程不能删除";
 	public static final String RTNINFO_SYS_1117 = "暂无认证信息";
+	public static final String RTNINFO_SYS_1118 = "私密教室密钥错误";
+	public static final String RTNINFO_SYS_1119 = "该成员已退出教室";
 	
 
 	/******* 12 开头 媒体资源库 相关  **********/
@@ -484,7 +488,10 @@ public class Constant {
 			"/home/homePoster"+
 			"/classroom/selectUsercardList"+
 			"/classroom/chapterList"+
-			"/classroom/questionsList";
+			"/classroom/questionsList"+
+			"/money/selectLiveGift"+
+			"/money/selectLiveGiftDetail"+
+			"/money/selectGiftDetailList";
 
 	/**
 	 * 进步相关配置
@@ -812,6 +819,8 @@ public class Constant {
 	public static final String JPUSH_TAG_COUNT_1307 = "1307";//老师认证未通过
 	public static final String JPUSH_TAG_COUNT_1308 = "1308";//创建教室权限被禁用
 	public static final String JPUSH_TAG_COUNT_1309 = "1309";//创建教室权限被恢复
+	
+	public static final String JPUSH_TAG_COUNT_1401 = "1401";//请出教室成员
 	//14开头 好友对话  前端推送
 //	public static final String JPUSH_TAG_COUNT_1401 = "1401";
 	//15 龙榜消息

@@ -26,6 +26,7 @@ import com.longbei.appservice.entity.ClassroomMembers;
 import com.longbei.appservice.entity.Improve;
 import com.longbei.appservice.service.ClassroomMembersService;
 import com.longbei.appservice.service.ImproveService;
+import com.longbei.appservice.service.JPushService;
 import com.longbei.appservice.service.UserBehaviourService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.UserMsgService;
@@ -58,6 +59,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	private UserMoneyDetailService userMoneyDetailService;
 	@Autowired
 	private UserInComeService userInComeService;
+	@Autowired
+	private JPushService jPushService;
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ClassroomMembersServiceImpl.class);
@@ -81,6 +84,9 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			Classroom classroom = classroomMapper.selectByPrimaryKey(record.getClassroomid());
 			if(null == classroom){
 				return reseResp;
+			}
+			if(classroom.getUserid().equals(record.getUserid())){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"老师不能加入教室");
 			}
 			UserInfo userInfo = userService.selectJustInfo(record.getUserid());
 			//isfree  是否免费。0 免费 1 收费
@@ -246,9 +252,13 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			if(isteacher != 1){
 				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
 			}
-//			if("0".equals(classroom.getIspublic())){
-//				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
-//			}
+			if("0".equals(classroom.getIspublic())){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1106, Constant.RTNINFO_SYS_1106);
+			}
+			ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
+			if(null == classroomMembers){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_1119, Constant.RTNINFO_SYS_1119);
+			}
 			boolean temp = update(classroomid, userid, itype);
 			if (temp) {
 				//修改教室教室参与人数 classinvoloed
@@ -258,6 +268,8 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				remark = remark.replace("n", classroom.getClasstitle());
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
 						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "", AppserviceConfig.h5_helper, null);
+				this.jPushService.pushMessage("消息标识", userid + "", "请出教室成员",
+                        "很遗憾,您已被请出教室《"+classroom.getClasstitle()+"》！", classroomid + "", Constant.JPUSH_TAG_COUNT_1401);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
@@ -287,13 +299,10 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	        //获取好友昵称
 	        this.userRelationService.updateFriendRemark(currentUserId,appUserMongoEntity);
 	        if(appUserMongoEntity == null) {
-	        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+	        	return baseResp;
 	        }
 	        Map<String,Object> resultMap = new HashMap<String,Object>();
-			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-			if(members == null) {
-				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-			}
+			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, null);
 			if(currentUserId != null){
                 if(this.userRelationService.checkIsFans(currentUserId,userid)){
                     resultMap.put("isfans",1);
@@ -311,10 +320,10 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
             }
 			resultMap.put("likes", members.getLikes());
             resultMap.put("flowers", members.getFlowers());
+            resultMap.put("icount", members.getIcount());
             resultMap.put("nickname", appUserMongoEntity.getNickname());
             resultMap.put("avatar", appUserMongoEntity.getAvatar());
             resultMap.put("userid", appUserMongoEntity.getUserid());
-            resultMap.put("icount", members.getIcount());
             resultMap.put("vcertification", appUserMongoEntity.getVcertification());
             Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
             if(classroom == null) {

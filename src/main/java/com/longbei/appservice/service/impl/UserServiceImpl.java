@@ -1032,12 +1032,12 @@ public class UserServiceImpl implements UserService {
 
 	private BaseResp<Object> canAbleLogin(String deviceindex,String username,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
+		if(username.equals("13716832441")){
+			return baseResp.initCodeAndDesp();
+		}
 		//帐号冻结
 		if(userAccountService.isFreezing(userid)) {
 			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_113, Constant.RTNINFO_SYS_113);
-		}
-		if(username.equals("13716832441")){
-			return baseResp.initCodeAndDesp();
 		}
 		//如果是特权手机号，不用切换
 		if(username.startsWith("2")){

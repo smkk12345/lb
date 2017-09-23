@@ -47,21 +47,23 @@ public class MoneyController {
     * @Title: http://ip:port/app_service/money/selectLiveGift
     * @Description: 我的礼物
     * @param @param userid
+    * @param @param classroomid 教室id   可为null---查我的礼物列表
     * @auther yinxc
     * @currentdate:2017年9月5日
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectLiveGift")
-    public BaseResp<List<Map<String,String>>> selectLiveGift(String userid) {
-		logger.info("selectLiveGift userid={}",userid);
+    public BaseResp<List<Map<String,String>>> selectLiveGift(String userid, String classroomid) {
+		logger.info("selectLiveGift userid = {}, classroomid = {}",userid, classroomid);
 		BaseResp<List<Map<String,String>>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
   		try {
-  			baseResp = liveGiftService.selectGiftSumList(Long.parseLong(userid));
+  			baseResp = liveGiftService.selectGiftSumList(Long.parseLong(userid), classroomid);
         } catch (Exception e) {
-            logger.error("selectLiveGift userid = {}", userid, e);
+            logger.error("selectLiveGift userid = {}, classroomid = {}", 
+            		userid, classroomid, e);
         }
   		return baseResp;
     }
@@ -70,16 +72,17 @@ public class MoneyController {
     * @Title: http://ip:port/app_service/money/selectLiveGiftDetail
     * @Description: 我的礼物明细
     * @param @param userid 当前登录者id
+    * @param @param classroomid 教室id   可为null---查我的礼物明细
     * @param @param startNo   pageSize
     * @auther yinxc
     * @currentdate:2017年9月5日
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectLiveGiftDetail")
-    public BaseResp<List<LiveGiftDetail>> selectLiveGiftDetail(String userid, 
+    public BaseResp<List<LiveGiftDetail>> selectLiveGiftDetail(String userid, String classroomid, 
     		Integer startNo, Integer pageSize) {
-		logger.info("selectOwnGiftList userid = {}, startNo = {}, pageSize = {}", 
-            		userid, startNo, pageSize);
+		logger.info("selectOwnGiftList userid = {}, classroomid = {}, startNo = {}, pageSize = {}", 
+            		userid, classroomid, startNo, pageSize);
 		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -93,10 +96,10 @@ public class MoneyController {
 			sSize = pageSize.intValue();
 		}
   		try {
-  			baseResp = liveGiftService.selectOwnGiftList(Long.parseLong(userid), sNo, sSize);
+  			baseResp = liveGiftService.selectOwnGiftList(Long.parseLong(userid), classroomid, sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectOwnGiftList userid = {}, startNo = {}, pageSize = {}", 
-            		userid, startNo, pageSize, e);
+            logger.error("selectOwnGiftList userid = {}, classroomid = {}, startNo = {}, pageSize = {}", 
+            		userid, classroomid, startNo, pageSize, e);
         }
   		return baseResp;
     }
@@ -106,6 +109,7 @@ public class MoneyController {
     * @Title: http://ip:port/app_service/money/selectGiftDetailList
     * @Description: 收到的单个礼物类型明细
     * @param @param userid 当前登录者id
+    * @param @param classroomid 教室id   可为null---查收到的单个礼物类型明细
     * @param @param giftid 礼物类型id
     * @param @param startNo   pageSize
     * @auther yinxc
@@ -113,10 +117,10 @@ public class MoneyController {
     */
 	@SuppressWarnings("unchecked")
  	@RequestMapping(value = "selectGiftDetailList")
-    public BaseResp<List<LiveGiftDetail>> selectGiftDetailList(String userid, String giftid, 
+    public BaseResp<List<LiveGiftDetail>> selectGiftDetailList(String userid, String classroomid, String giftid, 
     		Integer startNo, Integer pageSize) {
-		logger.info("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
-        		userid, giftid, startNo, pageSize);
+		logger.info("selectGiftListByGiftid userid = {}, classroomid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+        		userid, classroomid, giftid, startNo, pageSize);
 		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
   		if (StringUtils.hasBlankParams(userid, giftid)) {
              return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
@@ -130,10 +134,10 @@ public class MoneyController {
 			sSize = pageSize.intValue();
 		}
   		try {
-  			baseResp = liveGiftService.selectGiftListByGiftid(Long.parseLong(userid), Long.parseLong(giftid), sNo, sSize);
+  			baseResp = liveGiftService.selectGiftListByGiftid(Long.parseLong(userid), classroomid, Long.parseLong(giftid), sNo, sSize);
         } catch (Exception e) {
-            logger.error("selectGiftListByGiftid userid = {}, giftid = {}, startNo = {}, pageSize = {}", 
-            		userid, giftid, startNo, pageSize, e);
+            logger.error("selectGiftListByGiftid userid = {}, classroomid = {}, giftid = {}, startNo = {}, pageSize = {}", 
+            		userid, classroomid, giftid, startNo, pageSize, e);
         }
   		return baseResp;
     }

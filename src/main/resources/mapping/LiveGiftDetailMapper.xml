@@ -13,11 +13,12 @@
     <result column="createtime" property="createtime" />
     <result column="updatetime" property="updatetime" />
     <result column="status" property="status" />
+    <result column="gtype" property="gtype" />
     <result column="picurl" property="picurl" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, fromuid, touid, giftid, num, gifttitle, businessid, businesstype,createtime,updatetime,status
+    id, fromuid, touid, giftid, num, gifttitle, businessid, businesstype,createtime,updatetime,status, gtype
   </sql>
 
   <select id="selectOwnGiftList" resultMap="BaseResultMap" >
@@ -26,7 +27,12 @@
       lg.title as gifttitle,lgd.createtime,lg.picurl as picurl 
       FROM live_gift_detail lgd 
 	  INNER JOIN live_gift lg ON lgd.giftid = lg.giftid 
-	  WHERE lgd.touid =  #{userid}
+	  WHERE 
+	  <if test="businessid != null and businessid != ''" >
+      	lgd.businessid = #{businessid} 
+      	AND lgd.businesstype = #{businesstype} AND 
+      </if>
+	  lgd.touid =  #{userid}
       order by lgd.createtime desc
       <if test="startNum != null" >
         limit #{startNum},#{endNum}
@@ -39,7 +45,12 @@
       lg.title as gifttitle,lgd.createtime,lg.picurl as picurl 
       FROM live_gift_detail lgd 
 	  INNER JOIN live_gift lg ON lgd.giftid = lg.giftid 
-	  WHERE lgd.touid = #{userid} 
+	  WHERE
+	  	<if test="businessid != null and businessid != ''" >
+      		lgd.businessid = #{businessid} 
+      		AND lgd.businesstype = #{businesstype} AND 
+      	</if> 
+	  	lgd.touid = #{userid} 
 	    and lgd.giftid = #{giftid} 
       order by lgd.createtime desc
       <if test="startNum != null" >
@@ -51,8 +62,19 @@
       SELECT 
       id, touid, giftid, SUM(num) as num, gifttitle, businessid, businesstype 
       FROM live_gift_detail
-      where touid = #{userid}
+      where 
+      <if test="businessid != null and businessid != ''" >
+      	businessid = #{businessid} 
+      	AND businesstype = #{businesstype} AND 
+      </if>
+      touid = #{userid} 
       GROUP BY giftid
+  </select>
+  
+  <select id="selectSum" resultType="java.lang.Integer">
+      SELECT sum(num) FROM live_gift_detail 
+      WHERE businessid = #{businessid} 
+      AND businesstype = #{businesstype} 
   </select>
 
     <select id="selectGiftList" resultMap="BaseResultMap" >
@@ -100,6 +122,9 @@
             <if test="liveGiftDetail.status != null">
                 ,status
             </if>
+            <if test="liveGiftDetail.gtype != null">
+                ,gtype
+            </if>
         </trim>
         )values(
         <trim prefixOverrides=",">
@@ -132,6 +157,9 @@
             </if>
             <if test="liveGiftDetail.status != null">
                 ,#{liveGiftDetail.status}
+            </if>
+            <if test="liveGiftDetail.gtype != null">
+                ,#{liveGiftDetail.gtype}
             </if>
         </trim>
         )

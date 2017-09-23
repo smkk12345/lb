@@ -20,7 +20,6 @@
   <select id="selectList" resultMap="BaseResultMap">
       SELECT <include refid="Base_Column_List" />
       FROM live_gift
-      where isdel = '0'
       order by price
       <if test="startNum != null" >
         limit #{startNum},#{pageSize}

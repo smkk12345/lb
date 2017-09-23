@@ -1,17 +1,18 @@
 package com.longbei.appservice.service.impl;
 
-import com.longbei.appservice.cache.LiveCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.dao.ClassroomMapper;
 import com.longbei.appservice.dao.LiveGiftDetailMapper;
 import com.longbei.appservice.dao.LiveGiftMapper;
 import com.longbei.appservice.dao.LiveInfoMongoMapper;
 import com.longbei.appservice.dao.UserInfoMapper;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.AppUserMongoEntity;
+import com.longbei.appservice.entity.Classroom;
 import com.longbei.appservice.entity.LiveGift;
 import com.longbei.appservice.entity.LiveGiftDetail;
 import com.longbei.appservice.entity.LiveInfo;
@@ -51,8 +52,10 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private UserMongoDao userMongoDao;
     @Autowired
     private UserRelationService userRelationService;
+//    @Autowired
+//    private LiveCache liveCache;
     @Autowired
-    private LiveCache liveCache;
+    private ClassroomMapper classroomMapper;
     
 
     private static Logger logger = LoggerFactory.getLogger(LiveGiftServiceImpl.class);
@@ -61,7 +64,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     public BaseResp<List<LiveGift>> selectList(Integer startNum, Integer endNum) {
         BaseResp<List<LiveGift>> baseResp = new BaseResp<>();
         try{
-            List<LiveGift> list = liveCache.selectList(startNum,endNum);
+            List<LiveGift> list = liveGiftMapper.selectList(0, 500);;
             baseResp.setData(list);
             baseResp.initCodeAndDesp();
         }catch (Exception e){
@@ -71,15 +74,14 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     }
 
     @Override
-    public BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,
-                                     long businessid,String businesstype) {
+    public BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId, long liveid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         LiveGift liveGift = liveGiftMapper.selectLiveGiftByGiftId(giftId);
         UserInfo userInfo = userInfoMapper.selectByUserid(fromUid);
         if(null == liveGift||null == userInfo){
             return baseResp;
         }
-        LiveInfo liveInfo = liveInfoMongoMapper.selectLiveInfoByLiveid(businessid);
+        LiveInfo liveInfo = liveInfoMongoMapper.selectLiveInfoByLiveid(liveid);
         if(null == liveInfo){
             return baseResp;
         }
@@ -88,13 +90,44 @@ public class LiveGiftServiceImpl implements LiveGiftService {
             //扣除龙币 生成记录
             //1，兑换礼物 2，送礼物
             //插入一条明细
-            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,businesstype);
+        	//gtype  礼物类型 0 直播礼物 1 非直播礼物
+            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,Constant.IMPROVE_CLASSROOM_TYPE, "0");
             if(n > 0){ //String origin, int number, long friendid
                 int giveMoney = liveGift.getPrice()*num;
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
                 //添加教室收益
                 userInComeService.updateUserInCome(String.valueOf(classroomid),String.valueOf(toUId),
                         String.valueOf(fromUid),"1","0",giveMoney,null);
+            }
+            baseResp.initCodeAndDesp();
+            baseResp.setData(userInfo.getTotalmoney()-num*liveGift.getPrice());
+        }else {
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_1301, Constant.RTNINFO_SYS_1301);
+        }
+        return baseResp;
+    }
+
+    @Override
+    public BaseResp<Object> giveGift(long giftId, long fromUid, int num, long toUId,
+                                     long classroomid,String businesstype) {
+        BaseResp<Object> baseResp = new BaseResp<>();
+        LiveGift liveGift = liveGiftMapper.selectLiveGiftByGiftId(giftId);
+        UserInfo userInfo = userInfoMapper.selectByUserid(fromUid);
+        if(null == liveGift||null == userInfo){
+            return baseResp;
+        }
+        if(hasEnoughMoney(liveGift,userInfo,num)){
+            //扣除龙币 生成记录
+            //1，兑换礼物 2，送礼物
+            //插入一条明细
+        	//gtype  礼物类型 0 直播礼物 1 非直播礼物
+            int n = insertLiveGiftDetail(fromUid,toUId,num,liveGift,classroomid,businesstype, "1");
+            if(n > 0){ //String origin, int number, long friendid
+                int giveMoney = liveGift.getPrice()*num;
+                userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
+                //添加教室收益
+                userInComeService.updateUserInCome(String.valueOf(classroomid),String.valueOf(toUId),
+                        String.valueOf(fromUid),"7","0",giveMoney,null);
             }
             baseResp.initCodeAndDesp();
             baseResp.setData(userInfo.getTotalmoney()-num*liveGift.getPrice());
@@ -113,13 +146,22 @@ public class LiveGiftServiceImpl implements LiveGiftService {
      * @return
      */
     @Override
-    public BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid, Integer startNum, Integer endNum) {
+    public BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid, String classroomid, 
+    		Integer startNum, Integer endNum) {
     	BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
         try{
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectOwnGiftList(userid, startNum, endNum);
+        	Long cuserid = 0l;
+        	if(!StringUtils.isBlank(classroomid)){
+        		Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
+        		cuserid = classroom.getUserid();
+        	}else{
+        		cuserid = userid;
+        	}
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectOwnGiftList(cuserid, 
+            		classroomid, "4", startNum, endNum);
             if(null != list && list.size()>0){
             	for (LiveGiftDetail liveGiftDetail : list) {
-            		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
+            		initLiveGiftDetailByUserid(liveGiftDetail, cuserid.toString());
     			}
             }
             baseResp.setData(list);
@@ -133,13 +175,22 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     
 
 	@Override
-	public BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid, Long giftid, Integer startNum, Integer endNum) {
+	public BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid, String classroomid, 
+			Long giftid, Integer startNum, Integer endNum) {
 		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
         try{
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(userid, giftid, startNum, endNum);
+        	Long cuserid = 0l;
+        	if(!StringUtils.isBlank(classroomid)){
+        		Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
+        		cuserid = classroom.getUserid();
+        	}else{
+        		cuserid = userid;
+        	}
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(cuserid, classroomid, "4", 
+            		giftid, startNum, endNum);
             if(null != list && list.size()>0){
             	for (LiveGiftDetail liveGiftDetail : list) {
-            		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
+            		initLiveGiftDetailByUserid(liveGiftDetail, cuserid.toString());
     			}
             }
             baseResp.setData(list);
@@ -172,12 +223,20 @@ public class LiveGiftServiceImpl implements LiveGiftService {
      * 查询用户收到的各礼物类型总数
      * @param userid
      */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<List<Map<String,String>>> selectGiftSumList(long userid) {
+	public BaseResp<List<Map<String,String>>> selectGiftSumList(long userid, String classroomid) {
 		BaseResp<List<Map<String,String>>> baseResp = new BaseResp<>();
         try{
+        	Long cuserid = 0l;
+        	if(!StringUtils.isBlank(classroomid)){
+        		Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
+        		cuserid = classroom.getUserid();
+        	}else{
+        		cuserid = userid;
+        	}
             List<Map<String,String>> resultList = new ArrayList<>();
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(userid);
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(cuserid, classroomid, "4");
             if(null == list||list.size()==0){
                 return baseResp.initCodeAndDesp();
             }
@@ -186,7 +245,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
                 LiveGiftDetail detail = list.get(i);
                 map.put(detail.getGiftid(),detail.getNum());
             }
-            List<LiveGift> giftList = liveCache.selectList(0,500);
+            List<LiveGift> giftList = liveGiftMapper.selectList(0, 500);
             for (int i = 0; i < giftList.size(); i++) {
                 LiveGift gift = giftList.get(i);
                 if(map.containsKey(gift.getGiftid())){
@@ -231,7 +290,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     private int insertLiveGiftDetail(long fromuid,long touid
                                      ,int num,LiveGift liveGift,
                                      Long businessid,
-                                     String businesstype){
+                                     String businesstype, String gtype){
         int result = 0;
         LiveGiftDetail liveGiftDetail = new LiveGiftDetail(fromuid,
                 touid,liveGift.getGiftid(),liveGift.getTitle(),
@@ -239,6 +298,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
         Date date = new Date();
         liveGiftDetail.setCreatetime(date);
         liveGiftDetail.setUpdatetime(date);
+        liveGiftDetail.setGtype(gtype);
         try{
             result = liveGiftDetailMapper.insertGiftDetail(liveGiftDetail);
         }catch (Exception e){

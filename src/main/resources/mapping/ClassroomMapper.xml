@@ -53,7 +53,7 @@
     select 
     <include refid="Base_Column_List" />
     from classroom
-    where classroomid = #{classroomid,jdbcType=INTEGER}
+    where classroomid = #{classroomid}
   </select>
   
   <select id="checkClasstitle" resultMap="BaseResultMap" >
@@ -600,6 +600,10 @@
     set 
       classinvoloed = classinvoloed + #{num} 
     where classroomid = #{classroomid} 
+    <if test="num &lt; 0">
+      and classinvoloed > 0 
+    </if>
+    
   </update>
   
   <update id="updateAllcoursesByClassroomid" >

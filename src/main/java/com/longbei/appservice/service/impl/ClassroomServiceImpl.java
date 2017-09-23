@@ -67,6 +67,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 	@Autowired
 	private LiveInfoMongoMapper liveInfoMongoMapper;
 	@Autowired
+	private LiveGiftDetailMapper liveGiftDetailMapper;
+	@Autowired
 	private ClassroomClassnoticeMapper classroomClassnoticeMapper;
 	@Autowired
 	private ClassroomChapterMapper classroomChapterMapper;
@@ -268,23 +270,19 @@ public class ClassroomServiceImpl implements ClassroomService {
 				map.put("charge", classroom.getCharge()); //课程价格
 				map.put("isfree", classroom.getIsfree()); //是否免费。0 免费 1 收费
 				map.put("classinvoloed", classroom.getClassinvoloed()); //教室参与人数
+				map.put("audiotime", classroom.getAudiotime());
+				map.put("videotime", classroom.getVideotime());
 				map.put("classnotice", classroom.getClassnotice()); //教室公告
 				map.put("updatetime", DateUtils.formatDateTime1(classroom.getUpdatetime())); //教室公告更新时间
 				map.put("classbrief", classroom.getClassbrief()); //教室简介
 				int isTeacher = isTeacher(String.valueOf(userid),classroom);
 				map.put("isteacher",isTeacher);
 
-
+				Integer giftsum = 0;
 				if(userid != null&&!userid.toString().equals(Constant.VISITOR_UID)){
-					//获取当前用户在教室发作业的总数
-//					Integer impNum = improveClassroomMapper.selectCountByClassroomidAndUserid(classroomid + "", userid + "");
-//					if(null == impNum){
-//						impNum = 0;
-//					}
-//					map.put("impNum", impNum);
+					giftsum = liveGiftDetailMapper.selectSum(classroomid, "4");
 					ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(isTeacher == 1){
-//						map.put("classroomMembers", null);
 						map.put("shownotice", "1"); //教室公告 1 显示  0 不显示
 					}else{
 						if(null != classroomMembers){
@@ -297,27 +295,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 							}else{
 								map.put("shownotice", "1"); //教室公告
 							}
-//							map.put("classroomMembers", classroomMembers);
 						}else{
-//							map.put("classroomMembers", null);
 							map.put("shownotice", "1"); //教室公告
 						}
 					}
-					//itype 0—加入教室 1—退出教室     为null查全部
-//					ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
 					if(null != classroomMembers){
 						isadd = "1";
 					}
 				}else{
-//					map.put("classroomMembers", null);
 					map.put("shownotice", "1"); //教室公告
 				}
-				
+				map.put("giftsum", giftsum);
 				map.put("isadd", isadd);
-				//获取最新加入成员头像5个
-//				List<ClassroomMembers> memberList = classroomMembersMapper.selectListByClassroomid(classroomid, 0, 5);
-//				initUserInfoString(memberList);
-//				map.put("membersImageList", memberList); //成员头像列表
 			}
 			reseResp.setData(map);
 			reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
@@ -818,9 +807,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 	private List<Classroom> selectUserList(List<Classroom> list, long userid){
 		//把教室没有课程视频的去掉
 		//isadd 访问用户是否已加入教室  0：未加入  1：加入
-		for (int i = 0; i < list.size(); i++) {
+		for (Classroom classroom : list) {
 			String isadd = "0";
-			Classroom classroom = list.get(i);
+			if(null == classroom){
+				continue;
+			}
 			//获取老师名片信息
 			UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
 			classroom.setUserCard(userCard);
@@ -868,6 +859,9 @@ public class ClassroomServiceImpl implements ClassroomService {
 			if(null != concernList && concernList.size()>0){
 				for (UserBusinessConcern userBusinessConcern : concernList) {
 					Classroom classroom = classroomMapper.selectByPrimaryKey(userBusinessConcern.getBusinessid());
+					if(null == classroom){
+						continue;
+					}
 					roomlist.add(classroom);
 				}
 			}

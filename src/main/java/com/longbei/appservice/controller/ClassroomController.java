@@ -43,6 +43,36 @@ public class ClassroomController {
 	private static Logger logger = LoggerFactory.getLogger(ClassroomController.class);
 	
 	
+	/**
+     * @Title: http://ip:port/app_service/classroom/checkRoomJoincode
+     * @Description: 私密教室密钥是否正确
+     * @param @param classroomid 教室业务id
+     * @param @param joincode   密钥
+     * @param @param 正确返回 code 0 ，验证码不对，参数错误，未知错误返回相应状态码
+     * @auther yinxc
+     * @currentdate:2017年9月21日
+ 	*/
+  	@SuppressWarnings("unchecked")
+ 	@RequestMapping(value = "checkRoomJoincode")
+    public BaseResp<Object> checkRoomJoincode(String classroomid, String joincode) {
+		logger.info("checkRoomJoincode classroomid={},joincode={}",
+				classroomid,joincode);
+		BaseResp<Object> baseResp = new BaseResp<>();
+   		if (StringUtils.hasBlankParams(joincode, classroomid)) {
+             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
+        }
+   		try {
+   			Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+        	if (!joincode.equals(classroom.getJoincode())){
+        		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1118, Constant.RTNINFO_SYS_1118);
+        	}
+   			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
+   		} catch (Exception e) {
+   			logger.error("checkRoomJoincode classroomid={},joincode={}",
+				classroomid,joincode, e);
+   		}
+   		return baseResp;
+    }
 	
 	/**
      * @Title: http://ip:port/app_service/classroom/checkInsertTeaching
@@ -70,15 +100,16 @@ public class ClassroomController {
    			Integer status = 0;
    			if(resResp.getCode() == 0){
    				ClassroomCourses classroomCourses = resResp.getData();
-//   				if(classroomCourses.getStatus().equals("1")){
-//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
-//   				}else if(classroomCourses.getStatus().equals("0")){
-//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"直播未开始");
-//   				}else if(classroomCourses.getStatus().equals("2")||classroomCourses.getStatus().equals("3")){
-//   					baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"直播已结束");
-//   				}else{
-//   					//doNothing
-//   				}
+   				ClassroomMembers classroomMembers = classroomMembersService.selectListByClassroomidAndUserid(Long.parseLong(classroomid), Long.parseLong(userid), "0");
+   				if(null == classroomMembers){
+   					Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(classroomid));
+   					int isTeacher = classroomService.isTeacher(userid,classroom);
+   					if(isTeacher != 1){
+   						if(classroomCourses.getCoursesort() != 1){
+   	   	   					return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+   	   	   				}
+   					}
+   				}
    				status = classroomCourses.getStatus();
    			}
    			baseResp.getExpandData().put("status", status);
