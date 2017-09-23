@@ -82,6 +82,9 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 			if(null == classroom){
 				return reseResp;
 			}
+			if(classroom.getUserid().equals(record.getUserid())){
+				return reseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"老师不能加入教室");
+			}
 			UserInfo userInfo = userService.selectJustInfo(record.getUserid());
 			//isfree  是否免费。0 免费 1 收费
 			//classinvoloed---教室参与人数     classlimited---教室限制人数
