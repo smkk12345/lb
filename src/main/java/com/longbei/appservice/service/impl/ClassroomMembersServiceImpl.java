@@ -294,13 +294,10 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 	        //获取好友昵称
 	        this.userRelationService.updateFriendRemark(currentUserId,appUserMongoEntity);
 	        if(appUserMongoEntity == null) {
-	        	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+	        	return baseResp;
 	        }
 	        Map<String,Object> resultMap = new HashMap<String,Object>();
-			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, "0");
-			if(members == null) {
-				return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
-			}
+			ClassroomMembers members = classroomMembersMapper.selectByClassroomidAndUserid(classroomid, userid, null);
 			if(currentUserId != null){
                 if(this.userRelationService.checkIsFans(currentUserId,userid)){
                     resultMap.put("isfans",1);
@@ -318,10 +315,10 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
             }
 			resultMap.put("likes", members.getLikes());
             resultMap.put("flowers", members.getFlowers());
+            resultMap.put("icount", members.getIcount());
             resultMap.put("nickname", appUserMongoEntity.getNickname());
             resultMap.put("avatar", appUserMongoEntity.getAvatar());
             resultMap.put("userid", appUserMongoEntity.getUserid());
-            resultMap.put("icount", members.getIcount());
             resultMap.put("vcertification", appUserMongoEntity.getVcertification());
             Classroom classroom = classroomMapper.selectByPrimaryKey(classroomid);
             if(classroom == null) {
