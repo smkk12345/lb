@@ -13,6 +13,7 @@ import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
 import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,11 +73,20 @@ public class UserInComeServiceImpl implements UserInComeService{
                                              final String userId, String originUserId,
                                              final String origin, String type,
                                              int num, String detailremarker) {
-
         BaseResp<String> baseResp = new BaseResp<>();
-        if ("0".equals(type)){
-            num = (int) Math.ceil(num * (1 - SysRulesCache.behaviorRule.getClassroomcommission()));
+        if (!StringUtils.isBlank(classroomId)){
+            Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomId));
+            if (null != classroom){
+                if ("0".equals(type) && !"0".equals(classroom.getSourcetype())){
+                    num = (int) Math.ceil(num * (1 - SysRulesCache.behaviorRule.getClassroomcommission()));
+                }
+            }
+        } else {
+            if ("0".equals(type)){
+                num = (int) Math.ceil(num * (1 - SysRulesCache.behaviorRule.getClassroomcommission()));
+            }
         }
+
         //跟新 user_income
         baseResp = updateUserInCome(userId,num,type);
         if (!ResultUtil.isSuccess(baseResp)){
