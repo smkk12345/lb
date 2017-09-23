@@ -99,7 +99,7 @@ public class UserMongoDao extends BaseMongoDao<AppUserMongoEntity> {
 					return null;
 				}
 				if(mongoUser != null){
-					return updateAppUserMongoEntity(userInfo);
+					updateAppUserMongoEntity(userInfo);
 				}
 				if(null != userInfo){
 					mongoUser = saveUserInfoToMongo(userInfo);
