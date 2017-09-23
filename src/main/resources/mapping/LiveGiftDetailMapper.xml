@@ -75,7 +75,6 @@
       SELECT sum(num) FROM live_gift_detail 
       WHERE businessid = #{businessid} 
       AND businesstype = #{businesstype} 
-      and touid =  #{userid} 
   </select>
 
     <select id="selectGiftList" resultMap="BaseResultMap" >

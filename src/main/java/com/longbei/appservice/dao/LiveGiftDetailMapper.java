@@ -67,7 +67,7 @@ public interface LiveGiftDetailMapper {
     /*
      * 获取教室送礼物总数
      */
-    Integer selectSum(@Param("userid") Long userid, 
+    Integer selectSum(
     					@Param("businessid") long businessid, 
     					@Param("businesstype") String businesstype);
 
