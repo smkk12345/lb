@@ -143,10 +143,12 @@ public class LiveGiftServiceImpl implements LiveGiftService {
      * @return
      */
     @Override
-    public BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid, Integer startNum, Integer endNum) {
+    public BaseResp<List<LiveGiftDetail>> selectOwnGiftList(Long userid, String classroomid, 
+    		Integer startNum, Integer endNum) {
     	BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
         try{
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectOwnGiftList(userid, startNum, endNum);
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectOwnGiftList(userid, 
+            		classroomid, "4", startNum, endNum);
             if(null != list && list.size()>0){
             	for (LiveGiftDetail liveGiftDetail : list) {
             		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
@@ -163,10 +165,12 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     
 
 	@Override
-	public BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid, Long giftid, Integer startNum, Integer endNum) {
+	public BaseResp<List<LiveGiftDetail>> selectGiftListByGiftid(Long userid, String classroomid, 
+			Long giftid, Integer startNum, Integer endNum) {
 		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
         try{
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(userid, giftid, startNum, endNum);
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(userid, classroomid, "4", 
+            		giftid, startNum, endNum);
             if(null != list && list.size()>0){
             	for (LiveGiftDetail liveGiftDetail : list) {
             		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
@@ -202,12 +206,13 @@ public class LiveGiftServiceImpl implements LiveGiftService {
      * 查询用户收到的各礼物类型总数
      * @param userid
      */
+	@SuppressWarnings("unchecked")
 	@Override
-	public BaseResp<List<Map<String,String>>> selectGiftSumList(long userid) {
+	public BaseResp<List<Map<String,String>>> selectGiftSumList(long userid, String classroomid) {
 		BaseResp<List<Map<String,String>>> baseResp = new BaseResp<>();
         try{
             List<Map<String,String>> resultList = new ArrayList<>();
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(userid);
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(userid, classroomid, "4");
             if(null == list||list.size()==0){
                 return baseResp.initCodeAndDesp();
             }
@@ -216,7 +221,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
                 LiveGiftDetail detail = list.get(i);
                 map.put(detail.getGiftid(),detail.getNum());
             }
-            List<LiveGift> giftList = liveCache.selectList(0,500);
+            List<LiveGift> giftList = liveGiftMapper.selectList(0, 500);
             for (int i = 0; i < giftList.size(); i++) {
                 LiveGift gift = giftList.get(i);
                 if(map.containsKey(gift.getGiftid())){

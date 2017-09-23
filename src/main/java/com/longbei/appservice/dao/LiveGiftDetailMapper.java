@@ -17,6 +17,8 @@ public interface LiveGiftDetailMapper {
      * @return
      */
     List<LiveGiftDetail> selectOwnGiftList(@Param("userid") Long userid,
+    									   @Param("businessid") String businessid,
+    									   @Param("businesstype") String businesstype,
                                            @Param("startNum") Integer startNum,
                                            @Param("endNum") Integer endNum);
     
@@ -24,7 +26,9 @@ public interface LiveGiftDetailMapper {
      * 查询用户收到的各礼物类型总数
      * @param userid
      */
-    List<LiveGiftDetail> selectGiftSumList(@Param("userid") Long userid);
+    List<LiveGiftDetail> selectGiftSumList(@Param("userid") Long userid, 
+    										@Param("businessid") String businessid,  
+    										@Param("businesstype") String businesstype);
     
     
     /**
@@ -34,10 +38,12 @@ public interface LiveGiftDetailMapper {
      * @param startNum
      * @param endNum
      */
-    List<LiveGiftDetail> selectGiftListByGiftid(@Param("userid") Long userid, 
-    		@Param("giftid") Long giftid,
-            @Param("startNum") Integer startNum,
-            @Param("endNum") Integer endNum);
+    List<LiveGiftDetail> selectGiftListByGiftid(@Param("userid") Long userid,
+									    		@Param("businessid") String businessid,
+												@Param("businesstype") String businesstype,
+									    		@Param("giftid") Long giftid,
+									            @Param("startNum") Integer startNum,
+									            @Param("endNum") Integer endNum);
     
 
     /**
@@ -57,5 +63,12 @@ public interface LiveGiftDetailMapper {
      * @return
      */
     int insertGiftDetail(@Param("liveGiftDetail") LiveGiftDetail liveGiftDetail);
+    
+    /*
+     * 获取教室送礼物总数
+     */
+    Integer selectSum(@Param("userid") Long userid, 
+    					@Param("businessid") long businessid, 
+    					@Param("businesstype") String businesstype);
 
 }
