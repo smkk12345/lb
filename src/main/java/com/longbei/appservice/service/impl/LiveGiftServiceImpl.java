@@ -221,7 +221,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
                 LiveGiftDetail detail = list.get(i);
                 map.put(detail.getGiftid(),detail.getNum());
             }
-            List<LiveGift> giftList = liveCache.selectList(0,500);
+            List<LiveGift> giftList = liveGiftMapper.selectList(0, 500);
             for (int i = 0; i < giftList.size(); i++) {
                 LiveGift gift = giftList.get(i);
                 if(map.containsKey(gift.getGiftid())){
