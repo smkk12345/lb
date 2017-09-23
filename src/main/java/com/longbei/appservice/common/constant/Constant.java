@@ -488,7 +488,10 @@ public class Constant {
 			"/home/homePoster"+
 			"/classroom/selectUsercardList"+
 			"/classroom/chapterList"+
-			"/classroom/questionsList";
+			"/classroom/questionsList"+
+			"/money/selectLiveGift"+
+			"/money/selectLiveGiftDetail"+
+			"/money/selectGiftDetailList";
 
 	/**
 	 * 进步相关配置
