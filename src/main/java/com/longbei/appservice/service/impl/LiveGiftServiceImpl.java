@@ -124,7 +124,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
                 userMoneyDetailService.insertPublic(userInfo,"13",-giveMoney,toUId);
                 //添加教室收益
                 userInComeService.updateUserInCome(String.valueOf(classroomid),String.valueOf(toUId),
-                        String.valueOf(fromUid),"1","0",giveMoney,null);
+                        String.valueOf(fromUid),"7","0",giveMoney,null);
             }
             baseResp.initCodeAndDesp();
             baseResp.setData(userInfo.getTotalmoney()-num*liveGift.getPrice());
