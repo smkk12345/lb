@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * Created by wangyongzhi 17/3/8.
@@ -329,9 +330,9 @@ public class GroupController {
         if(StringUtils.hasBlankParams(keyword,userid)){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
-        //判断keyword是否含有中文   
-        if(keyword.getBytes().length != keyword.length()){
-        	//含有
+        //判断keyword是否为数字
+        Pattern pattern = Pattern.compile("[0-9]*");
+        if(!pattern.matcher(keyword).matches()){
         	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }
         if(startNum == null || startNum < 0){

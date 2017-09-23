@@ -219,12 +219,7 @@ public class ImproveServiceImpl implements ImproveService{
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
                 improve.setIsresponded("0");
-                //判断是否已加入教室
-                ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(Long.parseLong(businessid), 
-                		Long.parseLong(userid), "0");
-                if(null == classroomMembers){
-                	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
-                }
+                
                 isok = insertImproveForClassroom(improve);
                 break;
             case Constant.IMPROVE_CIRCLE_TYPE:
@@ -1641,7 +1636,14 @@ public class ImproveServiceImpl implements ImproveService{
                 baseResp.initCodeAndDesp();
                 break;
             case Constant.IMPROVE_CLASSROOM_TYPE:
-                baseResp.initCodeAndDesp();
+            	//判断是否已加入教室
+                ClassroomMembers classroomMembers = classroomMembersMapper.selectByClassroomidAndUserid(Long.parseLong(businessid), 
+                		Long.parseLong(userid), "0");
+                if(null == classroomMembers){
+                	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1102, Constant.RTNINFO_SYS_1102);
+                }else{
+                	baseResp.initCodeAndDesp();
+                }
                 break;
             case Constant.IMPROVE_CLASSROOM_REPLY_TYPE:
                 baseResp.initCodeAndDesp();
