@@ -269,7 +269,7 @@ public class ClassroomMembersServiceImpl implements ClassroomMembersService {
 				userMsgService.insertMsg(Constant.SQUARE_USER_ID, userid + "",
 						"", "12", classroomid + "", remark, "2", "54", "教室删除成员", 0, "", "", AppserviceConfig.h5_helper, null);
 				this.jPushService.pushMessage("消息标识", userid + "", "请出教室成员",
-                        "很遗憾,您已被请出教室《"+classroom.getClasstitle()+"》！","", Constant.JPUSH_TAG_COUNT_1401);
+                        "很遗憾,您已被请出教室《"+classroom.getClasstitle()+"》！", classroomid + "", Constant.JPUSH_TAG_COUNT_1401);
 				reseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
 			}
 		} catch (Exception e) {
