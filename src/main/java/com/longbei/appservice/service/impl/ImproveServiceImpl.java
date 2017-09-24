@@ -3606,7 +3606,7 @@ public class ImproveServiceImpl implements ImproveService{
      * @author luye
      */
     @Override
-    public BaseResp<List<Improve>> selectBusinessImproveList(String userid, String businessid,String iscomplain,
+    public BaseResp<List<Improve>> selectBusinessImproveList(String cuserid,String userid, String businessid,String iscomplain,
                                                        String businesstype, Integer startno,
                                                              Integer pagesize,boolean selectCount) {
         BaseResp<List<Improve>> baseResp = new BaseResp<>();
@@ -3615,7 +3615,7 @@ public class ImproveServiceImpl implements ImproveService{
                     getTableNameByBusinessType(businesstype),
                     null, userid, null, iscomplain, startno, pagesize);
 
-            initImproveListOtherInfo(userid, improves);
+            initImproveListOtherInfo(cuserid, improves);
             baseResp = BaseResp.ok();
             baseResp.setData(improves);
             if(selectCount){
@@ -3852,7 +3852,7 @@ public class ImproveServiceImpl implements ImproveService{
         logger.info("select improve list in business curuserid:{} userid:{} businesstype:{} businessid:{} startNo:{} pageSize:{}",curuserid,userid,businesstype,businessid,startno,pagesize);
         BaseResp<List<Improve>> baseResp = new BaseResp<List<Improve>>();
         try{
-            baseResp = selectBusinessImproveList(userid,businessid,null,businesstype,startno,pagesize,false);
+            baseResp = selectBusinessImproveList(curuserid,userid,businessid,null,businesstype,startno,pagesize,false);
             if(ResultUtil.isSuccess(baseResp)) {
 //                List<Improve> list = baseResp.getData();
 //                Set<String> improveIds = this.getUserCollectImproveId(curuserid);
@@ -3912,7 +3912,7 @@ public class ImproveServiceImpl implements ImproveService{
     @Override
     public BaseResp<List<Improve>> selectListInRank(String curuserid,String userid, String businessid,
                                                     String businesstype, Integer startno, Integer pagesize) {
-        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(userid,businessid,null,
+        BaseResp<List<Improve>> baseResp = selectBusinessImproveList(curuserid,userid,businessid,null,
                 businesstype,startno,pagesize,false);
         if(ResultUtil.isSuccess(baseResp)){
             switch (businesstype){
