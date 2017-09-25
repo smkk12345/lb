@@ -433,7 +433,7 @@ public interface ImproveService {
      * @param selectCount 是否查询总数 只有在startno == 0 && selectCount == true时 才会查询总数
      * @return
      */
-    BaseResp<List<Improve>> selectBusinessImproveList(String userid,String businessid,String iscomplain,
+    BaseResp<List<Improve>> selectBusinessImproveList(String cuserid,String userid,String businessid,String iscomplain,
                                                 String businesstype,Integer startno,Integer pagesize,boolean selectCount);
 
 

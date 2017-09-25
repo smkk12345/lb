@@ -356,6 +356,10 @@ public class UserRelationController extends BaseController {
 	public BaseResp<List<AppUserMongoEntity>> selectRelationList(String userid, String updateTime){
 		logger.info("selectRelationList userid={},dataStr={}",userid,updateTime);
 		BaseResp<List<AppUserMongoEntity>> baseResp = new BaseResp<>();
+		if(StringUtils.hasBlankParams(userid)){
+			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+		}
+
 		if("0".equals(updateTime)){
 			updateTime = null;
 		}

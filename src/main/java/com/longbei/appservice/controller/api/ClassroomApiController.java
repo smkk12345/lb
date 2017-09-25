@@ -133,7 +133,7 @@ public class ClassroomApiController {
             pageSize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         try {
-            BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(userid, classroomid, iscomplain,
+            BaseResp<List<Improve>> listBaseResp = improveService.selectBusinessImproveList(null,userid, classroomid, iscomplain,
                     Constant.IMPROVE_CLASSROOM_TYPE, startNo, pageSize, true);
             Integer totalcount = Integer.parseInt(listBaseResp.getExpandData().get("totalcount")+"");
 			Page.setPageNo(startNo/pageSize+1,totalcount,pageSize);
