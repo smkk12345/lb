@@ -7,13 +7,8 @@ import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
-import com.longbei.appservice.common.constant.RedisCacheNames;
 import com.longbei.appservice.common.syscache.SysRulesCache;
-import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.common.utils.NumberUtil;
-import com.longbei.appservice.common.utils.ResultUtil;
-import com.longbei.appservice.common.utils.ShortUrlUtils;
-import com.longbei.appservice.common.utils.StringUtils;
+import com.longbei.appservice.common.utils.*;
 import com.longbei.appservice.config.AppserviceConfig;
 import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.CodeDao;
@@ -26,8 +21,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1404,7 +1397,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 //3.更改参榜人数
                 boolean updateRankFlag = updateRankMemberCount(rankId,-1);
                 //4.删除reids中榜单的该用户排名
-                boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,userId+"");
+                boolean redisRemoveFlag = springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,userId.toString());
                 return baseResp.ok("退榜成功");
             }else {
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_70,Constant.RTNINFO_SYS_70);
@@ -2126,7 +2119,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                             continue;
                         }
                         rankMembers.setSortnum(startNum+i+1);
-                        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId+"");
+                        AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(tempUserId);
                         if(userId != null && !Constant.VISITOR_UID.equals(userId + "")){
                         	//获取好友昵称
                             this.userRelationService.updateFriendRemark(userId,appUserMongoEntity);
