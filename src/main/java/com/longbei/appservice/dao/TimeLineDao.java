@@ -89,6 +89,26 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
         }
         return timeLines;
     }
+
+    public void clearDirtyData(String timelinetype,String id){
+        Query deletequery = Query.query(Criteria.where("_id").is(id));
+        switch (timelinetype){
+            case Constant.TIMELINE_IMPROVE_SQUARE:
+                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_SELF:
+                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_FRIEND:
+                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
+                break;
+            case Constant.TIMELINE_IMPROVE_ATTR:
+                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
+                break;
+            default:
+                break;
+        }
+    }
     
     /**
 	 * @author yinxc

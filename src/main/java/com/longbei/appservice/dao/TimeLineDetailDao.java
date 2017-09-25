@@ -2,6 +2,7 @@ package com.longbei.appservice.dao;/**
  * Created by luye on 2017/1/23.
  */
 
+import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.*;
@@ -217,7 +218,10 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         TimeLineDetail timeLineDetail = mongoTemplate.findOne(query, TimeLineDetail.class);
         if(timeLineDetail != null){
             Query deletequery = Query.query(Criteria.where("timeLineDetail.$id").is(timeLineDetail.getId()));
-            mongoTemplate.remove(deletequery, TimeLine.class);
+            mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
+            mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
+            mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
+            mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
         }
         mongoTemplate.remove(query, TimeLineDetail.class);
     }

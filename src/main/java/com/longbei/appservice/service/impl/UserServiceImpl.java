@@ -1032,6 +1032,7 @@ public class UserServiceImpl implements UserService {
 
 	private BaseResp<Object> canAbleLogin(String deviceindex,String username,long userid){
 		BaseResp<Object> baseResp = new BaseResp<>();
+
 		if(username.equals("13716832441")){
 			return baseResp.initCodeAndDesp();
 		}
@@ -1220,6 +1221,10 @@ public class UserServiceImpl implements UserService {
 			userInfo = userInfoMapper.selectByUserid(Long.parseLong(appUserMongoEntity.getId()));
 			BaseResp baseResp1 =  canAbleLogin(deviceindex,userInfo.getUsername(),userInfo.getUserid());
 			if(ResultUtil.fail(baseResp1)){
+				BaseResp baseResp2 = iUserBasicService.gettokenWithoutPwd(username);
+				baseResp1.getExpandData().put("userid", userInfo.getUserid());
+				String token = (String) baseResp2.getData();
+				baseResp1.getExpandData().put("token", token);
 				baseResp1.setData(userInfo);
 				return baseResp1;
 			}

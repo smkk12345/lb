@@ -165,7 +165,8 @@ public class ImproveController {
     @RequestMapping(value = "insert")
     public BaseResp<Object> insertImprove(String userid, String brief, String pickey, String filekey,
                                           String businesstype, String businessid, String ptype,
-                                          String ispublic, String itype, String pimpid,String picattribute, String duration) {
+                                          String ispublic, String itype, String pimpid,
+                                          String picattribute, String duration,String uniqueid) {
         logger.info("userid={},brief={},pickey={},filekey={},businesstype={},businessid={},ptype={},ispublic={},"
         		+ "itype={},pimpid={},duration={}",
                 userid,brief,pickey, filekey, businesstype,businessid, ptype,ispublic,itype,pimpid,duration);
@@ -190,7 +191,7 @@ public class ImproveController {
         try {
             baseResp = improveService.insertImprove(userid, brief, pickey, filekey,
                     businesstype, businessid, ptype,
-                    ispublic, itype, pimpid,picattribute, duration);
+                    ispublic, itype, pimpid,picattribute, duration,uniqueid);
             if (ResultUtil.isSuccess(baseResp)) {
                 logger.debug("insert improve success");
             }
@@ -1049,9 +1050,17 @@ public class ImproveController {
         }
         try {
             baseResp = improveService.selectImproveBusinessInfo(impid,businesstype,businessid,userid);
+            if(ResultUtil.isSuccess(baseResp)) {
+                if (StringUtils.isBlank(businessid)) {
+                    businessid = "";
+                }
+                baseResp.getExpandData().put("shareurl",
+                        commonCache.getShortUrl(AppserviceConfig.h5_share_improve_detail
+                                + "?impid=" + impid + "&businesstype=" + businesstype + "&businessid=" + businessid));
+            }
         } catch (Exception e) {
             logger.error("selectImproveBusinessInfo impid:{} businesstype:{} businessid:{} userid:{} is error:",
-                    impid,businesstype,businessid,userid,e);
+                impid,businesstype,businessid,userid,e);
         }
         return baseResp;
     }

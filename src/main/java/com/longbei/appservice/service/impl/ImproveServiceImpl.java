@@ -182,7 +182,12 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<Object> insertImprove(String userid, String brief,
                                  String pickey, String filekey,
                                  String businesstype,String businessid, String ptype,
-                                 String ispublic, String itype, String pimpid,String picattribute, String duration) {
+                                 String ispublic, String itype, String pimpid,
+                                 String picattribute, String duration,String uniqueid) {
+
+        if(!StringUtils.isBlank(uniqueid)&&springJedisDao.hasKey(uniqueid)){
+            return new BaseResp().initCodeAndDesp();
+        }
 
         Improve improve = new Improve();
         improve.setImpid(idGenerateService.getUniqueIdAsLong());
@@ -268,6 +273,9 @@ public class ImproveServiceImpl implements ImproveService{
         //进步发布完成之后
         if(isok && !Constant.IMPROVE_CLASSROOM_REPLY_TYPE.equals(businesstype)){
             try{
+                if(!StringUtils.isBlank(uniqueid)){
+                    springJedisDao.set(uniqueid,uniqueid,30);
+                }
                 final UserInfo userInfo = userInfoMapper.selectByPrimaryKey(Long.parseLong(userid));//此处通过id获取用户信息
                 //处理邀请发放进步币问题
                 threadPoolTaskExecutor.execute(new Runnable() {
@@ -1122,12 +1130,11 @@ public class ImproveServiceImpl implements ImproveService{
     public BaseResp<Object> removeImprove(String userid,String improveid,
                                  String businesstype,String businessid) {
         BaseResp<Object> baseResp = new BaseResp<>();
-        boolean isok = false;
         try {
         	Improve improves = selectImprove(Long.parseLong(improveid),userid,businesstype,businessid,null,null);
         	if(null != improves){
         		if(!userid.equals(improves.getUserid().toString())){
-        			return new BaseResp(Constant.STATUS_SYS_112, Constant.RTNINFO_SYS_112);
+        			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_112, Constant.RTNINFO_SYS_112);
         		}
         	}
             switch (businesstype){
@@ -1573,6 +1580,7 @@ public class ImproveServiceImpl implements ImproveService{
                 Long s5 = System.currentTimeMillis();
                 logger.info("getTimeLineDetail time={}",s5-s4);
                 if (null == timeLineDetail){
+                    timeLineDao.clearDirtyData(ctype,timeLine.getId());
                     continue;
                 }
                 Improve improve = new Improve();
