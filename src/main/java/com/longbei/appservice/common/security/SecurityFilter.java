@@ -226,6 +226,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 		}
 		// 获取当前版本 判断是否是最新版本
 		String enforcedV = sysAppupdate.getEnforceversion();
+		if(sysAppupdate.getEnforced().equals("1")){
+			enforcedV = sysAppupdate.getVersion();
+		}
 		if(StringUtils.isBlank(enforcedV)){
 			return true;
 		}
