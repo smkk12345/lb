@@ -2112,10 +2112,12 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                 Integer endNum = startNum + pageSize - 1;
                 Set<String> userIdList  = this.springJedisDao.zRevrange(Constant.REDIS_RANK_SORT+rankId,startNum,endNum);
                 if(userIdList != null && userIdList.size() > 0){
+                    List<String> deleteRedisUserId = new ArrayList<String>();
                     int i = 0;
                     for(String tempUserId:userIdList){
                         RankMembers rankMembers = this.rankMembersMapper.selectByRankIdAndUserId(rankId,Long.parseLong(tempUserId));
                         if(rankMembers == null || rankMembers.getStatus() != 1){
+                            deleteRedisUserId.add(tempUserId);
                             continue;
                         }
                         rankMembers.setSortnum(startNum+i+1);
@@ -2128,6 +2130,9 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                         rankMembers.setRankAward(new RankAward());
                         userList.add(rankMembers);
                         i++;
+                    }
+                    if(deleteRedisUserId.size() > 0){
+                        this.springJedisDao.zRem(Constant.REDIS_RANK_SORT+rankId,deleteRedisUserId.toArray(new String[deleteRedisUserId.size()]));
                     }
                 }
             }else{
