@@ -2346,8 +2346,7 @@ public class ImproveServiceImpl implements ImproveService{
         try {
             List<ImpAllDetail> impAllDetails = impAllDetailMapper.selectList(impid,listtype,pagesize,lastdate);
             Map<String,String> friendRemark = this.userRelationService.selectFriendRemarkList(userid);
-//            Set<String> friendIds = this.userRelationService.getFriendIds(userid);
-            Set<String> friendIds = friendRemark.keySet();
+            Set<String> friendIds = this.userRelationService.getFriendIds(userid);
             for (ImpAllDetail impAllDetail : impAllDetails) {
     			AppUserMongoEntity appUserMongoEntity = userMongoDao.
                         getAppUser(String.valueOf(impAllDetail.getUserid()));
