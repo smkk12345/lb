@@ -64,7 +64,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     public BaseResp<List<LiveGift>> selectList(Integer startNum, Integer endNum) {
         BaseResp<List<LiveGift>> baseResp = new BaseResp<>();
         try{
-            List<LiveGift> list = liveGiftMapper.selectList(0, 500);;
+            List<LiveGift> list = liveGiftMapper.selectListByIsdel(0, 500);
             baseResp.setData(list);
             baseResp.initCodeAndDesp();
         }catch (Exception e){
