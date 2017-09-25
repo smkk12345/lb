@@ -17,14 +17,25 @@
         id, giftid, title, price, fileurl, doublehit, createtime, updatetime, isdel, picurl
     </sql>
 
-  <select id="selectList" resultMap="BaseResultMap">
-      SELECT <include refid="Base_Column_List" />
-      FROM live_gift
-      order by price
-      <if test="startNum != null" >
-        limit #{startNum},#{pageSize}
-      </if>
-  </select>
+	  <select id="selectList" resultMap="BaseResultMap">
+	      SELECT <include refid="Base_Column_List" />
+	      FROM live_gift
+	      order by price
+	      <if test="startNum != null" >
+	        limit #{startNum},#{pageSize}
+	      </if>
+	  </select>
+  
+  	<select id="selectListByIsdel" resultMap="BaseResultMap">
+	      SELECT <include refid="Base_Column_List" />
+	      FROM live_gift 
+	      where isdel = '0' 
+	      order by price
+	      <if test="startNum != null" >
+	        limit #{startNum},#{pageSize}
+	      </if>
+	  </select>
+  	
     <select id="selectLiveGiftList"  parameterType="com.longbei.appservice.entity.LiveGift" resultMap="BaseResultMap" >
         select
         <include refid="Base_Column_List" />

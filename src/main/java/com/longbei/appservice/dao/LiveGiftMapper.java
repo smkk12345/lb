@@ -12,6 +12,9 @@ public interface LiveGiftMapper {
 
     List<LiveGift> selectList(@Param("startNum") Integer startNum,
                               @Param("pageSize") Integer pageSize);
+    
+    List<LiveGift> selectListByIsdel(@Param("startNum") Integer startNum,
+            @Param("pageSize") Integer pageSize);
 
     List<LiveGift> selectLiveGiftList(@Param("liveGift") LiveGift liveGift,
                                       @Param("startNum") Integer startNum,
