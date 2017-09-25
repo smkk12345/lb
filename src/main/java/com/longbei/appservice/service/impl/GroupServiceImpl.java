@@ -1122,7 +1122,7 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
      * @return
      */
     @Override
-    public BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid,String gradeid, String groupname,Long managerid) {
+    public BaseResp<List<Map<String,Object>>> batchCreateGroup(Long mainGroupUserid,String gradeid, String groupname,String managerid) {
         logger.info("batch create group mainGroupUserid:{} groupname:{}",mainGroupUserid,groupname);
         BaseResp<List<Map<String,Object>>> baseResp = new BaseResp<List<Map<String,Object>>>();
         try{
@@ -1179,26 +1179,32 @@ public class GroupServiceImpl extends BaseServiceImpl implements GroupService {
 
                 List<String> avatars = new ArrayList<>();//群头像的list
                 avatars.add(OssConfig.url+appUserMongoEntity.getAvatar());
-                if(managerid != null){
-                    AppUserMongoEntity managerUser = this.userMongoDao.getAppUser(managerid.toString());
-                    if(managerUser == null){
-                        continue;
-                    }
-                    SnsGroupMembers managerGroupMember = new SnsGroupMembers();
-                    managerGroupMember.setGroupid(Long.parseLong(groupId));
-                    managerGroupMember.setCreatetime(new Date());
-                    managerGroupMember.setUpdatetime(new Date());
-                    managerGroupMember.setNickname(managerUser.getNickname());
-                    managerGroupMember.setStatus(1);
-                    managerGroupMember.setAvatar(managerUser.getAvatar());
-                    managerGroupMember.setTopstatus(false);
-                    managerGroupMember.setDisturbstatus(false);
-                    managerGroupMember.setIdentity(0);
-                    managerGroupMember.setUserid(managerid);
-                    snsGroupMembersList.add(managerGroupMember);
+                if(StringUtils.isNotEmpty(managerid)){
+                    String[] managerIds = managerid.split(",");
+                    for(String tempManagerId:managerIds){
+                        AppUserMongoEntity managerUser = this.userMongoDao.getAppUser(tempManagerId);
+                        if(managerUser == null){
+                            continue;
+                        }
 
-                    snsGroup.setCurrentnum(snsGroup.getCurrentnum()+1);
-                    avatars.add(OssConfig.url+managerUser.getAvatar());
+                        SnsGroupMembers managerGroupMember = new SnsGroupMembers();
+                        managerGroupMember.setGroupid(Long.parseLong(groupId));
+                        managerGroupMember.setCreatetime(new Date());
+                        managerGroupMember.setUpdatetime(new Date());
+                        managerGroupMember.setNickname(managerUser.getNickname());
+                        managerGroupMember.setStatus(1);
+                        managerGroupMember.setAvatar(managerUser.getAvatar());
+                        managerGroupMember.setTopstatus(false);
+                        managerGroupMember.setDisturbstatus(false);
+                        managerGroupMember.setIdentity(0);
+                        managerGroupMember.setUserid(Long.parseLong(tempManagerId));
+                        snsGroupMembersList.add(managerGroupMember);
+
+                        snsGroup.setCurrentnum(snsGroup.getCurrentnum()+1);
+                        if(snsGroup.getCurrentnum() < 9){
+                            avatars.add(OssConfig.url+managerUser.getAvatar());
+                        }
+                    }
                 }
                 InputStream inputStream = ImageUtils.getCombinationOfhead(avatars);
                 String key = getGroupAvatar();

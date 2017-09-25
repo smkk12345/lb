@@ -30,7 +30,7 @@ public class GroupApiController {
      * @return
      */
     @RequestMapping(value="batchCreateYSTGroup")
-    public BaseResp<List<Map<String,Object>>> batchCreateYSTGroup(Long mainGroupUserid, String gradeid, String groupname,Long managerid){
+    public BaseResp<List<Map<String,Object>>> batchCreateYSTGroup(Long mainGroupUserid, String gradeid, String groupname,String managerid){
         BaseResp<List<Map<String,Object>>> baseResp = new BaseResp<List<Map<String,Object>>>();
         if(mainGroupUserid == null || StringUtils.isEmpty(groupname) || StringUtils.isEmpty(gradeid) || managerid == null){
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);

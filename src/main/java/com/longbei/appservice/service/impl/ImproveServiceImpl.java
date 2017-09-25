@@ -235,18 +235,22 @@ public class ImproveServiceImpl implements ImproveService{
                     //0 不是批复。1 是批复
                     improve.setIsresponded("1");
                     //获取教室微进步批复作业列表
-                	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), 
-                			Long.parseLong(pimpid));
-                	if(null != replyList && replyList.size()>0){
-                		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1112, Constant.RTNINFO_SYS_1112);
-                	}
+//                	List<ImproveClassroom> replyList = improveClassroomMapper.selectListByBusinessid(improve.getBusinessid(), 
+//                			Long.parseLong(pimpid));
+//                	if(null != replyList && replyList.size()>0){
+//                		return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1112, Constant.RTNINFO_SYS_1112);
+//                	}
+                    ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
+                    if(null != improveClassroom && improveClassroom.getPimpid() != null 
+                    		&& improveClassroom.getPimpid().intValue() != 0){
+                    	return baseResp.initCodeAndDesp(Constant.STATUS_SYS_1112, Constant.RTNINFO_SYS_1112);
+                    }
                     isok = insertImproveForClassroomReply(improve);
                     
                     //修改用户作业信息     pimpid对应批复id
                     improveClassroomMapper.updatePimpidByImpid(businessid, improve.getImpid().toString(), pimpid);
                     //教室批复作业
                     commentid = improve.getImpid().toString();
-                    ImproveClassroom improveClassroom = improveClassroomMapper.selectByPrimaryKey(Long.parseLong(pimpid));
                     if(null != improveClassroom){
                         //批复完成后添加消息
                     	Classroom classroom = classroomService.selectByClassroomid(Long.parseLong(businessid));
@@ -1265,6 +1269,9 @@ public class ImproveServiceImpl implements ImproveService{
 
     //进步删除之后清理脏数据
     private void clearDirtyData(Improve improve){
+        if("1".equals(improve.getIsbusinessdel())){
+            return ;
+        }
         int flower = improve.getFlowers();
         int like = getLikeFromRedis(improve.getImpid().toString(),improve.getBusinessid().toString(),improve.getBusinesstype());
         String tableName = getTableNameByBusinessType(improve.getBusinesstype());
