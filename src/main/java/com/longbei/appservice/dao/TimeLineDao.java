@@ -8,6 +8,7 @@ import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.entity.TimeLine;
 import com.longbei.appservice.entity.TimeLineDetail;
 import com.mongodb.WriteResult;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -92,22 +93,24 @@ public class TimeLineDao extends BaseMongoDao<TimeLine>{
 
     public void clearDirtyData(String timelinetype,String id){
         Query deletequery = Query.query(Criteria.where("_id").is(id));
+        WriteResult result  = null;
         switch (timelinetype){
             case Constant.TIMELINE_IMPROVE_SQUARE:
-                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
+                result = mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SQUARE_COLLECTION);
                 break;
             case Constant.TIMELINE_IMPROVE_SELF:
-                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
+                result = mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_SELF_COLLECTION);
                 break;
             case Constant.TIMELINE_IMPROVE_FRIEND:
-                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
+                result = mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_FRIEND_COLLECTION);
                 break;
             case Constant.TIMELINE_IMPROVE_ATTR:
-                mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
+                result = mongoTemplate.remove(deletequery, Constant.TIMELINE_IMPROVE_ATTR_COLLECTION);
                 break;
             default:
                 break;
         }
+        logger.info("clearDirtyData result={}",JSONObject.fromObject(result).toString());
     }
     
     /**
