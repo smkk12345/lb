@@ -33,7 +33,7 @@ import java.util.Map;
  * @create 2017-08-14 下午5:21
  **/
 @Service
-public class UserInComeServiceImpl implements UserInComeService{
+public class UserInComeServiceImpl implements UserInComeService {
 
     private static Logger logger = LoggerFactory.getLogger(UserInComeServiceImpl.class);
 
@@ -58,12 +58,13 @@ public class UserInComeServiceImpl implements UserInComeService{
 
     /**
      * 添加教室收入,提现（包含明细的处理，消息的处理）
+     *
      * @param classroomId  教室id
      * @param originUserId 来源用户id
-     * @param userId   教师id
-     * @param origin     来源  0 教室学费，1 送礼物，2 提现 3 提现失败 4提现成功，5 退学费，6转入钱包
-     * @param type 0 - 收入 1 - 支出
-     * @param num  龙币数量
+     * @param userId       教师id
+     * @param origin       来源  0 教室学费，1 送礼物，2 提现 3 提现失败 4提现成功，5 退学费，6转入钱包
+     * @param type         0 - 收入 1 - 支出
+     * @param num          龙币数量
      * @return
      * @author luye
      * @create 2017-08-14 上午9:44
@@ -74,26 +75,26 @@ public class UserInComeServiceImpl implements UserInComeService{
                                              final String origin, String type,
                                              int num, String detailremarker) {
         BaseResp<String> baseResp = new BaseResp<>();
-        if (!StringUtils.isBlank(classroomId)){
+        if (!StringUtils.isBlank(classroomId)) {
             Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomId));
-            if (null != classroom){
-                if ("0".equals(type) && !"0".equals(classroom.getSourcetype())){
+            if (null != classroom) {
+                if ("0".equals(type) && !"0".equals(classroom.getSourcetype())) {
                     num = (int) Math.ceil(num * (1 - SysRulesCache.behaviorRule.getClassroomcommission()));
                 }
             }
         } else {
-            if ("0".equals(type)){
+            if ("0".equals(type)) {
                 num = (int) Math.ceil(num * (1 - SysRulesCache.behaviorRule.getClassroomcommission()));
             }
         }
 
         //跟新 user_income
-        baseResp = updateUserInCome(userId,num,type);
-        if (!ResultUtil.isSuccess(baseResp)){
+        baseResp = updateUserInCome(userId, num, type);
+        if (!ResultUtil.isSuccess(baseResp)) {
             return baseResp;
         }
         //添加明细
-        baseResp = insertUserInComeDetail(userId,origin,num,type,classroomId,originUserId,detailremarker,type);
+        baseResp = insertUserInComeDetail(userId, origin, num, type, classroomId, originUserId, detailremarker, type);
 
         return baseResp;
     }
@@ -103,8 +104,8 @@ public class UserInComeServiceImpl implements UserInComeService{
     public BaseResp insertUserInComeOrder(final String userid, final int num, String receiptUser,
                                           String receiptBank, String receiptNum, final String origin) {
         BaseResp baseResp = new BaseResp();
-        baseResp = updateUserInCome(null,userid,"0",origin,"1",num,null);
-        if (!ResultUtil.isSuccess(baseResp)){
+        baseResp = updateUserInCome(null, userid, "0", origin, "1", num, null);
+        if (!ResultUtil.isSuccess(baseResp)) {
             return baseResp;
         }
         UserInComeOrder userInComeOrder = new UserInComeOrder();
@@ -114,25 +115,25 @@ public class UserInComeServiceImpl implements UserInComeService{
         userInComeOrder.setNum(String.valueOf(num));
         userInComeOrder.setCreatetime(new Date());
         //转入钱包
-        if ("6".equals(origin)){
-            baseResp = userInComeToWallet(userid,userInComeOrder);
+        if ("6".equals(origin)) {
+            baseResp = userInComeToWallet(userid, userInComeOrder);
         }
         //银行卡，支付宝
-        if ("2".equals(origin)){
+        if ("2".equals(origin)) {
             userInComeOrder.setUiostatus(0);
             userInComeOrder.setReceiptUser(receiptUser);
             userInComeOrder.setReceiptBank(receiptBank);
             userInComeOrder.setReceiptNum(receiptNum);
             int res = userInComeOrderMapper.insertSelective(userInComeOrder);
-            if (res > 0){
+            if (res > 0) {
                 baseResp.initCodeAndDesp();
             }
         }
-        if (ResultUtil.isSuccess(baseResp)){
+        if (ResultUtil.isSuccess(baseResp)) {
             threadPoolTaskExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    sendUserInComeMessage(userid,num,origin);
+                    sendUserInComeMessage(userid, num, origin);
                 }
             });
         }
@@ -147,21 +148,21 @@ public class UserInComeServiceImpl implements UserInComeService{
             baseResp.initCodeAndDesp();
             baseResp.setData(userInCome);
         } catch (Exception e) {
-            logger.error("select userincome info userid={} is error:",userid,e);
+            logger.error("select userincome info userid={} is error:", userid, e);
         }
         return baseResp;
     }
 
     @Override
-    public BaseResp<UserInComeDetail> selectUserInComeDetail(String detailId,String detailType){
+    public BaseResp<UserInComeDetail> selectUserInComeDetail(String detailId, String detailType) {
         BaseResp<UserInComeDetail> baseResp = new BaseResp<>();
-        if ("0".equals(detailType)){
+        if ("0".equals(detailType)) {
             UserInComeDetail userInComeDetail = userInComeDetailMapper.selectUserInComeInDetail(detailId);
             initUserInComeInfo(userInComeDetail);
             baseResp.initCodeAndDesp();
             baseResp.setData(userInComeDetail);
         }
-        if ("1".equals(detailType)){
+        if ("1".equals(detailType)) {
             UserInComeDetail userInComeDetail = userInComeDetailMapper.selectUserInComeOutDetail(detailId);
             baseResp.initCodeAndDesp();
             baseResp.setData(userInComeDetail);
@@ -170,49 +171,48 @@ public class UserInComeServiceImpl implements UserInComeService{
     }
 
 
-
     @Override
     public BaseResp<Page<UserInComeDetail>> selectUserInComeDetailList
             (UserInComeDetail userInComeDetail, Integer pageNo, Integer pageSize, boolean istotalinfo) {
         BaseResp<Page<UserInComeDetail>> baseResp = new BaseResp<>();
-        Page<UserInComeDetail> page = new Page<>(pageNo,pageSize);
+        Page<UserInComeDetail> page = new Page<>(pageNo, pageSize);
         try {
             int totalCount = userInComeDetailMapper.selectCount(userInComeDetail);
             List<UserInComeDetail> list = userInComeDetailMapper.selectList(userInComeDetail,
-                    pageSize * (pageNo - 1),pageSize);
-            if ("0".equals(userInComeDetail.getDetailtype())){
-                for (UserInComeDetail userInComeDetail1 : list){
+                    pageSize * (pageNo - 1), pageSize);
+            if ("0".equals(userInComeDetail.getDetailtype())) {
+                for (UserInComeDetail userInComeDetail1 : list) {
                     initUserInComeInfo(userInComeDetail1);
+                }
             }
-            }
-            if ("1".equals(userInComeDetail.getDetailtype())){
-                for (UserInComeDetail userInComeDetail1 : list){
+            if ("1".equals(userInComeDetail.getDetailtype())) {
+                for (UserInComeDetail userInComeDetail1 : list) {
                     int itype = Integer.parseInt(userInComeDetail1.getItype());
-                    if (itype >= 2 && itype < 4){
+                    if (itype >= 2 && itype < 4) {
                         //TODO 这个地方可以从 user_income_order 中通过 detailid 获取 后期再说吧
                         UserInComeDetail user = userInComeDetailMapper.selectUserInComeOutDetail
                                 (String.valueOf(userInComeDetail1.getDetailid()));
-                        if (null != user){
-                            BeanUtils.copyProperties(userInComeDetail1,user);
+                        if (null != user) {
+                            BeanUtils.copyProperties(userInComeDetail1, user);
                         }
                     }
                 }
             }
-            Page.setPageNo(pageNo,totalCount,pageSize);
+            Page.setPageNo(pageNo, totalCount, pageSize);
             page.setTotalCount(totalCount);
             page.setList(list);
             baseResp.initCodeAndDesp();
             baseResp.setData(page);
-            Map<String,Object> map = new HashedMap();
-            if (istotalinfo){
-                map.put("userInCome",selectUserInCome(userInComeDetail.getUserid()+"").getData());
+            Map<String, Object> map = new HashedMap();
+            if (istotalinfo) {
+                map.put("userInCome", selectUserInCome(userInComeDetail.getUserid() + "").getData());
             }
-            if (!StringUtils.isBlank(userInComeDetail.getCsourcetype())){
-                map.put("totalnum",null==userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype())?0:userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype()));
+            if (!StringUtils.isBlank(userInComeDetail.getCsourcetype())) {
+                map.put("totalnum", null == userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype()) ? 0 : userInComeDetailMapper.selectTotalCoin(userInComeDetail.getCsourcetype()));
             }
             baseResp.setExpandData(map);
         } catch (Exception e) {
-            logger.error("selectUserInComeDetailList is error:",e);
+            logger.error("selectUserInComeDetailList is error:", e);
         }
         return baseResp;
     }
@@ -224,14 +224,14 @@ public class UserInComeServiceImpl implements UserInComeService{
                                                                      Integer pageNo, Integer pagesize) {
 
         BaseResp<Page<UserInComeOrder>> baseResp = new BaseResp<>();
-        Page<UserInComeOrder> page = new Page<>(pageNo,pagesize);
+        Page<UserInComeOrder> page = new Page<>(pageNo, pagesize);
         List<String> userids = new ArrayList<>();
         try {
-            if (!StringUtils.isBlank(nickname)){
+            if (!StringUtils.isBlank(nickname)) {
                 AppUserMongoEntity appUserMongoEntity = new AppUserMongoEntity();
                 appUserMongoEntity.setNickname(nickname);
                 List<AppUserMongoEntity> list = userMongoDao.getAppUsers(appUserMongoEntity);
-                for (AppUserMongoEntity appuser : list){
+                for (AppUserMongoEntity appuser : list) {
                     userids.add(String.valueOf(appuser.getUserid()));
                 }
             }
@@ -241,9 +241,9 @@ public class UserInComeServiceImpl implements UserInComeService{
             userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
             userInComeOrder.setUserids(userids);
             int totalCount = userInComeOrderMapper.selectCount(userInComeOrder);
-            List<UserInComeOrder> list = userInComeOrderMapper.selectList(userInComeOrder,pagesize*(pageNo - 1),pagesize);
-            for(int i=0;i<list.size();i++) {
-                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(list.get(i).getUserid()+"");
+            List<UserInComeOrder> list = userInComeOrderMapper.selectList(userInComeOrder, pagesize * (pageNo - 1), pagesize);
+            for (int i = 0; i < list.size(); i++) {
+                AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUser(list.get(i).getUserid() + "");
                 list.get(i).setAppUserMongoEntity(appUserMongoEntity);
             }
             page.setTotalCount(totalCount);
@@ -251,7 +251,7 @@ public class UserInComeServiceImpl implements UserInComeService{
             baseResp.initCodeAndDesp();
             baseResp.setData(page);
         } catch (Exception e) {
-            logger.error("selectUserIncomeOrderList uiostatus={} is error:",uiostatus,e);
+            logger.error("selectUserIncomeOrderList uiostatus={} is error:", uiostatus, e);
         }
 
         return baseResp;
@@ -263,10 +263,10 @@ public class UserInComeServiceImpl implements UserInComeService{
         BaseResp baseResp = new BaseResp();
 
         final UserInComeOrder uorder = userInComeOrderMapper.selectByPrimaryKey(uioid);
-        if (null == uorder){
+        if (null == uorder) {
             return baseResp;
         }
-        String date= DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
+        String date = DateUtils.getDate("yyyy-MM-dd HH:mm:ss");
         UserInComeOrder userInComeOrder = new UserInComeOrder();
         userInComeOrder.setUioid(Long.parseLong(uioid));
         userInComeOrder.setUiostatus(Integer.parseInt(uiostatus));
@@ -276,27 +276,27 @@ public class UserInComeServiceImpl implements UserInComeService{
             int res = 0;
             UserInComeDetail userInComeDetail = new UserInComeDetail();
             final String oldnum = uorder.getNum();
-            if ("2".equals(uiostatus) || "3".equals(uiostatus)){
+            if ("2".equals(uiostatus) || "3".equals(uiostatus)) {
                 res = userInComeMapper.updateOutGoByUserId(String.valueOf(uorder.getUserid())
-                        ,Integer.parseInt(oldnum)*-1,new Date());
+                        , Integer.parseInt(oldnum) * -1, new Date());
                 userInComeDetail.setDetailstatus("2");
                 threadPoolTaskExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        sendUserInComeMessage(String.valueOf(uorder.getUserid()),Integer.parseInt(oldnum),"3");
+                        sendUserInComeMessage(String.valueOf(uorder.getUserid()), Integer.parseInt(oldnum), "3");
                     }
                 });
             }
-            int n= userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
-            if (n > 0){
+            int n = userInComeOrderMapper.updateByPrimaryKeySelective(userInComeOrder);
+            if (n > 0) {
                 userInComeDetail.setDetailid(uorder.getDetailid());
                 userInComeDetail.setUpdatetime(new Date());
-                if ("4".equals(uiostatus)){
+                if ("4".equals(uiostatus)) {
                     userInComeDetail.setDetailstatus("1");
                     threadPoolTaskExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
-                            sendUserInComeMessage(String.valueOf(uorder.getUserid()),Integer.parseInt(oldnum),"4");
+                            sendUserInComeMessage(String.valueOf(uorder.getUserid()), Integer.parseInt(oldnum), "4");
                         }
                     });
                 }
@@ -304,82 +304,80 @@ public class UserInComeServiceImpl implements UserInComeService{
                 baseResp.initCodeAndDesp();
             }
         } catch (Exception e) {
-            logger.error("updateUserIncomeOrderStatus uioid={} uiostatus={} is error:",uioid,uiostatus,e);
+            logger.error("updateUserIncomeOrderStatus uioid={} uiostatus={} is error:", uioid, uiostatus, e);
         }
 
         return baseResp;
     }
 
     /**
-     *
      * @param userid 用户id
-     * @param num  数量
-     * @param type  0 - 收入 1 - 支出
+     * @param num    数量
+     * @param type   0 - 收入 1 - 支出
      * @return
      */
-    private BaseResp updateUserInCome(String userid,Integer num,String type){
+    private BaseResp updateUserInCome(String userid, Integer num, String type) {
         BaseResp baseResp = new BaseResp();
-        if (StringUtils.hasBlankParams(userid,type)){
-            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
+        if (StringUtils.hasBlankParams(userid, type)) {
+            return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
         }
         //收入
-        if ("0".equals(type)){
-            baseResp = updateOrSaveUserInCome(userid,num);
+        if ("0".equals(type)) {
+            baseResp = updateOrSaveUserInCome(userid, num);
         }
         //支出
-        if ("1".equals(type)){
-            baseResp = updateUserInComeOutGo(userid,num);
+        if ("1".equals(type)) {
+            baseResp = updateUserInComeOutGo(userid, num);
         }
         return baseResp;
     }
 
 
-    private BaseResp updateOrSaveUserInCome(String userid,Integer num){
+    private BaseResp updateOrSaveUserInCome(String userid, Integer num) {
         int res = 0;
         BaseResp baseResp = new BaseResp();
         try {
             UserInCome userInCome = userInComeMapper.selectByUserId(userid);
-            if (null == userInCome){
+            if (null == userInCome) {
                 UserInCome userInCome1 = new UserInCome();
                 userInCome1.setUserid(Long.parseLong(userid));
                 userInCome1.setTotal(num);
                 userInCome1.setCreatetime(new Date());
                 res = userInComeMapper.insertSelective(userInCome1);
             } else {
-                res = userInComeMapper.updateTotalByUserId(userid,num,new Date());
+                res = userInComeMapper.updateTotalByUserId(userid, num, new Date());
             }
         } catch (Exception e) {
-            logger.error("updateOrSaveUserInCome userid={} num={} is error:",userid,num,e);
+            logger.error("updateOrSaveUserInCome userid={} num={} is error:", userid, num, e);
         }
-        if (res > 0){
+        if (res > 0) {
             baseResp.initCodeAndDesp();
         }
         return baseResp;
     }
 
 
-
-    private BaseResp updateUserInComeOutGo(String userid,Integer num){
+    private BaseResp updateUserInComeOutGo(String userid, Integer num) {
         BaseResp baseResp = new BaseResp();
         int res = 0;
         try {
-            res = userInComeMapper.updateOutGoByUserId(userid,num,new Date());
+            res = userInComeMapper.updateOutGoByUserId(userid, num, new Date());
         } catch (Exception e) {
-            logger.error("updateUserInComeOutGo userid={} num={} is error:",userid,num,e);
+            logger.error("updateUserInComeOutGo userid={} num={} is error:", userid, num, e);
         }
-        if (res > 0){
+        if (res > 0) {
             baseResp.initCodeAndDesp();
         } else {
-            baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,"提取失败，收益不足");
+            baseResp.initCodeAndDesp(Constant.STATUS_SYS_01, "提取失败，收益不足");
         }
         return baseResp;
     }
 
 
-    private BaseResp insertUserInComeDetail(String userid,String itype,int num,
-                                            String businesstype,String businessid,
-                                            String originuserid,String remarker,
-                                            String detailtype){
+    private BaseResp insertUserInComeDetail(String userid, String itype, int num,
+                                            String businesstype, String businessid,
+                                            String originuserid, String remarker,
+                                            String detailtype) {
 
         BaseResp baseResp = new BaseResp();
 
@@ -391,28 +389,28 @@ public class UserInComeServiceImpl implements UserInComeService{
             userInComeDetail.setItype(itype);
             userInComeDetail.setNum(num);
             userInComeDetail.setBusinesstype(businesstype);
-            userInComeDetail.setBusinesstid(Long.parseLong(businessid==null?"0":businessid));
+            userInComeDetail.setBusinesstid(Long.parseLong(businessid == null ? "0" : businessid));
             userInComeDetail.setOriginuserid(Long.parseLong(originuserid));
             userInComeDetail.setRemarker(remarker);
             userInComeDetail.setDetailtype(detailtype);
             userInComeDetail.setCreatetime(new Date());
-            if ("0".equals(detailtype)){
+            if ("0".equals(detailtype)) {
                 userInComeDetail.setDetailstatus("0");
-                if ("0".equals(businesstype)){
+                if ("0".equals(businesstype)) {
                     Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(businessid));
-                    userInComeDetail.setCsourcetype(classroom==null?"1":classroom.getSourcetype());
+                    userInComeDetail.setCsourcetype(classroom == null ? "1" : classroom.getSourcetype());
                 }
             }
-            if ("1".equals(detailtype) && "5".equals(itype)){
+            if ("1".equals(detailtype) && "5".equals(itype)) {
                 userInComeDetail.setDetailstatus("0");
             }
             int res = userInComeDetailMapper.insertSelective(userInComeDetail);
-            if (res > 0){
+            if (res > 0) {
                 baseResp.initCodeAndDesp();
                 baseResp.setData(detailid);
             }
         } catch (Exception e) {
-            logger.error("insertUserInComeDetail userid={} is error:",userid,e);
+            logger.error("insertUserInComeDetail userid={} is error:", userid, e);
         }
         return baseResp;
     }
@@ -420,39 +418,40 @@ public class UserInComeServiceImpl implements UserInComeService{
 
     /**
      * 发送消息
-     * @param userid  用户id
-     * @param num     龙币数量
-     * @param tyep    消息类型 2 - 提现到银行卡，支付宝  6 - 提现到钱包
+     *
+     * @param userid 用户id
+     * @param num    龙币数量
+     * @param tyep   消息类型 2 - 提现到银行卡，支付宝  6 - 提现到钱包
      */
-    private void sendUserInComeMessage(String userid,int num,String tyep){
+    private void sendUserInComeMessage(String userid, int num, String tyep) {
         String remark = "";
         String title = "龙币提现";
         //结算中消息
-        if ("2".equals(tyep)){
-            remark = "您申请提现的"+ num + "个龙币，正在结算中，我们将以最快的速度为你处理。";
+        if ("2".equals(tyep)) {
+            remark = "您申请提现的" + num + "个龙币，正在结算中，我们将以最快的速度为你处理。";
         }
         //结算失败消息
-        if ("3".equals(tyep)){
-            remark = "您申请提现的"+ num + "个龙币，结算失败龙币已经退还到您的收益余额中，给您造成的不便尽请谅解，详细信息请登录龙杯官网进行查看。";
+        if ("3".equals(tyep)) {
+            remark = "您申请提现的" + num + "个龙币，结算失败龙币已经退还到您的收益余额中，给您造成的不便尽请谅解，详细信息请登录龙杯官网进行查看。";
         }
         //结算成功消息
-        if ("4".equals(tyep)){
-            remark = "您申请提现的"+ num + "个龙币，结算成功，请您留意个人账户的交易信息。";
+        if ("4".equals(tyep)) {
+            remark = "您申请提现的" + num + "个龙币，结算成功，请您留意个人账户的交易信息。";
         }
         //转入钱包
-        if ("6".equals(tyep)){
-            remark = "您申请提现的"+ num + "个龙币，已转入您的钱包。";
+        if ("6".equals(tyep)) {
+            remark = "您申请提现的" + num + "个龙币，已转入您的钱包。";
         }
-        userMsgMapper.insertSelective(createInviteUserMsg(userid,remark,title,tyep));
+        userMsgMapper.insertSelective(createInviteUserMsg(userid, remark, title, tyep));
     }
 
-    private UserMsg createInviteUserMsg(String  userid,String remark,String title,String type){
+    private UserMsg createInviteUserMsg(String userid, String remark, String title, String type) {
         UserMsg userMsg = new UserMsg();
         userMsg.setFriendid(Long.parseLong(Constant.SQUARE_USER_ID));
         userMsg.setUserid(Long.parseLong(userid));
         //mtype 0 系统消息     1 对话消息   2:@我消息      用户中奖消息在@我      未中奖消息在通知消息
         userMsg.setMtype("0");
-        if ("6".equals(type)){
+        if ("6".equals(type)) {
             userMsg.setMsgtype("63");
         } else {
             userMsg.setMsgtype("64");
@@ -471,19 +470,19 @@ public class UserInComeServiceImpl implements UserInComeService{
     }
 
 
-    private BaseResp userInComeToWallet(String userid,UserInComeOrder userInComeOrder){
+    private BaseResp userInComeToWallet(String userid, UserInComeOrder userInComeOrder) {
         BaseResp baseResp = new BaseResp();
-        if (null == userInComeOrder.getNum()){
+        if (null == userInComeOrder.getNum()) {
             return baseResp;
         }
         try {
             userInComeOrder.setUiostatus(4);
             int res = userInComeOrderMapper.insertSelective(userInComeOrder);
-            if (res > 0){
+            if (res > 0) {
                 baseResp = userMoneyDetailService.insertPublic
-                        (Long.parseLong(userid),"11",Integer.parseInt(userInComeOrder.getNum()),0);
+                        (Long.parseLong(userid), "11", Integer.parseInt(userInComeOrder.getNum()), 0);
             }
-            if (ResultUtil.isSuccess(baseResp)){
+            if (ResultUtil.isSuccess(baseResp)) {
                 UserInComeDetail userInComeDetail = new UserInComeDetail();
                 userInComeDetail.setDetailid(userInComeOrder.getDetailid());
                 //结算成功
@@ -493,17 +492,17 @@ public class UserInComeServiceImpl implements UserInComeService{
                 userInComeDetailMapper.updateByPrimaryKeySelective(userInComeDetail);
             }
         } catch (Exception e) {
-            logger.error("userInComeToWallet userid={} is error:",userid,e);
+            logger.error("userInComeToWallet userid={} is error:", userid, e);
         }
         return baseResp;
     }
 
 
-    private void initUserInComeInfo(UserInComeDetail userInComeDetail){
-        if (null == userInComeDetail){
+    private void initUserInComeInfo(UserInComeDetail userInComeDetail) {
+        if (null == userInComeDetail) {
             return;
         }
-        if ("0".equals(userInComeDetail.getBusinesstype())){
+        if ("0".equals(userInComeDetail.getBusinesstype())) {
             Classroom classroom = classroomMapper.selectByPrimaryKey(userInComeDetail.getBusinesstid());
             userInComeDetail.setClassroom(classroom);
             AppUserMongoEntity appUserMongoEntity =
