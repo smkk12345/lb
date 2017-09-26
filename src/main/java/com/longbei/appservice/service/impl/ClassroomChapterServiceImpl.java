@@ -138,20 +138,22 @@ public class ClassroomChapterServiceImpl implements ClassroomChapterService {
 				}
 			}else{
 				int coursecount = 0;
-				chapterList = classroomChapterMapper.selectChapterByCid(classroomid, startNo, pageSize);
-				for (int i = 0; i < chapterList.size(); i++) {
-					ClassroomChapter classroomChapter = chapterList.get(i);
+				int chaptercount = 0;
+				int size = 0;
+				List<ClassroomChapter> list = classroomChapterMapper.selectChapterByCid(classroomid, startNo, pageSize);
+				size = list.size();
+				for (int i = 0; i < size; i++) {
+					ClassroomChapter classroomChapter = list.get(i);
 					List<ClassroomCourses> courseList = classroomCoursesMapper.selectByChapterId(classroomid,classroomChapter.getChapterid());
 					if(null != courseList && courseList.size()>0){
 						classroomChapter.setCoursesList(courseList);
-					}else{
-						chapterList.remove(classroomChapter);
-						continue;
+						chapterList.add(classroomChapter);
+						chaptercount ++;
+						coursecount = coursecount + courseList.size();
 					}
-					coursecount = coursecount + courseList.size();
 				}
 				baseResp.getExpandData().put("courses",coursecount);
-				baseResp.getExpandData().put("chapters",chapterList.size());
+				baseResp.getExpandData().put("chapters",chaptercount);
 			}
 			baseResp.setData(chapterList);
 			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00, Constant.RTNINFO_SYS_00);
