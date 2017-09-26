@@ -493,6 +493,7 @@ public class UserRelationServiceImpl implements UserRelationService {
 					map.put("avatar",userInfo.getAvatar());
 					map.put("userid",userInfo.getUserid());
 					map.put("brief",userInfo.getBrief());
+					map.put("username",userInfo.getUsername());
 					map.put("vcertification",userInfo.getVcertification());
 					if(Constant.VISITOR_UID.equals(userId + "")){
 						map.put("usernickname",userInfo.getNickname());

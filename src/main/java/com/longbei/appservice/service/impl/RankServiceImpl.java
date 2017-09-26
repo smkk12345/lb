@@ -2233,6 +2233,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
                     map.put("userid",appUserMongoEntity.getUserid());
                     map.put("avatar",appUserMongoEntity.getAvatar());
                     map.put("usernickname",appUserMongoEntity.getNickname());
+                    map.put("username",appUserMongoEntity.getUsername());
                     map.put("vcertification",appUserMongoEntity.getVcertification());
 
                     if(userId == null){
@@ -2266,7 +2267,7 @@ public class RankServiceImpl extends BaseServiceImpl implements RankService{
             baseResp.setData(resultList);
             baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
         }catch(Exception e){
-            logger.error("select rank fashionMain error rankId:{} startNum:{} pageSize:{}",rankId,startNum,pageSize);
+            logger.error("select rank fashionMain error rankId:{} startNum:{} pageSize:{}",rankId,startNum,pageSize,e);
             printException(e);
         }
         return baseResp;
