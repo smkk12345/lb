@@ -70,6 +70,7 @@ public class LiveAppController{
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         //处理关闭教室直播逻辑
+        logger.info("updateOnlineStatusclose satrt ------------------");
         baseResp = classroomService.updateOnlineStatus(roomid,courseid,userid,"2");
 
         return baseResp.initCodeAndDesp();

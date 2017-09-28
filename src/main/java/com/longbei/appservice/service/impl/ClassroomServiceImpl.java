@@ -480,7 +480,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 				//最近一次直播的日期时间      提前5分钟可进入     延迟5分钟直播结束
 				Date startdate = selectDate(-Constant.LIVE_START);
 				
-				Date enddate = selectDate(-Constant.LIVE_END);
+				Date enddate = selectDate(Constant.LIVE_END);
+
 				logger.info("selectRoomHeadDetail startdate = {}, enddate = {}", 
 						DateUtils.formatDateTime1(startdate), DateUtils.formatDateTime1(enddate));
 				
@@ -1611,6 +1612,7 @@ public class ClassroomServiceImpl implements ClassroomService {
         			if(classroomCourses.getStatus() == 1){
         				int liveend = Constant.LIVE_END;
         				if(end>liveend*60){
+							logger.info("updateOnlineStatussch satrt ------------------");
             				//直播结束
             				updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
             				//删除mongo数据

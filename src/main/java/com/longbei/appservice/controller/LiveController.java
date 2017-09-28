@@ -305,6 +305,7 @@ public class LiveController {
                 uid,filekey,pickey,duration);
         //处理教室直播逻辑
         try{
+            logger.info("updateOnlineStatusupdate satrt ------------------");
             LiveInfo liveInfo = liveInfoMongoService.selectLiveInfoByLiveid(Long.parseLong(uid));
             if(null == liveInfo){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
