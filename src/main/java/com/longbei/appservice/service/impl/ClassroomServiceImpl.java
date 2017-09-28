@@ -484,9 +484,19 @@ public class ClassroomServiceImpl implements ClassroomService {
 
 //				logger.info("selectRoomHeadDetail startdate = {}, enddate = {}",
 //						DateUtils.formatDateTime1(startdate), DateUtils.formatDateTime1(enddate));
-				
-				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, 
-						null, null);
+				/**
+				 * 1，开始时间最早是今天
+				 * 2，没结束
+				 * 3，结束时间大于当前时间
+				 * 4，通过daytime排序取第一个
+				 * 5，直播状态限制
+				 */
+				String curDay = DateUtils.formatDate(new Date(),"yyyy-MM-dd");
+				curDay = curDay + " 00:00:00";
+
+				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid,
+						curDay, DateUtils.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss"));
+
 				if(null != classroomCourses){
 					List<ClassroomCourses> liveCourses = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid,  
 							classroomCourses.getDaytime(), null, null, 0, 0);

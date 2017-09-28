@@ -196,11 +196,11 @@ public class ClassroomCoursesServiceImpl implements ClassroomCoursesService {
 		return reseResp;
 	}
 	
-	@Override
-	public ClassroomCourses selectTeachingCoursesListByCid(long classroomid, Date startdate, Date enddate) {
-		ClassroomCourses classroomCourses = classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, startdate, enddate);
-		return classroomCourses;
-	}
+//	@Override
+//	public ClassroomCourses selectTeachingCoursesListByCid(long classroomid, Date startdate, Date enddate) {
+//		ClassroomCourses classroomCourses = classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, startdate, enddate);
+//		return classroomCourses;
+//	}
 
 
 

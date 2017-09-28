@@ -175,7 +175,7 @@ public interface ClassroomCoursesMapper {
      * enddate  延迟几分钟直播结束---时间
      */
     ClassroomCourses selectTeachingCoursesListByCid(@Param("classroomid") long classroomid, 
-    		@Param("startdate") Date startdate, @Param("enddate") Date enddate);
+    		@Param("curday") String curday, @Param("nowdate") String nowdate);
     
     /*
      * 获取最大排序值(sort desc排序)

@@ -76,7 +76,7 @@ public interface ClassroomCoursesService {
      * 获取课程信息---最近直播
      * classroomid 教室id
      */
-	ClassroomCourses selectTeachingCoursesListByCid(long classroomid, Date startdate, Date enddate);
+//	ClassroomCourses selectTeachingCoursesListByCid(long classroomid, Date startdate, Date enddate);
 	
 	/**
 	 * @author yinxc

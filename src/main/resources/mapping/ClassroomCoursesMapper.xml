@@ -202,7 +202,10 @@
     and pickey != '' 
     and isup = 1 
 	and teachingtypes = 1
-	and (status = 0 or status = 1) 
+	and (status = 0 or status = 1)
+    and daytime is not null
+    and starttime &gt; #{curday}
+    and endtime &gt; #{nowdate}
 	ORDER BY daytime ASC
       limit 1
   </select>
