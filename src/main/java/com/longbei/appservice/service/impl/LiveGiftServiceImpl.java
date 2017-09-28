@@ -174,7 +174,7 @@ public class LiveGiftServiceImpl implements LiveGiftService {
 		BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
         try{
             List<LiveGiftDetail> list = null;
-            logger.info("selectGiftListByGiftid classroomid={},giftid={},cuserid={}",classroomid,giftid,cuserid);
+            logger.info("selectGiftListByGiftid classroomid={},giftid={},userid={}",classroomid,giftid,userid);
         	if(StringUtils.isBlank(classroomid)){
                 //查询用户制定礼物的礼物明细
                 list = liveGiftDetailMapper.selectGiftListByGiftid(userid, null, null,
