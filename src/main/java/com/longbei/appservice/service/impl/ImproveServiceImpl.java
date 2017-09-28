@@ -1127,11 +1127,11 @@ public class ImproveServiceImpl implements ImproveService{
      *  @update 2017/1/23 下午4:55
      */
     @Override
-    public BaseResp<Object> removeImprove(String userid,String improveid,
-                                 String businesstype,String businessid) {
+    public BaseResp<Object> removeImprove(final String userid,final String improveid,
+                                 final String businesstype,String businessid) {
         BaseResp<Object> baseResp = new BaseResp<>();
         try {
-        	Improve improves = selectImprove(Long.parseLong(improveid),userid,businesstype,businessid,null,null);
+        	final Improve improves = selectImprove(Long.parseLong(improveid),userid,businesstype,businessid,null,null);
         	if(null != improves){
         		if(!userid.equals(improves.getUserid().toString())){
         			return baseResp.initCodeAndDesp(Constant.STATUS_SYS_112, Constant.RTNINFO_SYS_112);
@@ -1169,27 +1169,31 @@ public class ImproveServiceImpl implements ImproveService{
                     break;
             }
             if (ResultUtil.isSuccess(baseResp)){
-                //将收藏了该进步的用户进步状态修改为已删除
-                deleteUserCollectImprove("0",improveid);
-                //将该进步设为取消推荐
-                List<Long> list = new ArrayList<Long>();
-                list.add(Long.parseLong(improveid));
+                threadPoolTaskExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        //将收藏了该进步的用户进步状态修改为已删除
+                        deleteUserCollectImprove("0",improveid);
+                        //将该进步设为取消推荐
+                        List<Long> list = new ArrayList<Long>();
+                        list.add(Long.parseLong(improveid));
 //                timeLineDetailDao.updateRecommendImprove(list,businesstype,"0");
-                improveMapper.updateImproveRecommend(getTableNameByBusinessType(businesstype),list,"0");
+                        improveMapper.updateImproveRecommend(getTableNameByBusinessType(businesstype),list,"0");
 
-                timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
+                        timeLineDetailDao.deleteImprove(Long.parseLong(improveid),userid);
 //                Improve improve = selectImproveByImpid(Long.parseLong(improveid),userid,businesstype,businessid);
-                userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
-                        Long.parseLong(userid),improves,0);
+                        userBehaviourService.userSumInfo(Constant.UserSumType.removedImprove,
+                                Long.parseLong(userid),improves,0);
 
-                //看进步是不是今天的,如果是今天的进步,则将redis中保存的用户当天发表的进步-1
-                Date startDate = DateUtils.getDateStart(new Date());
-                Date endDate = DateUtils.getDateEnd(startDate);
-                if(improves.getCreatetime().getTime() >= startDate.getTime() && improves.getCreatetime().getTime() < endDate.getTime()){
-                    String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
-                    springJedisDao.increment(key,userid,-1);
-                }
-
+                        //看进步是不是今天的,如果是今天的进步,则将redis中保存的用户当天发表的进步-1
+                        Date startDate = DateUtils.getDateStart(new Date());
+                        Date endDate = DateUtils.getDateEnd(startDate);
+                        if(improves.getCreatetime().getTime() >= startDate.getTime() && improves.getCreatetime().getTime() < endDate.getTime()){
+                            String key = Constant.RP_USER_PERDAY+Constant.PERDAY_ADD_IMPROVE+"_"+DateUtils.getDate();
+                            springJedisDao.increment(key,userid,-1);
+                        }
+                    }
+                });
             }
         } catch (Exception e) {
             logger.error("remove improve is error:",e);
