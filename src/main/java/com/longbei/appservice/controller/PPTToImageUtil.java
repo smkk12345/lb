@@ -1,43 +1,26 @@
 package com.longbei.appservice.controller;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
-
 import org.apache.poi.hslf.HSLFSlideShow;
 import org.apache.poi.hslf.model.Slide;
 import org.apache.poi.hslf.model.TextRun;
 import org.apache.poi.hslf.usermodel.RichTextRun;
 import org.apache.poi.hslf.usermodel.SlideShow;
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFShape;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
-import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
-import org.apache.poi.xslf.usermodel.XSLFTextRun;
-import org.apache.poi.xslf.usermodel.XSLFTextShape;
+import org.apache.poi.xslf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTRegularTextRun;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTTextBody;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTTextCharacterProperties;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTTextFont;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTTextParagraph;
+import org.openxmlformats.schemas.drawingml.x2006.main.*;
 import org.openxmlformats.schemas.presentationml.x2006.main.CTGroupShape;
 import org.openxmlformats.schemas.presentationml.x2006.main.CTShape;
 import org.openxmlformats.schemas.presentationml.x2006.main.CTSlide;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by wangyongzhi 17/8/16.
@@ -83,7 +66,6 @@ public class PPTToImageUtil {
 
             is.close();
             for (int i = 0; i < xslfSlides.length; i++) {
-                System.out.print("第" + i + "页。");
                 setFont(xslfSlides[i]);
                 BufferedImage img = new BufferedImage(pageSize.width,
                         pageSize.height, BufferedImage.TYPE_INT_RGB);
@@ -204,15 +186,12 @@ public class PPTToImageUtil {
             Slide[] slide = ppt.getSlides();
             Dimension pgSize = ppt.getPageSize();
             for (int i = 0; i < slide.length; i++) {
-                System.out.print("第" + i + "页。");
-
                 TextRun[] truns = slide[i].getTextRuns();
                 for (int k = 0; k < truns.length; k++) {
                     RichTextRun[] rtruns = truns[k].getRichTextRuns();
                     for (int l = 0; l < rtruns.length; l++) {
                         rtruns[l].setFontIndex(1);
                         rtruns[l].setFontName("宋体");
-                        System.out.println(rtruns[l].getText());
                     }
                 }
 
@@ -241,7 +220,7 @@ public class PPTToImageUtil {
             }
             return imageList;
         } catch (FileNotFoundException e) {
-            System.out.println(e);
+            e.printStackTrace();
         } catch (IOException e) {
         }
         return imageList;
@@ -267,7 +246,6 @@ public class PPTToImageUtil {
             // Dimension pgsize = ppt.getPageSize();
             Slide[] slide = ppt.getSlides();
             for (int i = 0; i < slide.length; i++) {
-                System.out.print("第" + i + "页。");
                 BufferedImage img = new BufferedImage(w,
                         h, BufferedImage.TYPE_INT_RGB);
 
@@ -284,7 +262,7 @@ public class PPTToImageUtil {
             }
             return true;
         } catch (FileNotFoundException e) {
-            System.out.println(e);
+            e.printStackTrace();
         } catch (IOException e) {
         }
         return false;
@@ -315,7 +293,6 @@ public class PPTToImageUtil {
             Dimension pgsize = ppt.getPageSize();
             XSLFSlide[] slides = ppt.getSlides();
             for(int i=0;i<slides.length;i++){
-                System.out.print("第" + i + "页。");
                 //设置字体为宋体，解决中文乱码问题
                 CTSlide xmlObject = slides[i].getXmlObject();
                 CTGroupShape spTree = xmlObject.getCSld().getSpTree();
@@ -371,7 +348,7 @@ public class PPTToImageUtil {
                 oldfile.renameTo(newfile);
             }
         }else{
-            System.out.println("新文件名和旧文件名相同...");
+
         }
     }
     public static String formatNum(String name){
@@ -383,7 +360,6 @@ public class PPTToImageUtil {
         }
         name = name.substring(index);
         name = name.substring(0,name.lastIndexOf("."));
-        System.out.println(name);
         return name;
     }
     public static void ppt2003Img(String sourceFile, String tmpPicsDirName) {
@@ -392,7 +368,6 @@ public class PPTToImageUtil {
             Dimension pgsize = ppt.getPageSize();
             Slide[] slides = ppt.getSlides();
             for(int i=0;i<slides.length;i++){
-                System.out.print("第" + i + "页。");
                 BufferedImage img = new BufferedImage(pgsize.width, pgsize.height, BufferedImage.TYPE_INT_RGB);
                 Graphics2D graphics = img.createGraphics();
                 graphics.setPaint(Color.white);

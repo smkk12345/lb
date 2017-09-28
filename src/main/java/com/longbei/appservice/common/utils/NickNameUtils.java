@@ -1,7 +1,5 @@
 package com.longbei.appservice.common.utils;
 
-import java.util.Calendar;
-
 /**
  * Created by lixb on 2017/3/5.
  */
@@ -38,11 +36,5 @@ public class NickNameUtils {
         String result = p+mToken+sb2+sb1;
         return result;
     }
-
-    public static void main1(String[] args){
-        String nickname = getSingleNickName("lb","18201526455");
-        System.out.print(nickname);
-    }
-
 
 }

@@ -47,20 +47,6 @@ public class SFSequence {
 		this.datacenterId = datacenterId;
 	}
 	
-
-	public static void main1(String[] args) {
-		try {
-			System.out.println(getHostIp(InetAddress.getLocalHost()));
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for (int i = 0; i < 200; i++) {
-			long machineId = calculateMachineId();
-			System.out.println(machineId%32);
-		}
-	}
-
 	public static long calculateMachineId() {
 		try {
 			for (NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces())) {

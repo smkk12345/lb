@@ -42,7 +42,7 @@ public class TopicMessageReciverService implements MessageListener{
         //业务处理
         try {
             String msg = ((TextMessage)message).getText();
-            System.out.println(msg);
+//            System.out.println(msg);
             if (Constant.UPDATE_RULE.equals(msg)){
                 initUserBehaviorRule(0);
                 Constant_Imp_Icon.init();

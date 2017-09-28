@@ -19,7 +19,6 @@ import com.longbei.appservice.entity.MediaResourceDetail;
 import com.longbei.appservice.entity.MediaResourceType;
 import com.longbei.appservice.service.MediaResourceService;
 import com.longbei.appservice.service.api.staticresourceservice.PPTServiceApi;
-import org.artofsolving.jodconverter.OfficeDocumentConverter;
 import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeManager;
 import org.icepdf.core.exceptions.PDFException;
@@ -516,7 +515,6 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         }
         img.flush();
         document.dispose();
-        System.out.println("转码成功 ");
         return imageList;
     }
 
@@ -527,7 +525,6 @@ public class MediaResourceServiceImpl implements MediaResourceService {
         }
         DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
         try {
-            System.out.println("openOffice Manager start open....");
             configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
             configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
             configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
@@ -536,11 +533,8 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             officeManager = configuration.buildOfficeManager();
 
             officeManager.start();
-            System.out.println("office Manager 启动成功!");
-            System.out.println("************* success **************"+getOfficeHome());
         } catch (Exception ce) {
-            System.out.println("************* fail **************"+getOfficeHome());
-            System.out.println("office Manager 启动失败:" + ce);
+           ce.printStackTrace();
         }
     }
 
@@ -596,16 +590,13 @@ public class MediaResourceServiceImpl implements MediaResourceService {
 
 
     public static void stopService() {
-        System.out.println("openOffice Manager 开始停止....");
         if (officeManager != null) {
             officeManager.stop();
         }
-        System.out.println("openOffice Manager 停止成功!");
     }
 
     public static void initStopService(){
         try {
-            System.out.println("openOffice Manager 开始关闭....");
             DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
             configuration.setOfficeHome(getOfficeHome());// 设置OpenOffice.org安装目录
             configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
@@ -615,11 +606,8 @@ public class MediaResourceServiceImpl implements MediaResourceService {
             officeManager = configuration.buildOfficeManager();
             officeManager.stop();
             officeManager = null;
-            System.out.println("office Manager 关闭成功!");
-            System.out.println("************* success **************"+getOfficeHome());
         } catch (Exception ce) {
-            System.out.println("************* fail **************"+getOfficeHome());
-            System.out.println("office Manager 关闭失败:" + ce);
+            ce.printStackTrace();
         }
     }
     /*************************** PPT转图片 end *************************/

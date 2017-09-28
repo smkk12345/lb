@@ -1,14 +1,7 @@
 package com.longbei.appservice.common.utils;
-import java.util.Random;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.longbei.appservice.entity.Gift;
+
+import java.util.*;
 
 /**
  * 不同概率抽奖工具包
@@ -102,9 +95,6 @@ public class LotteryUtil {
     	while (it.hasNext()) {
 			Integer i = (Integer) it.next();
 			Gift g = getGiftByIndex(i);
-			System.out.println(g.getGiftName()+":"+map.get(i));
-//			Integete value = 
-//			
 		}
     	
     	

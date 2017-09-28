@@ -1,11 +1,10 @@
 package com.longbei.pay.weixin.res;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.longbei.pay.util.MD5Util;
 import com.longbei.pay.util.TenpayUtil;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -87,7 +86,7 @@ public class RequestHandler {
 	}
 
 	public void init() {
-		System.out.println("init()");
+
 	}
 
 	/**
@@ -147,7 +146,6 @@ public class RequestHandler {
 
 		// 去掉最后一个&
 		String packageValue = sb.append("sign=" + sign).toString();
-		System.out.println("packageValue=" + packageValue);
 		return packageValue;
 	}
 
@@ -167,7 +165,6 @@ public class RequestHandler {
 			}
 		}
 		sb.append("key=" + this.getKey());
-		System.out.println("md5 sb:" + sb);
 		String sign = MD5Util.MD5Encode(sb.toString(), this.charset).toUpperCase();
 
 		return sign;

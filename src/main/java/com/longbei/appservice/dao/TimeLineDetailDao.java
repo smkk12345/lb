@@ -5,9 +5,9 @@ package com.longbei.appservice.dao;/**
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.dao.BaseMongoDao;
 import com.longbei.appservice.common.utils.DateUtils;
-import com.longbei.appservice.entity.*;
-import com.longbei.appservice.service.impl.UserCheckinDetailImpl;
-import net.sf.json.JSONObject;
+import com.longbei.appservice.entity.AppUserMongoEntity;
+import com.longbei.appservice.entity.TimeLineDetail;
+import com.longbei.appservice.entity.UserImproveStatistic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -146,7 +146,6 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Query query = new Query(criteria);
         query.skip(startNum);
         query.limit(pageSize);
-        System.out.println(query);
         List<TimeLineDetail> timeLineDetails = mongoTemplate.find(query,TimeLineDetail.class);
         return timeLineDetails;
     }
@@ -189,8 +188,6 @@ public class TimeLineDetailDao extends BaseMongoDao<TimeLineDetail>{
         Query query = new Query(criteria);
         Update update = new Update();
         update.set("istopic",isTopic);
-        System.out.println(query);
-        System.out.println("update--------"+update);
         mongoTemplate.updateMulti(query,update, TimeLineDetail.class);
     }
 
