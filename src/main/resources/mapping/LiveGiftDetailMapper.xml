@@ -74,7 +74,7 @@
               AND businesstype = #{businesstype}
           </when>
           <otherwise>
-              userid = #{userid}
+              touid = #{userid}
           </otherwise>
       </choose>
       GROUP BY giftid
