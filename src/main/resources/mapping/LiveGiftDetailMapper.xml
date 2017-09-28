@@ -27,15 +27,20 @@
       lg.title as gifttitle,lgd.createtime,lg.picurl as picurl 
       FROM live_gift_detail lgd 
 	  INNER JOIN live_gift lg ON lgd.giftid = lg.giftid 
-	  WHERE 
-	  <if test="businessid != null and businessid != ''" >
-      	lgd.businessid = #{businessid} 
-      	AND lgd.businesstype = #{businesstype} AND 
-      </if>
-	  lgd.touid =  #{userid}
+	  WHERE
+
+      <choose>
+          <when test="businessid != null and businessid != ''" >
+              lgd.businessid = #{businessid}
+              AND lgd.businesstype = #{businesstype}
+          </when>
+          <otherwise>
+              lgd.touid =  #{userid}
+          </otherwise>
+      </choose>
       order by lgd.createtime desc
       <if test="startNum != null" >
-        limit #{startNum},#{endNum}
+          limit #{startNum},#{endNum}
       </if>
   </select>
   
@@ -62,11 +67,16 @@
       SELECT 
       id, touid, giftid, SUM(num) as num, gifttitle, businessid, businesstype 
       FROM live_gift_detail
-      where 
-      <if test="businessid != null and businessid != ''" >
-      	businessid = #{businessid} 
-      	AND businesstype = #{businesstype}
-      </if>
+      where
+      <choose>
+          <when test="businessid != null and businessid != ''" >
+              businessid = #{businessid}
+              AND businesstype = #{businesstype}
+          </when>
+          <otherwise>
+              userid = #{userid}
+          </otherwise>
+      </choose>
       GROUP BY giftid
   </select>
   

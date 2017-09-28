@@ -143,18 +143,19 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     		Integer startNum, Integer endNum) {
     	BaseResp<List<LiveGiftDetail>> baseResp = new BaseResp<>();
         try{
-        	Long cuserid = 0l;
-        	if(!StringUtils.isBlank(classroomid)){
-        		Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
-        		cuserid = classroom.getUserid();
-        	}else{
-        		cuserid = userid;
-        	}
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectOwnGiftList(cuserid, 
-            		classroomid, "4", startNum, endNum);
+            List<LiveGiftDetail> list = null;
+            if(StringUtils.isBlank(classroomid)){
+                //查个人中心的总明细
+                list = liveGiftDetailMapper.selectOwnGiftList(userid,
+                        null, null, startNum, endNum);
+            }else{
+                //查教室中的礼物明细
+                list = liveGiftDetailMapper.selectOwnGiftList(null,
+                        classroomid, "4", startNum, endNum);
+            }
             if(null != list && list.size()>0){
             	for (LiveGiftDetail liveGiftDetail : list) {
-            		initLiveGiftDetailByUserid(liveGiftDetail, cuserid.toString());
+            		initLiveGiftDetailByUserid(liveGiftDetail, userid.toString());
     			}
             }
             baseResp.setData(list);
@@ -221,16 +222,15 @@ public class LiveGiftServiceImpl implements LiveGiftService {
 	public BaseResp<List<Map<String,String>>> selectGiftSumList(long userid, String classroomid) {
 		BaseResp<List<Map<String,String>>> baseResp = new BaseResp<>();
         try{
-//        	Long cuserid = userid;
-//        	if(!StringUtils.isBlank(classroomid)){
-//        		Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
-//                UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
-//                if(null != userCard){
-//                    cuserid = userCard.getUserid();
-//                }
-//        	}
             List<Map<String,String>> resultList = new ArrayList<>();
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(null, classroomid, "4");
+            List<LiveGiftDetail> list = null;
+            if(!StringUtils.isBlank(classroomid)){
+                //查询教室的礼物
+                list = liveGiftDetailMapper.selectGiftSumList(null, classroomid, "4");
+            }else {
+                //查询用户的礼物
+                list = liveGiftDetailMapper.selectGiftSumList(userid, null, null);
+            }
             if(null == list||list.size()==0){
                 return baseResp.initCodeAndDesp();
             }
