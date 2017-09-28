@@ -169,7 +169,7 @@
     and isup = 1 
     and teachingtypes = 1 
     and (status = 0 or status = 1) 
-	and (starttime > #{startdate} or endtime > #{enddate}) 
+    and (starttime &lt; #{startdate} or endtime &gt; #{enddate})
     <if test="daytime != null and daytime != ''" >
       	and daytime = #{daytime}
     </if>
