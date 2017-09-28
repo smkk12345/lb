@@ -99,12 +99,6 @@
             <if test="doublehit != null" >
                 doublehit,
             </if>
-            <if test="createtime != null" >
-                createtime,
-            </if>
-            <if test="updatetime != null" >
-                updatetime,
-            </if>
             <if test="isdel != null" >
                 isdel,
             </if>
@@ -128,12 +122,6 @@
             <if test="doublehit != null" >
                 #{doublehit,jdbcType=CHAR},
             </if>
-            <if test="createtime != null" >
-                #{createtime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatetime != null" >
-                #{updatetime,jdbcType=TIMESTAMP},
-            </if>
             <if test="isdel != null" >
                 #{isdel,jdbcType=CHAR},
             </if>
@@ -156,12 +144,6 @@
             </if>
             <if test="doublehit != null" >
                 doublehit = #{doublehit,jdbcType=CHAR},
-            </if>
-            <if test="createtime != null" >
-                createtime = #{createtime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatetime != null" >
-                updatetime = #{updatetime,jdbcType=TIMESTAMP},
             </if>
             <if test="isdel != null" >
                 isdel = #{isdel,jdbcType=CHAR},

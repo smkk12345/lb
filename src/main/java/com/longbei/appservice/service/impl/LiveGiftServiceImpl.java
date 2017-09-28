@@ -180,8 +180,19 @@ public class LiveGiftServiceImpl implements LiveGiftService {
         	}else{
         		cuserid = userid;
         	}
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(cuserid, classroomid, "4", 
-            		giftid, startNum, endNum);
+            List<LiveGiftDetail> list = null;
+        	if(StringUtils.isBlank(classroomid)){
+                //查询用户制定礼物的礼物明细
+                list = liveGiftDetailMapper.selectGiftListByGiftid(cuserid, null, null,
+                        giftid, startNum, endNum);
+            }else{
+                //查询教室中制定礼物的礼物明细
+                list = liveGiftDetailMapper.selectGiftListByGiftid(null, classroomid, "4",
+                        giftid, startNum, endNum);
+            }
+//            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftListByGiftid(cuserid, classroomid, "4",
+//            		giftid, startNum, endNum);
+
             if(null != list && list.size()>0){
             	for (LiveGiftDetail liveGiftDetail : list) {
             		initLiveGiftDetailByUserid(liveGiftDetail, cuserid.toString());

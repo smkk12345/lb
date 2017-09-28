@@ -51,12 +51,16 @@
       FROM live_gift_detail lgd 
 	  INNER JOIN live_gift lg ON lgd.giftid = lg.giftid 
 	  WHERE
-	  	<if test="businessid != null and businessid != ''" >
-      		lgd.businessid = #{businessid} 
-      		AND lgd.businesstype = #{businesstype} AND 
-      	</if> 
-	  	lgd.touid = #{userid} 
-	    and lgd.giftid = #{giftid} 
+          <choose>
+              <when test="businessid != null and businessid != ''" >
+                  lgd.businessid = #{businessid}
+                  AND lgd.businesstype = #{businesstype}
+              </when>
+              <otherwise>
+                  lgd.touid =  #{userid}
+              </otherwise>
+          </choose>
+	    and lgd.giftid = #{giftid}
       order by lgd.createtime desc
       <if test="startNum != null" >
         limit #{startNum},#{endNum}
