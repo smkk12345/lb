@@ -204,7 +204,7 @@
     and isup = 1 
 	and teachingtypes = 1
 	and (status = 0 or status = 1) 
-	and (starttime &lt; #{startdate} or endtime &gt; #{enddate})
+	and  endtime &gt; #{enddate})
 	ORDER BY starttime ASC  
       limit 1
   </select>
