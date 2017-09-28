@@ -50,7 +50,7 @@
         <if test="liveGift.price != null and liveGift.price != ''" >
             AND price = #{liveGift.price}
         </if>
-        ORDER BY price ASC,createtime DESC
+        ORDER BY updatetime DESC
         <if test="startNum != null" >
             limit #{startNum},#{pageSize}
         </if>

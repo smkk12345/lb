@@ -140,9 +140,9 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     /**
      * 查询用户收到的礼物列表
      * @param userid 当前登录者id
-     * @param friendid
+     * @param classroomid
      * @param startNum
-     * @param endNUm
+     * @param endNum
      * @return
      */
     @Override
@@ -356,7 +356,9 @@ public class LiveGiftServiceImpl implements LiveGiftService {
     public BaseResp<Object> insertLiveGift(LiveGift liveGift){
         BaseResp<Object> baseResp = new BaseResp<Object>();
         liveGift.setGiftid(idGenerateService.getUniqueIdAsLong());
-        liveGift.setCreatetime(new Date());
+        Date date = new Date();
+        liveGift.setCreatetime(date);
+        liveGift.setUpdatetime(date);
         try {
             int n = liveGiftMapper.insertLiveGift(liveGift);
             if(n == 1){
