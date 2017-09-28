@@ -779,15 +779,15 @@ public class ClassroomApiController {
  	*/
  	@SuppressWarnings("unchecked")
   	@RequestMapping(value = "coursesList")
-     public BaseResp<List<ClassroomCourses>> coursesList(String classroomid) {
+     public BaseResp<List<ClassroomChapter>> coursesList(String classroomid) {
  		logger.info("coursesList classroomid={}",classroomid);
- 		BaseResp<List<ClassroomCourses>> baseResp = new BaseResp<>();
+ 		BaseResp<List<ClassroomChapter>> baseResp = new BaseResp<>();
    		if (StringUtils.hasBlankParams(classroomid)) {
               return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07, Constant.RTNINFO_SYS_07);
          }
    		try {
-   			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), 0, 15);
-//   			baseResp = classroomChapterService.selectChapterByCid(Long.parseLong(classroomid), 0, 15);
+//   			baseResp = classroomCoursesService.selectListByClassroomid(Long.parseLong(classroomid), 0, 15);
+   			baseResp = classroomChapterService.selectChapterByCid(Long.parseLong(classroomid), 0, 15);
    		} catch (Exception e) {
    			logger.error("coursesList classroomid = {}", classroomid, e);
    		}
