@@ -5,18 +5,9 @@ import com.longbei.appservice.common.IdGenerateService;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
 import com.longbei.appservice.common.utils.StringUtils;
-import com.longbei.appservice.dao.ClassroomMapper;
-import com.longbei.appservice.dao.LiveGiftDetailMapper;
-import com.longbei.appservice.dao.LiveGiftMapper;
-import com.longbei.appservice.dao.LiveInfoMongoMapper;
-import com.longbei.appservice.dao.UserInfoMapper;
+import com.longbei.appservice.dao.*;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
-import com.longbei.appservice.entity.AppUserMongoEntity;
-import com.longbei.appservice.entity.Classroom;
-import com.longbei.appservice.entity.LiveGift;
-import com.longbei.appservice.entity.LiveGiftDetail;
-import com.longbei.appservice.entity.LiveInfo;
-import com.longbei.appservice.entity.UserInfo;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.LiveGiftService;
 import com.longbei.appservice.service.UserMoneyDetailService;
 import com.longbei.appservice.service.UserRelationService;
@@ -56,6 +47,8 @@ public class LiveGiftServiceImpl implements LiveGiftService {
 //    private LiveCache liveCache;
     @Autowired
     private ClassroomMapper classroomMapper;
+    @Autowired
+    private UserCardMapper userCardMapper;
     
 
     private static Logger logger = LoggerFactory.getLogger(LiveGiftServiceImpl.class);
@@ -228,15 +221,16 @@ public class LiveGiftServiceImpl implements LiveGiftService {
 	public BaseResp<List<Map<String,String>>> selectGiftSumList(long userid, String classroomid) {
 		BaseResp<List<Map<String,String>>> baseResp = new BaseResp<>();
         try{
-        	Long cuserid = 0l;
-        	if(!StringUtils.isBlank(classroomid)){
-        		Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
-        		cuserid = classroom.getUserid();
-        	}else{
-        		cuserid = userid;
-        	}
+//        	Long cuserid = userid;
+//        	if(!StringUtils.isBlank(classroomid)){
+//        		Classroom classroom = classroomMapper.selectByPrimaryKey(Long.parseLong(classroomid));
+//                UserCard userCard = userCardMapper.selectByCardid(classroom.getCardid());
+//                if(null != userCard){
+//                    cuserid = userCard.getUserid();
+//                }
+//        	}
             List<Map<String,String>> resultList = new ArrayList<>();
-            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(cuserid, classroomid, "4");
+            List<LiveGiftDetail> list = liveGiftDetailMapper.selectGiftSumList(null, classroomid, "4");
             if(null == list||list.size()==0){
                 return baseResp.initCodeAndDesp();
             }

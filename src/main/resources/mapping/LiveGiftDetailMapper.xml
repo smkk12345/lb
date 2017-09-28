@@ -65,9 +65,8 @@
       where 
       <if test="businessid != null and businessid != ''" >
       	businessid = #{businessid} 
-      	AND businesstype = #{businesstype} AND 
+      	AND businesstype = #{businesstype}
       </if>
-      touid = #{userid} 
       GROUP BY giftid
   </select>
   
