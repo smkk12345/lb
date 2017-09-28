@@ -175,28 +175,22 @@ public class HttpEndpoint {
         private void paserContent(Element notify) {
             try {
                 String topicOwner = safeGetElementContent(notify, "TopicOwner");
-                System.out.println("TopicOwner:\t" + topicOwner);
                 logger.debug("TopicOwner:\t" + topicOwner);
 
                 String topicName = safeGetElementContent(notify, "TopicName");
-                System.out.println("TopicName:\t" + topicName);
                 logger.debug("TopicName:\t" + topicName);
 
                 String subscriber = safeGetElementContent(notify, "Subscriber");
-                System.out.println("Subscriber:\t" + subscriber);
                 logger.debug("Subscriber:\t" + subscriber);
 
                 String subscriptionName = safeGetElementContent(notify, "SubscriptionName");
-                System.out.println("SubscriptionName:\t" + subscriptionName);
                 logger.debug("SubscriptionName:\t" + subscriptionName);
 
                 String msgid = safeGetElementContent(notify, "MessageId");
-                System.out.println("MessageId:\t" + msgid);
                 logger.debug("MessageId:\t" + msgid);
 
                 // if PublishMessage with base64 message
                 String msg = safeGetElementContent(notify, "Message");
-                System.out.println("Message:\t" + new String(Base64.decodeBase64(msg)));
                 logger.debug("Message:\t" + new String(Base64.decodeBase64(msg)));
 
                 //if PublishMessage with string message
@@ -205,23 +199,19 @@ public class HttpEndpoint {
                 //logger.debug("Message:\t" + msg);
 
                 String msgMD5 = safeGetElementContent(notify, "MessageMD5");
-                System.out.println("MessageMD5:\t" + msgMD5);
                 logger.debug("MessageMD5:\t" + msgMD5);
 
                 String msgPublishTime = safeGetElementContent(notify, "PublishTime");
                 Date d = new Date(Long.parseLong(msgPublishTime));
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String strdate = sdf.format(d);
-                System.out.println("PublishTime:\t" + strdate);
                 logger.debug("MessagePublishTime:\t" + strdate);
 
                 String cert = safeGetElementContent(notify, "SigningCertURL");
-                System.out.println("SigningCertURL:\t" + cert);
                 logger.debug("SigningCertURL:\t" + cert);
 
 
             } catch (Exception e) {
-                System.out.println(e.getMessage());
                 e.printStackTrace();
                 logger.warn(e.getMessage());
             }
@@ -328,13 +318,10 @@ public class HttpEndpoint {
             Header[] headers = request.getAllHeaders();
             Map<String, String> hm = new HashMap<String, String>();
             for (Header h : headers) {
-                System.out.println(h.getName() + ":" + h.getValue());
                 hm.put(h.getName(), h.getValue());
             }
 
             String target = request.getRequestLine().getUri();
-            System.out.println(target);
-
 
             if (request instanceof HttpEntityEnclosingRequest) {
                 HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
@@ -368,10 +355,8 @@ public class HttpEndpoint {
 
                 //verify request
                 String cert = safeGetElementContent(notify, "SigningCertURL");
-                System.out.println("SigningCertURL:\t" + cert);
                 logger.debug("SigningCertURL:\t" + cert);
                 if (cert.isEmpty()) {
-                    System.out.println("SigningCertURL empty");
                     response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
                     return;
                 }

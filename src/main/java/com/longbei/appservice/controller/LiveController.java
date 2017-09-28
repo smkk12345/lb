@@ -156,7 +156,6 @@ public class LiveController {
             pagesize = Integer.parseInt(Constant.DEFAULT_PAGE_SIZE);
         }
         baseResp = this.mediaResourceService.findMediaResourceList(mediaResource,null,pageno,pagesize);
-        System.out.print(JSONObject.fromObject(baseResp).toString());
         map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
         return map;
     }
@@ -178,7 +177,6 @@ public class LiveController {
             return map;
         }
         baseResp = this.mediaResourceService.findMediaResourceDetailList(mediaid,userid);
-        System.out.print(JSONObject.fromObject(baseResp).toString());
         map.put("result",AES.encrypt(AES.A_KEY, JSONObject.fromObject(baseResp).toString()));
         return map;
     }
@@ -241,7 +239,6 @@ public class LiveController {
         }
         Map<String,String> map = new HashMap<>();
         String result = JSONObject.fromObject(baseResp).toString();
-        System.out.println(result);
         map.put("result",AES.encrypt(AES.A_KEY, result));
         return map;
     }

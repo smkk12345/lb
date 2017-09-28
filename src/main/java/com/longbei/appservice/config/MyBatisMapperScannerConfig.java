@@ -47,7 +47,6 @@ public class MyBatisMapperScannerConfig {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
         mapperScannerConfigurer.setBasePackage("com.longbei.appservice.dao");
-        System.out.println("==========================================================");
         Properties properties = new Properties();
         //properties.setProperty("mappers", "tk.mybatis.springboot.util.MyMapper");
         properties.setProperty("notEmpty", "false");

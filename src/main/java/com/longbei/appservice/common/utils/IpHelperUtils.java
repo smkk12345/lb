@@ -1,13 +1,13 @@
 package com.longbei.appservice.common.utils;
 
+import net.sf.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
- 
-import net.sf.json.JSONObject;
  
 public class IpHelperUtils
 {
@@ -21,8 +21,7 @@ public class IpHelperUtils
         String city = "";
         try{
          String str = getJsonContent("http://ip.taobao.com/service/getIpInfo.php?ip="+IP);
-         System.out.println(str);
-          
+
          JSONObject obj = JSONObject.fromObject(str);
          JSONObject obj2 =  (JSONObject) obj.get("data");
          Integer code = (Integer) obj.get("code");

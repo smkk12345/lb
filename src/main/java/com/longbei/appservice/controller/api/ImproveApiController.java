@@ -157,7 +157,6 @@ public class ImproveApiController {
             return baseResp.initCodeAndDesp(Constant.STATUS_SYS_07,Constant.RTNINFO_SYS_07);
         }
         try {
-            System.out.println(improve.getBusinesstype());
             baseResp = improveService.selectImproveList(improve.getBusinesstype(),improve.getBrief(),
                     improve.getAppUserMongoEntity()==null?null:improve.getAppUserMongoEntity().getNickname(),
                     improve.getCreatetime(),

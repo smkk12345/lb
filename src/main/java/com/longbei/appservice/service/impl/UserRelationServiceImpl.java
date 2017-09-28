@@ -1233,17 +1233,12 @@ public class UserRelationServiceImpl implements UserRelationService {
 				Map<String,String> map = JSONObject.fromObject(jsonStr);
 				String mobile = (String) js.get("num");
 				AppUserMongoEntity appUserMongoEntity = userMongoDao.getAppUserByUserName(mobile);
-				if(i == 53){
-					System.out.print("aaa");
-				}
+
 				if (appUser.getUsername().equals(mobile)) {
 					js.put("status", "3");//自己
 					if (appUserMongoEntity != null) {
 						js.put("userid", appUserMongoEntity.getId());
 
-						if(js.get("userid").equals("10961")){
-							System.out.print("aaa");
-						}
 						if(StringUtils.isNotBlank(appUserMongoEntity.getAvatar())){
 							if(appUserMongoEntity.getAvatar().equals("null")){
 								js.put("avatar", "");

@@ -4,12 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.jersey.core.util.Base64;
 
-import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+import java.util.HashMap;
 
 public class AES {
 
@@ -104,16 +102,5 @@ public class AES {
 		}
 		return jsonBody;
 	}
-
-	public static void main1(String[] args){
-		HashMap<String,String> map = new HashMap<String,String>();
-		map.put("startnum","5");
-		map.put("endnum","2");
-		String encryStr = encryptParamsMap(map);
-		System.out.println("encry:"+encryStr);
-		String deStr = AES.decrypt(A_KEY, encryStr);
-		System.out.println("decry:"+deStr);
-	}
-
 
 }
