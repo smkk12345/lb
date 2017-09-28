@@ -478,18 +478,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 //				map.put("isteacher",isTeacher(String.valueOf(userid),classroom));
 				
 				//最近一次直播的日期时间      提前5分钟可进入     延迟5分钟直播结束
-				Date startdate = selectDate(-Constant.LIVE_START);
-				
-				Date enddate = selectDate(Constant.LIVE_END);
+//				Date startdate = selectDate(-Constant.LIVE_START);
+//
+//				Date enddate = selectDate(Constant.LIVE_END);
 
-				logger.info("selectRoomHeadDetail startdate = {}, enddate = {}", 
-						DateUtils.formatDateTime1(startdate), DateUtils.formatDateTime1(enddate));
+//				logger.info("selectRoomHeadDetail startdate = {}, enddate = {}",
+//						DateUtils.formatDateTime1(startdate), DateUtils.formatDateTime1(enddate));
 				
 				ClassroomCourses classroomCourses =  classroomCoursesMapper.selectTeachingCoursesListByCid(classroomid, 
-						startdate, enddate);
+						null, null);
 				if(null != classroomCourses){
 					List<ClassroomCourses> liveCourses = classroomCoursesMapper.selectDaytimeCoursesListByCid(classroomid,  
-							classroomCourses.getDaytime(), startdate, enddate, 0, 0);
+							classroomCourses.getDaytime(), null, null, 0, 0);
 					map.put("liveCourses", liveCourses);
 					map.put("daytime", classroomCourses.getDaytime());
 				}else{
