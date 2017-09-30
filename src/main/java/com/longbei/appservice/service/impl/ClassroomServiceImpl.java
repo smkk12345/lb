@@ -1,35 +1,28 @@
 package com.longbei.appservice.service.impl;
 
-import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import com.longbei.appservice.common.syscache.SysRulesCache;
-
-import com.longbei.appservice.dao.*;
-import com.longbei.appservice.dao.mongo.dao.CodeDao;
-import com.longbei.appservice.entity.*;
-import org.apache.commons.collections.map.HashedMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.longbei.appservice.cache.CommonCache;
 import com.longbei.appservice.common.BaseResp;
 import com.longbei.appservice.common.Page;
 import com.longbei.appservice.common.constant.Constant;
+import com.longbei.appservice.common.syscache.SysRulesCache;
 import com.longbei.appservice.common.utils.DateUtils;
 import com.longbei.appservice.common.utils.ResultUtil;
 import com.longbei.appservice.common.utils.StringUtils;
 import com.longbei.appservice.config.AppserviceConfig;
+import com.longbei.appservice.dao.*;
+import com.longbei.appservice.dao.mongo.dao.CodeDao;
 import com.longbei.appservice.dao.mongo.dao.UserMongoDao;
+import com.longbei.appservice.entity.*;
 import com.longbei.appservice.service.*;
+import org.apache.commons.collections.map.HashedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service("classroomService")
 public class ClassroomServiceImpl implements ClassroomService {
@@ -1732,6 +1725,51 @@ public class ClassroomServiceImpl implements ClassroomService {
 			baseResp.initCodeAndDesp();
 		}catch (Exception e){
 			logger.error("ignoreNotice error and classroomid={},userid={}",classroomid,userid,e);
+		}
+		return baseResp;
+	}
+
+	/**
+	 * 关闭直播时间已经到了,直播未结束的教室
+	 * @param currentTime
+	 * @return
+     */
+	@Override
+	public BaseResp<Object> endMissingClassroom(Long currentTime) {
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+//获取直播中的教室列表---mongo   liveinfo存放的直播课程
+			List<LiveInfo> list = liveInfoMongoMapper.selectLiveInfoList("0");
+			if(null != list && list.size()>0) {
+				for (LiveInfo liveInfo : list) {
+					Classroom classroom = classroomMapper.selectByPrimaryKey(liveInfo.getClassroomid());
+					if (null == classroom) {
+						continue;
+					}
+					ClassroomCourses classroomCourses = classroomCoursesMapper.select(liveInfo.getClassroomid(),
+							liveInfo.getCourseid().intValue());
+					if (null == classroomCourses) {
+						continue;
+					}
+					//判断currentTime   及课程结束时间延迟30分钟   是否结束
+					Date currentDateTime = new Date(currentTime);
+					//返回两个时间的误差 单位是秒
+					Long end = DateUtils.getTimeDifference(liveInfo.getEndtime(), currentDateTime);
+					//status 直播状态  未开始 0，直播中 1，，直播结束未开启回放 2，直播结束开启回放 3
+					//未直播的课程    结束时间到了，直接关闭      2017-09-01
+					if (classroomCourses.getStatus() == 0) {
+						if (end > 0) {
+							//直播结束
+							updateOnlineStatus(liveInfo.getClassroomid() + "", liveInfo.getCourseid() + "", liveInfo.getUserid() + "", "2");
+							//删除mongo数据
+							liveInfoMongoMapper.deleteLiveInfo(liveInfo.getClassroomid(), liveInfo.getCourseid());
+						}
+					}
+				}
+			}
+			baseResp.initCodeAndDesp(Constant.STATUS_SYS_00,Constant.RTNINFO_SYS_00);
+		}catch(Exception e){
+			logger.error("end missing classroom errorMsg:{}",e);
 		}
 		return baseResp;
 	}

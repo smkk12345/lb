@@ -1076,4 +1076,21 @@ public class ClassroomApiController {
 //        return baseResp;
 	}
 
+	/**
+	 * 关闭到时间了还未关闭的教室
+	 * @param currentTime
+	 * @return
+     */
+	@RequestMapping(value="endMissingClassroom")
+	public BaseResp<Object> endMissingClassroom(Long currentTime){
+		logger.info("end missing classroom currentTime:{}",currentTime);
+		BaseResp<Object> baseResp = new BaseResp<>();
+		try{
+			baseResp = this.classroomService.endMissingClassroom(currentTime);
+		}catch(Exception e){
+			logger.error("end missing classroom errorMsg:{}",e);
+		}
+		return baseResp;
+	}
+
 }

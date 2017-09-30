@@ -317,5 +317,11 @@ public interface ClassroomService {
 	BaseResp<List<Classroom>> roomListByIds(String roomids);
 
 	BaseResp<Object> ignoreNotice(long classroomid,long userid);
-	
+
+	/**
+	 * 关闭直播时间已经到了,直播未结束的直播
+	 * @param currentTime
+	 * @return
+     */
+	BaseResp<Object> endMissingClassroom(Long currentTime);
 }
