@@ -307,7 +307,7 @@ public class LiveController {
             if(null == liveInfo){
                 return baseResp.initCodeAndDesp(Constant.STATUS_SYS_01,Constant.RTNINFO_SYS_01);
             }
-//            classroomService.updateOnlineStatus(liveInfo.getClassroomid() + "",liveInfo.getCourseid() + "",liveInfo.getUserid() + "","2");
+            classroomService.updateOnlineStatus(liveInfo.getClassroomid() + "",liveInfo.getCourseid() + "",liveInfo.getUserid() + "","2");
             Double durations = Double.parseDouble(duration)*1000;
             Integer dur = durations.intValue();
             logger.info("courseid={},roomid={},filekey={},durations={}",
